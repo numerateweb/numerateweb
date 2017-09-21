@@ -66,7 +66,7 @@ public class ConvertOMObject implements CLICommand {
 				em.setNamespace(e.getKey(), e.getValue());
 			}
 			for (String file : files) {
-				IStatus status = new OMReader(Arrays.asList()) {
+				IStatus status = new OMReader(Arrays.<String>asList()) {
 					public void parse(String fileName, IOMXmlParser parser) throws XMLStreamException, ParseException {
 						ITransaction transaction = em.getTransaction();
 						try {

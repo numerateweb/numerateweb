@@ -165,6 +165,67 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.10</version>
+					<executions>
+						<execution>
+							<id>embed-webjars</id>
+							<phase>none</phase>
+							<goals>
+								<goal>unpack-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>.</outputDirectory>
+								<includeScope>runtime</includeScope>
+								<includes>META-INF/resources/webjars/**</includes>
+								<excludes>**/src/**</excludes>
+								<overWriteIfNewer>true</overWriteIfNewer>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-libraries</id>
+							<phase>none</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<excludeGroupIds>org.webjars, org.webjars.bower, org.webjars.npm</excludeGroupIds>
+								<stripVersion>true</stripVersion>
+								<outputDirectory>lib/</outputDirectory>
+								<includeScope>runtime</includeScope>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- Configuration for Eclipse M2E -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[0.0,)</versionRange>
+										<goals>
+											<goal>unpack-dependencies</goal>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -175,29 +236,11 @@
 			<layout>p2</layout>
 			<url>https://dl.bintray.com/enilink/snapshots/enilink/1.2.4.201709131418/</url>
 		</repository>
-
-		<repository>
-			<id>komma</id>
-			<layout>p2</layout>
-			<url>https://dl.bintray.com/komma/updates/komma/1.3.2/</url>
-		</repository>
-
-		<repository>
-			<id>mars</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars/</url>
-		</repository>
-
-		<repository>
-			<id>orbit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/</url>
-		</repository>
 	</repositories>
 
 	<modules>
 		<module>bundles/core/org.numerateweb.math</module>
-		<!-- module>bundles/core/org.numerateweb.math.edit</module -->
+		<module>bundles/core/org.numerateweb.math.edit</module>
 
 		<module>bundles/web/org.numerateweb.lift</module>
 		<module>bundles/web/org.numerateweb.website</module>
