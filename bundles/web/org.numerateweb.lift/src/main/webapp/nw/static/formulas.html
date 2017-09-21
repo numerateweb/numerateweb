@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Home</title>
+</head>
+<body class="lift:content_id=main"
+	prefix="
+	rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+	owl: http://www.w3.org/2002/07/owl#
+	rdfs: http://www.w3.org/2000/01/rdf-schema#
+	math: http://numerateweb.org/vocab/math#">
+	<div id="main" data-lift="surround?with=default;at=content">
+		<script data-lift="JS.rdfa"></script>
+		<script data-lift="JS.templates"></script>
+		<script data-lift="head" type="text/javascript"
+			src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+			
+		</script>
+		<script data-lift="head" type="text/javascript">
+			MathJax.Hub.Config({
+				MathML : {
+					useMathMLspacing : true
+				}
+			});
+
+			function createElement(target, options) {
+				function asFunc(obj) {
+					return typeof obj === "function" ? obj : function() {
+						return obj;
+					};
+				}
+				function doCreate(name) {
+					var name = name.replace(/\s+/g, "_");
+					var instanceTemplate = $('<div about="?this" typeof="?" data-lift="rdfa">').attr("typeof", options.type);
+					var renderTemplate = asFunc(options.renderTemplate);
+
+					var uri = options.valueToUri(name);
+					var d = new $.Deferred;
+					function render() {
+						enilink.render(renderTemplate(uri), {
+							model : enilink.param("model")
+						}, function(html) {
+							d.resolve(html);
+						});
+					}
+					function createAndRender() {
+						var rdf = instanceTemplate.attr("about", uri).rdf().databank.dump();
+						enilink.rdf.updateTriples(rdf, null, function(success) {
+							if (!success) {
+								d.reject("Anlegen des Elements ist fehlgeschlagen.");
+							} else {
+								render();
+							}
+							return false;
+						});
+
+					}
+					enilink.render($("<div>").append(instanceTemplate).html(), {
+						model : enilink.contextModel(target),
+						resource : uri
+					}, function(html) {
+						if (html) {
+							d.reject("Das Element '" + name + "' existiert bereits.");
+						} else {
+							createAndRender();
+						}
+					});
+					return d.promise();
+				}
+
+				var self = $(target);
+				var editableOptions = {
+					type : "text",
+					onblur : "ignore",
+					inputclass : "input-xxlarge",
+					mode : "inline",
+					toggle : "manual"
+				};
+				editableOptions = $.extend(editableOptions, {
+					display : false,
+					success : function(html) {
+						if (html) {
+							// insert element
+						}
+					},
+					value : "",
+					title : "Neues Element",
+					url : function(params) {
+						return doCreate(params.value);
+					}
+				}, options.editableOptions || {});
+				self.editable(editableOptions);
+				self.editable("toggle");
+			}
+
+			$(function() {
+				$("#btn-add-item").click(function() {
+					var self = this;
+					enilink.rdf.namespace("", function(ns) {
+						createElement(self, {
+							type : "http://numerateweb.org/vocab/math#Object",
+							renderTemplate : function(uri) {
+								return {
+									what : "nw/static/formulas",
+									template : "formula",
+									bind : {
+										formula : uri.toString()
+									}
+								};
+							},
+							valueToUri : function(value) {
+								return $.uri(ns + value);
+							},
+							editableOptions : {
+								success : function(html) {
+									if (html) {
+										var newElem = $(html);
+										$("#formulas").append(newElem);
+										//addHandlers(newElem);
+									}
+								}
+							}
+						});
+					});
+				});
+			});
+		</script>
+		<style data-lift="head" type="text/css">
+.formula {
+	position: relative;
+}
+
+.formula .mathml a, .formula .prettyprint a {
+	color: black;
+}
+
+.formula .mathml {
+	background-color: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 4px 4px 4px;
+	padding: 30px 0px 20px;
+}
+
+.formula .property {
+	background-color: #F5F5F5;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 0 4px 0;
+	font-weight: bold;
+	padding: 3px 7px;
+	position: absolute;
+	top: 0px;
+}
+
+.formula .prettyprint {
+	margin-top: -20px;
+	padding-top: 5px;
+	white-space: pre-line;
+}
+
+.formula .content a, .formula .prettyprint a {
+	color: red;
+}
+</style>
+		<h3>Formulas</h3>
+		<div data-lift="rdfa?inferred=false">
+			<!-- textarea class="query"></textarea -->
+			<div id="formulas">
+				<div class="row formula asc" about="?formula" typeof="math:Object"
+					data-filter="isIri(?formula)" data-t="formula">
+					<div class="not-exists clearable" rel="rdf:type"
+						resource="math:Symbol"></div>
+					<div class="col-md-12">
+						<div class="property" data-lift="rdf.label"></div>
+						<div class="mathml">
+							<div style="margin-left: 1ex"><span data-lift="math.mathml"></span></div>
+						</div>
+						<pre class="prettyprint" style="text-align: left"><span data-lift="math.popcorn"></span></pre>
+					</div>
+				</div>
+			</div>
+			<section>
+				<a id="btn-add-item" class="btn btn-small" href="javascript:void(0)"><i
+					class="glyphicon glyphicon-plus"></i> Add formula</a>
+			</section>
+			<div data-for="?formula" data-items="20" class="paginator"></div>
+		</div>
+		<div data-lift="embed?what=editsupport"></div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="net.enilink.komma.model.modules">
+      <module
+            class="org.numerateweb.math.rdf.NWMathModule"
+            uri="http://numerateweb.org/vocab/math/rules">
+      </module>
+      <module
+            class="org.numerateweb.math.rdf.NWMathModule"
+            uri="http://numerateweb.org/vocab/math">
+      </module>
+   </extension>
+   <extension
+         point="net.enilink.komma.model.models">
+      <model
+            namespace="http://numerateweb.org/vocab/math/rules#"
+            prefix="mathrl">
+      </model>
+      <model
+            namespace="http://numerateweb.org/vocab/math#"
+            prefix="math">
+      </model>
+      <model
+            namespace="http://numerateweb.org/vocab/math/meta#"
+            prefix="math-meta">
+      </model>
+   </extension>
+   <extension
+         point="net.enilink.komma.model.uriMapRules">
+      <rule
+            pattern="http://numerateweb.org/vocab/math/"
+            priority="20"
+            replacement="platform:/plugin/org.numerateweb.math/META-INF/ontologies/">
+      </rule>
+      <rule
+            pattern="http://numerateweb.org/vocab/math"
+            priority="30"
+            replacement="platform:/plugin/org.numerateweb.math/META-INF/ontologies/math">
+      </rule>
+   </extension>
+
+</plugin>

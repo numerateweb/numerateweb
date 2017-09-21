@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Convert POPCORN to SPARQL</title>
+</head>
+<body class="lift:content_id=main">
+	<div id="main" data-lift="surround?with=default;at=content">
+		<script data-lift="embed?what=_mathjax"></script>
+		<style data-lift="head" type="text/css">
+/* <![CDATA[ */
+.definition .content a,.definition .prettyprint a {
+	color: red;
+}
+
+.definition .content {
+	background-color: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 4px 4px 4px;
+	padding: 0px 0px 20px 20px;
+}
+
+.definition .prettyprint {
+	margin-top: -20px;
+	padding-top: 5px;
+	white-space: pre-line;
+}
+
+.examples {
+	margin: 10px 0;
+}
+/* ]]> */
+</style>
+		<script data-lift="head">
+			$(function() {
+				$(".example a").click(function() {
+					var expr = $(this).closest(".example").find("pre").text();
+					$("textarea[name=popcorn]").val(expr);
+				});
+			});
+		</script>
+		<div data-lift="popcornSearch">
+			<h4>POPCORN</h4>
+			<form action="" method="get">
+				<fieldset id="fields">
+					<textarea name="popcorn" class="form-control"></textarea>
+				</fieldset>
+				<div class="examples">
+					<div class="row">
+						<div class="col-md-4 example">
+							<div>
+								<a href="javascript:void(0)">Find all top-level expressions
+									that contain a sum or a product.</a>
+							</div>
+							<pre>.^(..+(.|(arith1:sum, arith1:product)))</pre>
+						</div>
+						<div class="col-md-4 example">
+							<div>
+								<a href="javascript:void(0)">Find all lambda functions that
+									use the times operator and the plus operator.</a>
+							</div>
+							<pre>$_ -&gt; ...(.&(arith1:times, arith1:plus))</pre>
+						</div>
+						<div class="col-md-4 example">
+							<div>
+								<a href="javascript:void(0)">Find all lambda functions that
+									have $x as parameter.</a>
+							</div>
+							<pre>$x -&gt; ?</pre>
+						</div>
+					</div>
+				</div>
+				<div id="buttons" style="padding-top: 10px">
+					<button type="submit" class="btn btn-primary">
+						<i class="glyphicon glyphicon-search"></i>
+					</button>
+				</div>
+			</form>
+
+			<div data-lift="rdfa"
+				prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# math: http://numerateweb.org/vocab/math#">
+				<div style="margin: 10px 0px">
+					<a data-toggle="collapse" href="#sparqlQuery">SPARQL</a>
+					<div id="sparqlQuery" class="collapse">
+						<textarea class="query form-control"></textarea>
+					</div>
+				</div>
+
+				<div class="popcorn-patterns"></div>
+				<div class="row definition" about="?expr">
+					<div class="col-md-12">
+						<a href="{app}/describe?model={model}&resource={}"
+							data-lift="rdf.ref?to=href" class="pull-right"
+							style="padding-right: 5px; font-size: smaller">describe</a>
+						<div class="content">
+							<span data-lift="math.mathml"></span>
+						</div>
+						<pre class="prettyprint" style="text-align: left"><span data-lift="math.popcorn" data-linkto="/nw/symbol?symbol={}"></span></pre>
+					</div>
+				</div>
+				<div class="paginator" data-for="?expr"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

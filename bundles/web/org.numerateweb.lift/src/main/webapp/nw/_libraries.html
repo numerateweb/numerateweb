@@ -1,0 +1,54 @@
+<div>
+	<style data-lift="head" type="text/css">
+/* <![CDATA[ */
+.quicksearch .pagination ul>li>a,.quicksearch .pagination ul>li>span {
+	padding: 2px 6px;
+}
+/* ]]> */
+</style>
+	<script type="text/javascript" data-lift="head">
+		$(function() {
+			$("#libraries").click(
+					function(e) {
+						var lib = $(e.target).closest("li[about]")
+								.resourceAttr("about");
+						if (lib) {
+							var params = enilink.params();
+							delete params["offset"];
+							params["library"] = lib;
+							window.location.search = "?"
+									+ enilink.encodeParams(params);
+						}
+					});
+
+			$("#show-all").click(function() {
+				var params = enilink.params();
+				delete params["offset"];
+				delete params["library"];
+				window.location.search = "?" + enilink.encodeParams(params);
+			});
+		});
+	</script>
+	<div id="libraries">
+		<a data-toggle="collapse" data-parent="#libraries"
+			href="#libraries-list">Select library</a> :: <a id="show-all"
+			href="javascript:void(0)">Show all</a>
+		<div id="libraries-list" class="collapse">
+			<div class="panel-body">
+				<div data-lift="rdfa?mode=ajax" class="quicksearch"
+					prefix="
+				rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+				math-meta: http://numerateweb.org/vocab/math/meta#">
+					<div class="search-form"></div>
+					<div class="search-patterns" data-for="?libitem" data-param="ql"></div>
+					<ul class="list-unstyled">
+						<li about="?libitem" class="asc libraries-item"><span
+							rel="rdf:type" resource="math-meta:Library" class="clearable"></span>
+							<a href="javascript:void(0)"><span data-lift="rdf.label"></span></a></li>
+					</ul>
+					<div data-for="?libitem" data-items="10" class="paginator"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

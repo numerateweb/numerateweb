@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns="http://numerateweb.org/vocab/math#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xml:base="http://numerateweb.org/vocab/math">
+<owl:Ontology rdf:about=""/>
+<owl:Class rdf:about="#Application">
+	<rdfs:comment>Constructs an OpenMath object from a sequence of one or more OpenMath objects. The first child of an application is referred to as its "head" while the remaining objects are called its "arguments".  An OpenMath application object can be used to convey the mathematical notion of application of a function to a set of arguments.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1">
+			<owl:allValuesFrom rdf:resource="#ObjectList"/>
+			<owl:onProperty rdf:resource="#arguments"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n2">
+			<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+			<owl:onProperty rdf:resource="#arguments"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n3">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="#operator"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n4">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#operator"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="#Compound"/>
+</owl:Class>
+<owl:Class rdf:about="#Attribution">
+	<rdfs:comment>Decorates an object with a sequence of one or more pairs made up of an OpenMath symbol, the "attribute", and an associated  object, the "value of the attribute". The value of the attribute can be an OpenMath attribution object itself. As an example of this, consider the OpenMath objects representing groups, automorphism groups, and group dimensions. It is then possible to attribute an OpenMath object representing a group by its automorphism group, itself attributed by its dimension.
+
+OpenMath objects can be attributed with OpenMath foreign objects, which are containers for non-OpenMath structures. For example a mathematical expression could be attributed with its spoken or visual rendering.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n5">
+			<owl:allValuesFrom rdf:resource="#AttributionList"/>
+			<owl:onProperty rdf:resource="#arguments"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n6">
+			<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+			<owl:onProperty rdf:resource="#arguments"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n7">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#target"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n8">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="#target"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="#Compound"/>
+</owl:Class>
+<rdfs:Class rdf:about="#AttributionList">
+	<rdfs:comment>A list of attribute-value pairs.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n9">
+			<owl:allValuesFrom rdf:resource="#AttributionPair"/>
+			<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="na">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+	<owl:equivalentClass>
+		<owl:Class rdf:nodeID="nb">
+			<owl:intersectionOf>
+				<rdf:Description rdf:nodeID="nc">
+					<rdf:first>
+						<owl:Restriction rdf:nodeID="nd">
+							<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+							<owl:someValuesFrom rdf:resource="#AttributionPair"/>
+						</owl:Restriction>
+					</rdf:first>
+					<rdf:rest>
+						<rdf:Description rdf:nodeID="ne">
+							<rdf:first>
+								<owl:Class rdf:nodeID="nf">
+									<owl:unionOf>
+										<rdf:Description rdf:nodeID="ng">
+											<rdf:first>
+												<owl:Restriction rdf:nodeID="nh">
+													<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+													<owl:someValuesFrom rdf:resource="#AttributionList"/>
+												</owl:Restriction>
+											</rdf:first>
+											<rdf:rest>
+												<rdf:Description rdf:nodeID="ni">
+													<rdf:first rdf:nodeID="nj"/>
+													<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+												</rdf:Description>
+											</rdf:rest>
+										</rdf:Description>
+									</owl:unionOf>
+								</owl:Class>
+							</rdf:first>
+							<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+						</rdf:Description>
+					</rdf:rest>
+				</rdf:Description>
+			</owl:intersectionOf>
+		</owl:Class>
+	</owl:equivalentClass>
+</rdfs:Class>
+<owl:Class rdf:about="#AttributionPair">
+	<rdfs:comment>Maps an attribute key to the corresponding attribute value.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nk">
+			<owl:allValuesFrom rdf:resource="#Symbol"/>
+			<owl:onProperty rdf:resource="#attributeKey"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nl">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="#attributeValue"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nm">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#attributeKey"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nn">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#attributeValue"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+<owl:Class rdf:about="#Binding">
+	<rdfs:comment>A variable binding that is constructed from an OpenMath object, and from a sequence of zero or more variables followed by another OpenMath object.  The binding consits of a "binder" object, the "body" and the "variables" to be bound in the "body". It is allowed to have no bound variables, but the binder object and the body should be present. Binding can be used to express functions or logical statements.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="no">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="#binder"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="np">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="#body"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nq">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#binder"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nr">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#body"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="ns">
+			<owl:allValuesFrom rdf:resource="#VariableList"/>
+			<owl:onProperty rdf:resource="#variables"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nt">
+			<owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+			<owl:onProperty rdf:resource="#variables"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Class rdf:about="#Compound">
+			<rdfs:comment>An object that is composed of some other mathematical objects.</rdfs:comment>
+			<rdfs:subClassOf rdf:resource="#Object"/>
+		</owl:Class>
+	</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:about="#Error">
+	<rdfs:comment>Represents error objects which are made up of an OpenMath symbol and a sequence of zero or more OpenMath objects. This object has no direct mathematical meaning.  Errors occur as the result of some treatment on an OpenMath object and are thus of real interest only when some sort of communication is taking place. Errors may occur inside other objects and also inside other errors. Error objects might consist only of a symbol as in the object: error (S).</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nu">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#symbol"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nv">
+			<owl:allValuesFrom rdf:resource="#Symbol"/>
+			<owl:onProperty rdf:resource="#symbol"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nw">
+			<owl:allValuesFrom rdf:resource="#ObjectList"/>
+			<owl:onProperty rdf:resource="#arguments"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="#Compound"/>
+</owl:Class>
+<owl:Class rdf:about="#Foreign">
+	<rdfs:comment>A non-OpenMath object within an OpenMath attribution. Examples of its use could be to annotate a formula with a visual or aural rendering, an animation, etc. They may also appear in OpenMath error objects, for example to allow an application to report an error in processing such an object.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nx">
+			<owl:allValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+			<owl:onProperty rdf:resource="#encoding"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="ny">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#encoding"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="nz">
+			<owl:allValuesFrom rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"/>
+			<owl:onProperty rdf:resource="#value"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n10">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#value"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="#Object"/>
+</owl:Class>
+<owl:Class rdf:about="#Literal">
+	<rdfs:comment>An OpenMath literal (integer, float, character string, bytearray).</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n11">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#value"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Class rdf:about="#Object">
+			<rdfs:comment>Component of a mathematical expression.</rdfs:comment>
+			<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+		</owl:Class>
+	</rdfs:subClassOf>
+</owl:Class>
+<rdfs:Class rdf:about="#ObjectList">
+	<rdfs:comment>A list of mathematical objects.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n12">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n13">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+	<owl:equivalentClass>
+		<owl:Class rdf:nodeID="n14">
+			<owl:intersectionOf>
+				<rdf:Description rdf:nodeID="n15">
+					<rdf:first>
+						<owl:Restriction rdf:nodeID="n16">
+							<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+							<owl:someValuesFrom rdf:resource="#Object"/>
+						</owl:Restriction>
+					</rdf:first>
+					<rdf:rest>
+						<rdf:Description rdf:nodeID="n17">
+							<rdf:first>
+								<owl:Class rdf:nodeID="n18">
+									<owl:unionOf>
+										<rdf:Description rdf:nodeID="n19">
+											<rdf:first>
+												<owl:Restriction rdf:nodeID="n1a">
+													<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+													<owl:someValuesFrom rdf:resource="#ObjectList"/>
+												</owl:Restriction>
+											</rdf:first>
+											<rdf:rest>
+												<rdf:Description rdf:nodeID="n1b">
+													<rdf:first rdf:nodeID="n1c"/>
+													<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+												</rdf:Description>
+											</rdf:rest>
+										</rdf:Description>
+									</owl:unionOf>
+								</owl:Class>
+							</rdf:first>
+							<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+						</rdf:Description>
+					</rdf:rest>
+				</rdf:Description>
+			</owl:intersectionOf>
+		</owl:Class>
+	</owl:equivalentClass>
+</rdfs:Class>
+<owl:Class rdf:about="#Reference">
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1s">
+			<owl:allValuesFrom rdf:resource="#Object"/>
+			<owl:onProperty rdf:resource="#target"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1t">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#target"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="#Object"/>
+</owl:Class>
+<owl:Class rdf:about="#Symbol">
+	<rdfs:comment>Symbols are uniquely defined by the Content Dictionary in which they occur and by a name. Each symbol has no more than one definition in a Content Dictionary. Many Content Dictionaries may define differently a symbol with the same name (e.g. the symbol union is defined as associative-commutative set theoretic union in a Content Dictionary set1 but another Content Dictionary, multiset1 might define a symbol union as the union of multi-sets).</rdfs:comment>
+	<rdfs:subClassOf rdf:resource="#Object"/>
+</owl:Class>
+<owl:Class rdf:about="#Variable">
+	<rdfs:comment>Denote parameters, variables or indeterminates (such as bound variables of function definitions, variables in summations and integrals, independent variables of derivatives).</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1f">
+			<owl:allValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+			<owl:onProperty rdf:resource="#name"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1g">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#name"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="#Object"/>
+</owl:Class>
+<rdfs:Class rdf:about="#VariableList">
+	<rdfs:comment>A list of variables.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1h">
+			<owl:allValuesFrom rdf:resource="#Variable"/>
+			<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="n1i">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+	<owl:equivalentClass>
+		<owl:Class rdf:nodeID="n1j">
+			<owl:intersectionOf>
+				<rdf:Description rdf:nodeID="n1k">
+					<rdf:first>
+						<owl:Restriction rdf:nodeID="n1l">
+							<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+							<owl:someValuesFrom rdf:resource="#Variable"/>
+						</owl:Restriction>
+					</rdf:first>
+					<rdf:rest>
+						<rdf:Description rdf:nodeID="n1m">
+							<rdf:first>
+								<owl:Class rdf:nodeID="n1n">
+									<owl:unionOf>
+										<rdf:Description rdf:nodeID="n1o">
+											<rdf:first>
+												<owl:Restriction rdf:nodeID="n1p">
+													<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+													<owl:someValuesFrom rdf:resource="#Variable"/>
+												</owl:Restriction>
+											</rdf:first>
+											<rdf:rest>
+												<rdf:Description rdf:nodeID="n1q">
+													<rdf:first rdf:nodeID="n1r"/>
+													<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+												</rdf:Description>
+											</rdf:rest>
+										</rdf:Description>
+									</owl:unionOf>
+								</owl:Class>
+							</rdf:first>
+							<rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+						</rdf:Description>
+					</rdf:rest>
+				</rdf:Description>
+			</owl:intersectionOf>
+		</owl:Class>
+	</owl:equivalentClass>
+</rdfs:Class>
+<owl:ObjectProperty rdf:about="#arguments">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#attributeKey">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#attributeValue">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#binder">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#body">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:DatatypeProperty rdf:about="#encoding">
+	<rdfs:comment>Specifies the encoding of a foreign object.</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+</owl:DatatypeProperty>
+<owl:DatatypeProperty rdf:about="#name">
+	<rdfs:comment>Represents the name of a variable.</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+</owl:DatatypeProperty>
+<owl:ObjectProperty rdf:about="#operator">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#symbol">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#target">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:DatatypeProperty rdf:about="#value">
+	<rdfs:comment>Represents the value of a literal or a foreign object.</rdfs:comment>
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+</owl:DatatypeProperty>
+<owl:ObjectProperty rdf:about="#variables">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:Restriction rdf:nodeID="nj">
+	<owl:hasValue rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+	<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+</owl:Restriction>
+<owl:Restriction rdf:nodeID="n1c">
+	<owl:hasValue rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+	<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+</owl:Restriction>
+<owl:Restriction rdf:nodeID="n1r">
+	<owl:hasValue rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+	<owl:onProperty rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+</owl:Restriction>
+
+</rdf:RDF>

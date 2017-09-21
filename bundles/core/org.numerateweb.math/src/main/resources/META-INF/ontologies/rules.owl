@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:mathrl="http://numerateweb.org/vocab/math/rules#"
+	xmlns:math="http://numerateweb.org/vocab/math#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xml:base="http://numerateweb.org/vocab/math/rules">
+<owl:Ontology rdf:about="">
+	<owl:imports rdf:resource="http://numerateweb.org/vocab/math"/>
+</owl:Ontology>
+<owl:Class rdf:about="#Constraint">
+	<rdfs:comment>Represents a rule for computing the value of the associated property.</rdfs:comment>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="node17pd4029lx1">
+			<owl:allValuesFrom rdf:resource="http://numerateweb.org/vocab/math#Object"/>
+			<owl:onProperty rdf:resource="#expression"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="node17pd4029lx2">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#expression"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="node17pd4029lx3">
+			<owl:allValuesFrom rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+			<owl:onProperty rdf:resource="#onProperty"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf>
+		<owl:Restriction rdf:nodeID="node17pd4029lx4">
+			<owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:cardinality>
+			<owl:onProperty rdf:resource="#onProperty"/>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+	<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+<owl:ObjectProperty rdf:about="#constraint">
+	<rdfs:range rdf:resource="#Constraint"/>
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#expression">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#onProperty">
+	<rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+</owl:ObjectProperty>
+
+</rdf:RDF>

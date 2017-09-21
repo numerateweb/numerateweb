@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Home</title>
+</head>
+<body class="lift:content_id=main"
+	prefix="
+	rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+	owl: http://www.w3.org/2002/07/owl#
+	rdfs: http://www.w3.org/2000/01/rdf-schema#
+	math: http://numerateweb.org/vocab/math#
+	mathrl: http://numerateweb.org/vocab/math/rules#">
+	<div id="main" data-lift="surround?with=default;at=content">
+		<script data-lift="head" type="text/javascript"
+			src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+		<script data-lift="head" type="text/javascript">
+			MathJax.Hub.Config({
+				MathML : {
+					useMathMLspacing : true
+				}
+			});
+		</script>
+		<style data-lift="head" type="text/css">
+.constraint {
+	position: relative;
+}
+
+.constraint .mathml a,.constraint .prettyprint a {
+	color: black;
+}
+
+.constraint .mathml {
+	background-color: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 4px 4px 4px;
+	padding: 30px 0px 20px;
+}
+
+.constraint .property {
+	background-color: #F5F5F5;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 0 4px 0;
+	font-weight: bold;
+	padding: 3px 7px;
+	position: absolute;
+	top: 0px;
+}
+
+.constraint .prettyprint {
+	margin-top: -20px;
+	padding-top: 5px;
+}
+
+.constraint .content a,.constraint .prettyprint a {
+	color: red;
+}
+</style>
+
+		<div data-lift="rdfa">
+			<div about="?class" class="asc">
+				<h3>
+					<a href="{app}/describe?model={model}&resource={}"
+						data-lift="rdf.ref?to=href"><span data-lift="rdf.label"></span></a>
+				</h3>
+				<section>
+					<div class="row constraint" rel="mathrl:constraint"
+						resource="?constraint">
+						<div class="col-md-12">
+							<div class="property asc" rel="mathrl:onProperty" resource="?prop">
+								<a href="{app}/describe?model={model}&resource={}"
+									data-lift="rdf.ref?to=href"><span data-lift="rdf.label"></span></a>
+							</div>
+							<div class="mathml">
+								<div rel="mathrl:expression" resource="?expr"
+									style="margin-left: 1ex">
+									<span data-lift="math.mathml"></span>
+								</div>
+							</div>
+							<pre class="prettyprint" style="text-align: left"
+								rel="mathrl:expression" resource="?expr"><span data-lift="math.popcorn"></span></pre>
+						</div>
+					</div>
+				</section>
+			</div>
+			<div data-for="?constraint" data-items="20" class="paginator"></div>
+		</div>
+</body>
+</html>

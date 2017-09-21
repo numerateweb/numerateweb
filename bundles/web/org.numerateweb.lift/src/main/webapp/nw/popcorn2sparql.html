@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Convert POPCORN to SPARQL</title>
+</head>
+<body class="lift:content_id=main">
+	<div id="main" data-lift="surround?with=default;at=content">
+		<style>
+textarea {
+	min-height: 20em;
+}
+</style>
+		<div class="row">
+			<div class="col-md-6">
+				<h4>POPCORN</h4>
+				<form action="" method="post" data-lift="form.ajax">
+					<div data-lift="Popcorn2Sparql">
+						<fieldset id="fields">
+							<textarea name="popcorn" class="form-control"></textarea>
+						</fieldset>
+						<div id="buttons" style="padding-top: 10px">
+							<button type="submit" class="btn btn-primary">Convert</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-md-6">
+				<h4>SPARQL</h4>
+				<textarea name="sparql" id="sparql" class="form-control"></textarea>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

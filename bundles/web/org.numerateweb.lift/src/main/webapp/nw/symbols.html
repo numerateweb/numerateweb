@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Home</title>
+</head>
+<body class="lift:content_id=main">
+	<div id="main" data-lift="surround?with=default;at=content">
+		<div data-lift="JS.rdfa"></div>
+		<div data-lift="JS.templates"></div>
+		<div data-lift="rdfa" data-params="?library">
+			<div class="pull-left" style="margin-bottom: 20px">
+				<h3 style="margin: 0" data-if-param="library">
+					Symbols in <span about="?library" data-lift="rdf.pname"></span>
+				</h3>
+				<h3 style="margin: 0" data-unless-param="library">All symbols</h3>
+				<div data-lift="embed?what=nw/_libraries"></div>
+			</div>
+			<div style="text-align: right" class="pull-right">
+				<div class="search-form"></div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="optional">
+				<div class="search-patterns" data-for="?symbol" data-param="q"></div>
+				<div data-embed="nw/_symbol"></div>
+			</div>
+			<div data-for="?symbol" data-items="8" class="paginator"></div>
+		</div>
+</body>
+</html>

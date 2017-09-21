@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: numerateweb Lift support
+Bundle-SymbolicName: org.numerateweb.lift;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: net.enilink.lift,
+ net.enilink.komma.model,
+ org.numerateweb.math,
+ org.eclipse.core.runtime
+Lift-Packages: org.numerateweb.lift
+Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.numerateweb.lift.Activator
+Export-Package: org.numerateweb.lift.snippet,
+ org.numerateweb.lift.util

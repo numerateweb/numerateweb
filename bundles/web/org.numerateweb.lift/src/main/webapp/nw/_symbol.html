@@ -1,0 +1,89 @@
+<div prefix="
+	rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+	rdfs: http://www.w3.org/2000/01/rdf-schema#
+	math: http://numerateweb.org/vocab/math#
+	math-meta: http://numerateweb.org/vocab/math/meta#">
+	<script data-lift="embed?what=_mathjax"></script>
+	<style data-lift="head" type="text/css">
+	/* <![CDATA[ */
+	.definition {
+		position: relative;
+	}
+	
+	.definition .content a,.definition .prettyprint a {
+		color: red;
+	}
+	
+	.definition .content {
+		background-color: #FFFFFF;
+		border: 1px solid #DDDDDD;
+		border-radius: 4px 4px 4px 4px;
+		padding: 30px 0px 20px 20px;
+	}
+	
+	.definition .caption {
+		background-color: #F5F5F5;
+		border: 1px solid #DDDDDD;
+		border-radius: 4px 0 4px 0;
+		font-size: 12px;
+		font-weight: bold;
+		padding: 3px 7px;
+		position: absolute;
+		top: 0px;
+	}
+	
+	.definition .prettyprint {
+		margin-top: -20px;
+		padding-top: 5px;
+		white-space: pre-line;
+	}
+	/* ]]> */
+	</style>
+	<div about="?symbol" class="asc" typeof="math:Symbol">
+		<h4>
+			<a href="{app}/describe?model={model}&resource={}"
+				data-lift="rdf.ref?to=href"><span data-lift="rdf.name"></span></a>
+			<span style="font-size: small;"><span
+				style="color: rgba(0, 0, 0, 0.4)" data-lift="rdf.ref"></span><br />
+				<span style="font-style: italic">in <a
+					style="color: rgba(0, 0, 0, 0.4);" rel="rdfs:isDefinedBy"
+					resource="?library" href="{app}/symbols?library={}&model={model}"
+					data-lift="rdf.ref?to=href"><span data-lift="rdf.ref"></span></a>
+			</span></span>
+		</h4>
+		<div property="math-meta:description" content="?desc"><span data-lift="rdf.label"></span></div>
+		
+		<section class="optional union" style="margin-top: 1ex">
+			<div class="row definition" property="math-meta:commentedProperty"
+				content="?cmp" style="margin-bottom: 20px">
+				<div class="col-md-12">
+						<div class="caption">CMP</div>
+						<div class="content">
+							<span data-lift="rdf.label" style="margin-left: 1ex"></span>
+						</div>
+				</div>
+			</div>
+			<div class="row definition" rel="math-meta:formalProperty"
+				resource="?fmp">
+				<div class="col-md-12">
+					<div class="caption">FMP</div>
+					<a href="{app}/describe?model={model}&resource={}"
+							data-lift="rdf.ref?to=href" class="pull-right" style="padding-right:5px; font-size:smaller">describe</a>
+					<div class="content"><span data-lift="math.mathml"></span></div>
+					<pre class="prettyprint" style="text-align: left"><span data-lift="math.popcorn" data-linkto="/nw/symbol?symbol={}"></span></pre>
+				</div>
+			</div>
+			<div class="row definition" rel="math-meta:example"
+				resource="?example">
+				<div class="col-md-12">
+					<div class="caption">Example</div>
+					<a href="{app}/describe?model={model}&resource={}"
+							data-lift="rdf.ref?to=href" class="pull-right" style="padding-right:5px; font-size:smaller">describe</a>
+					<div class="content"><div data-lift="rdf.getArguments"><span data-lift="math.mathml"></span></div></div>
+					<pre class="prettyprint" style="text-align: left"><span data-lift="math.popcorn" data-linkto="/nw/symbol?symbol={}"></span></pre>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div data-lift="embed?what=editsupport"></div>
+</div>
