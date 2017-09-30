@@ -19,6 +19,7 @@ Bundle-ClassPath: .,
  lib/commons-compress.jar
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.base;version="17.0.0",
+ com.google.common.cache;version="18.0.0",
  com.google.common.collect;version="17.0.0",
  org.aopalliance.intercept,
  org.junit;version="4.0.0";resolution:=optional,
