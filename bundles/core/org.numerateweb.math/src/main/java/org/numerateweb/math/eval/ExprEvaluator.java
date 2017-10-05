@@ -12,6 +12,9 @@ import org.numerateweb.math.reasoner.CacheManager;
 import net.enilink.komma.core.IEntityManager;
 import net.enilink.komma.core.IReference;
 
+/**
+ * Simple numeric evaluator for OpenMath objects. 
+ */
 public class ExprEvaluator extends AbstractEvaluator<Object> {
 	protected ExprEvaluator(IEntityManager manager, CacheManager cacheManager) {
 		super(manager, cacheManager);

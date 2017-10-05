@@ -6,6 +6,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 
 import org.numerateweb.math.eval.Expressions;
+import org.numerateweb.math.eval.Helpers;
 
 /**
  * Represents a big operator (sum, product, ...) over a set of elements.
@@ -60,7 +61,7 @@ public class SetOperatorExpr implements Expr {
 			// simply evaluate the body here
 			return binding.body.eval();
 		};
-		return Expressions.valueToStream(interval.eval()).map(v -> {
+		return Helpers.valueToStream(interval.eval()).map(v -> {
 			// set var before evaluation or none
 			return varName.map(name -> Expressions.withVar(name, v, func)).orElse(func.get());
 		}).reduce(accumulator).orElse(defaultValue);

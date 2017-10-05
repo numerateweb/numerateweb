@@ -8,6 +8,9 @@ import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.util.ParseResult;
 import org.numerateweb.math.util.PopcornParseUtils;
 
+/**
+ * Basic tests for numerical evaluation of OM objects.
+ */
 public class EvalTest {
 	Expr parse(String expr) {
 		ParseResult<Expr> result = PopcornParseUtils.parse(expr, INamespaces.empty(), new ExprBuilder());
@@ -21,6 +24,14 @@ public class EvalTest {
 	Number evalNumber(String expr) {
 		return (Number) parse(expr).eval();
 	}
+	
+	@Test
+	public void testBasicOperators() {
+		assertEquals(8, evalNumber("2^3").intValue());
+		assertEquals(64, evalNumber("(2^3)^2").intValue());
+		assertEquals(64, evalNumber("(2^3)^(1 + 0 + 1)").intValue());
+		assertEquals(32, evalNumber("(2^3)^(1 + 0 + 1)/2").intValue());
+	}
 
 	@Test
 	public void testSetOperators() {
@@ -31,7 +42,7 @@ public class EvalTest {
 		assertEquals(12, evalNumber("sum([1,2,3], $x -> $x * 2)").intValue());
 		assertEquals(8, evalNumber("product({1,2}, $x -> $x * 2)").intValue());
 	}
-	
+
 	@Test
 	public void testSets() {
 		assertEquals(eval("{3,2,1}"), eval("{1,2,3}"));

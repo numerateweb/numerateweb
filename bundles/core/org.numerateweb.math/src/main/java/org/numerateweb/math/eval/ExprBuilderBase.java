@@ -1,5 +1,7 @@
 package org.numerateweb.math.eval;
 
+import static org.numerateweb.math.eval.Helpers.valueToStream;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +96,7 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 							} else {
 								// handle as simple intersection of two sets
 								return Stream.of(restrictableArg.eval(), restriction)
-										.flatMap(v -> Expressions.valueToStream(v)).distinct()
+										.flatMap(v -> valueToStream(v)).distinct()
 										.collect(Collectors.toList());
 							}
 						}
