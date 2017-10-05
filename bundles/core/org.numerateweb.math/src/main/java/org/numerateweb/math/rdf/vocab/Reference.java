@@ -1,4 +1,4 @@
-package org.numerateweb.math.concepts;
+package org.numerateweb.math.rdf.vocab;
 
 import net.enilink.composition.annotations.Iri;
 import net.enilink.komma.core.IReference;

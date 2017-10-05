@@ -25,8 +25,8 @@ public class MathLabelProvider implements IItemLabelProvider {
 			}
 			return expr;
 		}
-		if (object instanceof org.numerateweb.math.concepts.Object) {
-			return renderMath((org.numerateweb.math.concepts.Object) object);
+		if (object instanceof org.numerateweb.math.rdf.vocab.Object) {
+			return renderMath((org.numerateweb.math.rdf.vocab.Object) object);
 		}
 		return ModelUtil.getLabel(object);
 	}

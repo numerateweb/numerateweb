@@ -10,10 +10,10 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.core.runtime.IStatus;
-import org.numerateweb.math.concepts.NWMATH;
 import org.numerateweb.math.ns.Namespaces;
 import org.numerateweb.math.rdf.NWMathBuilder;
 import org.numerateweb.math.rdf.meta.NWMETA;
+import org.numerateweb.math.rdf.vocab.NWMATH;
 import org.numerateweb.math.search.Helper;
 import org.numerateweb.math.util.stax.ParseException;
 import org.numerateweb.math.xml.IOMXmlParser;

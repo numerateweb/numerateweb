@@ -1,4 +1,4 @@
-package org.numerateweb.math.concepts;
+package org.numerateweb.math.rdf.vocab;
 
 import java.util.List;
 

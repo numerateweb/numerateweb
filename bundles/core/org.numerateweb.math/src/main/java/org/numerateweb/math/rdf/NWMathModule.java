@@ -2,18 +2,18 @@ package org.numerateweb.math.rdf;
 
 import net.enilink.komma.core.KommaModule;
 
-import org.numerateweb.math.concepts.Application;
-import org.numerateweb.math.concepts.Attribution;
-import org.numerateweb.math.concepts.AttributionPair;
-import org.numerateweb.math.concepts.Binding;
-import org.numerateweb.math.concepts.Compound;
-import org.numerateweb.math.concepts.Error;
-import org.numerateweb.math.concepts.Foreign;
-import org.numerateweb.math.concepts.Literal;
-import org.numerateweb.math.concepts.Object;
-import org.numerateweb.math.concepts.Reference;
-import org.numerateweb.math.concepts.Symbol;
-import org.numerateweb.math.concepts.Variable;
+import org.numerateweb.math.rdf.vocab.Application;
+import org.numerateweb.math.rdf.vocab.Attribution;
+import org.numerateweb.math.rdf.vocab.AttributionPair;
+import org.numerateweb.math.rdf.vocab.Binding;
+import org.numerateweb.math.rdf.vocab.Compound;
+import org.numerateweb.math.rdf.vocab.Error;
+import org.numerateweb.math.rdf.vocab.Foreign;
+import org.numerateweb.math.rdf.vocab.Literal;
+import org.numerateweb.math.rdf.vocab.Object;
+import org.numerateweb.math.rdf.vocab.Reference;
+import org.numerateweb.math.rdf.vocab.Symbol;
+import org.numerateweb.math.rdf.vocab.Variable;
 import org.numerateweb.math.rules.Constraint;
 
 public class NWMathModule extends KommaModule {

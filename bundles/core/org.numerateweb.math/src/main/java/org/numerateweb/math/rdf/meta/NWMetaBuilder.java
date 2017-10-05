@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.numerateweb.math.concepts.NWMATH;
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObject.Type;
 import org.numerateweb.math.model.OMObjectBuilderBase;
@@ -16,6 +15,7 @@ import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.om.cd.META;
 import org.numerateweb.math.rdf.NWMathBuilder;
 import org.numerateweb.math.rdf.NWMathBuilderBase;
+import org.numerateweb.math.rdf.vocab.NWMATH;
 
 import net.enilink.vocab.rdf.RDF;
 import net.enilink.vocab.rdfs.RDFS;

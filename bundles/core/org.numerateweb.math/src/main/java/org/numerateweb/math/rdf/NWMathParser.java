@@ -12,22 +12,22 @@ import net.enilink.komma.core.URI;
 import net.enilink.komma.core.URIs;
 import net.enilink.vocab.xmlschema.XMLSCHEMA;
 
-import org.numerateweb.math.concepts.Application;
-import org.numerateweb.math.concepts.Attribution;
-import org.numerateweb.math.concepts.AttributionPair;
-import org.numerateweb.math.concepts.Binding;
-import org.numerateweb.math.concepts.Error;
-import org.numerateweb.math.concepts.Foreign;
-import org.numerateweb.math.concepts.Literal;
-import org.numerateweb.math.concepts.Reference;
-import org.numerateweb.math.concepts.Symbol;
-import org.numerateweb.math.concepts.Variable;
 import org.numerateweb.math.model.Builder;
 import org.numerateweb.math.model.Builder.BindingBuilder;
 import org.numerateweb.math.model.Builder.SeqBuilder;
 import org.numerateweb.math.model.Builder.VariablesBuilder;
 import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.om.rdf.OMRdfSymbols;
+import org.numerateweb.math.rdf.vocab.Application;
+import org.numerateweb.math.rdf.vocab.Attribution;
+import org.numerateweb.math.rdf.vocab.AttributionPair;
+import org.numerateweb.math.rdf.vocab.Binding;
+import org.numerateweb.math.rdf.vocab.Error;
+import org.numerateweb.math.rdf.vocab.Foreign;
+import org.numerateweb.math.rdf.vocab.Literal;
+import org.numerateweb.math.rdf.vocab.Reference;
+import org.numerateweb.math.rdf.vocab.Symbol;
+import org.numerateweb.math.rdf.vocab.Variable;
 
 public class NWMathParser {
 	static class NamespaceBinding {

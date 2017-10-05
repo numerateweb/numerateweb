@@ -15,10 +15,10 @@ import net.enilink.komma.core.LinkedHashGraph;
 import net.enilink.komma.core.URI;
 import net.enilink.vocab.rdf.RDF;
 
-import org.numerateweb.math.concepts.NWMATH;
 import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.popcorn.PopcornParser;
 import org.numerateweb.math.rdf.NWMathBuilder;
+import org.numerateweb.math.rdf.vocab.NWMATH;
 import org.numerateweb.math.util.SparqlUtils;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.ReportingParseRunner;

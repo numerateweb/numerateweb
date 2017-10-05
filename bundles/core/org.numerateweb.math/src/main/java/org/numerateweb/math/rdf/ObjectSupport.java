@@ -7,11 +7,11 @@ import net.enilink.komma.core.Initializable;
 import net.enilink.komma.em.util.ISparqlConstants;
 import net.enilink.komma.em.util.RESULTS;
 
-import org.numerateweb.math.concepts.NWMATH;
+import org.numerateweb.math.rdf.vocab.NWMATH;
 import org.numerateweb.math.util.SparqlUtils;
 
 public abstract class ObjectSupport implements IEntity,
-		org.numerateweb.math.concepts.Object, Initializable {
+		org.numerateweb.math.rdf.vocab.Object, Initializable {
 	@Override
 	public void init(IGraph graph) {
 		if (graph == null) {

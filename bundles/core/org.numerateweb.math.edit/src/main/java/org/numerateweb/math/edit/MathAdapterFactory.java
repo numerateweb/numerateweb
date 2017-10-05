@@ -8,7 +8,7 @@ import net.enilink.komma.edit.provider.IComposeableAdapterFactory;
 import net.enilink.komma.edit.provider.IItemLabelProvider;
 import net.enilink.vocab.rdf.Property;
 
-import org.numerateweb.math.concepts.NWMATH;
+import org.numerateweb.math.rdf.vocab.NWMATH;
 import org.numerateweb.math.rules.Constraint;
 import org.numerateweb.math.rules.NWRULES;
 
@@ -19,7 +19,7 @@ public class MathAdapterFactory extends AdapterFactory implements
 	@Override
 	protected Object createAdapter(Object object, Object type) {
 		if (IItemLabelProvider.class.equals(type)) {
-			if ((object instanceof Constraint || object instanceof org.numerateweb.math.concepts.Object)
+			if ((object instanceof Constraint || object instanceof org.numerateweb.math.rdf.vocab.Object)
 					&& !(object instanceof Property)) {
 				return new MathLabelProvider();
 			}
