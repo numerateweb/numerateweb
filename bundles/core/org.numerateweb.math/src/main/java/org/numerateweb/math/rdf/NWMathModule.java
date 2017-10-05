@@ -2,6 +2,7 @@ package org.numerateweb.math.rdf;
 
 import net.enilink.komma.core.KommaModule;
 
+import org.numerateweb.math.rdf.rules.Constraint;
 import org.numerateweb.math.rdf.vocab.Application;
 import org.numerateweb.math.rdf.vocab.Attribution;
 import org.numerateweb.math.rdf.vocab.AttributionPair;
@@ -14,7 +15,6 @@ import org.numerateweb.math.rdf.vocab.Object;
 import org.numerateweb.math.rdf.vocab.Reference;
 import org.numerateweb.math.rdf.vocab.Symbol;
 import org.numerateweb.math.rdf.vocab.Variable;
-import org.numerateweb.math.rules.Constraint;
 
 public class NWMathModule extends KommaModule {
 	public NWMathModule() {

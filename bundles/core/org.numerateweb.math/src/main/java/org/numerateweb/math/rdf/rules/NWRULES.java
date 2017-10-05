@@ -1,4 +1,4 @@
-package org.numerateweb.math.rules;
+package org.numerateweb.math.rdf.rules;
 
 import net.enilink.komma.core.URIs;
 import net.enilink.komma.core.URI;

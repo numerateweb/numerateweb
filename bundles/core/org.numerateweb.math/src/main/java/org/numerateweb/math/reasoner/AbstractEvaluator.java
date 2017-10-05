@@ -9,8 +9,8 @@ import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObjectBuilder;
 import org.numerateweb.math.ns.Namespaces;
 import org.numerateweb.math.rdf.NWMathParser;
-import org.numerateweb.math.rules.Constraint;
-import org.numerateweb.math.rules.NWRULES;
+import org.numerateweb.math.rdf.rules.Constraint;
+import org.numerateweb.math.rdf.rules.NWRULES;
 import org.numerateweb.math.util.SparqlUtils;
 
 import com.google.inject.TypeLiteral;

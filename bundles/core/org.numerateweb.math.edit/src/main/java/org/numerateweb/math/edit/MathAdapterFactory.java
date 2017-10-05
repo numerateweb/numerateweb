@@ -8,9 +8,9 @@ import net.enilink.komma.edit.provider.IComposeableAdapterFactory;
 import net.enilink.komma.edit.provider.IItemLabelProvider;
 import net.enilink.vocab.rdf.Property;
 
+import org.numerateweb.math.rdf.rules.Constraint;
+import org.numerateweb.math.rdf.rules.NWRULES;
 import org.numerateweb.math.rdf.vocab.NWMATH;
-import org.numerateweb.math.rules.Constraint;
-import org.numerateweb.math.rules.NWRULES;
 
 public class MathAdapterFactory extends AdapterFactory implements
 		IComposeableAdapterFactory {

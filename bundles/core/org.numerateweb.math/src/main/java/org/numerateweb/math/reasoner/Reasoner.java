@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.numerateweb.math.model.OMObject;
-import org.numerateweb.math.rules.NWRULES;
+import org.numerateweb.math.rdf.rules.NWRULES;
 import org.numerateweb.math.util.SparqlUtils;
 
 import net.enilink.komma.core.IBindings;

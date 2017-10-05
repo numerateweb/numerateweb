@@ -15,8 +15,8 @@ import net.enilink.komma.core.URIs;
 import net.enilink.komma.parser.manchester.ManchesterSyntaxParser;
 import net.enilink.vocab.xmlschema.XMLSCHEMA;
 
-import org.numerateweb.math.helper.StatementConverterActions;
-import org.numerateweb.math.helper.ValueConverter;
+import org.numerateweb.math.manchester.StatementConverterActions;
+import org.numerateweb.math.manchester.ValueConverter;
 import org.numerateweb.math.model.Builder;
 import org.numerateweb.math.model.DelegatingSeqBuilder;
 import org.numerateweb.math.ns.INamespaces;

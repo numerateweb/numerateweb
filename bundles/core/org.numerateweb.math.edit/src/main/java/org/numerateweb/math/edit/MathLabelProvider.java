@@ -4,7 +4,7 @@ import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.ns.Namespaces;
 import org.numerateweb.math.popcorn.PopcornBuilder;
 import org.numerateweb.math.rdf.NWMathParser;
-import org.numerateweb.math.rules.Constraint;
+import org.numerateweb.math.rdf.rules.Constraint;
 
 import net.enilink.komma.edit.provider.IItemLabelProvider;
 import net.enilink.komma.model.ModelUtil;

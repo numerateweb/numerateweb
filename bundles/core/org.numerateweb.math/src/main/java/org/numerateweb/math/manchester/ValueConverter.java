@@ -1,4 +1,4 @@
-package org.numerateweb.math.helper;
+package org.numerateweb.math.manchester;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.numerateweb.math.rules;
+package org.numerateweb.math.rdf.rules;
 
 import net.enilink.composition.annotations.Iri;
 
