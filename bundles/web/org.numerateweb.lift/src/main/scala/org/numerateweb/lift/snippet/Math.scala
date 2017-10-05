@@ -12,11 +12,11 @@ import scala.xml.parsing.NoBindingFactoryAdapter
 
 import org.numerateweb.lift.util.OMXmlBuilderWithMathml
 import org.numerateweb.lift.util.PopcornBuilderWithHtml
-import org.numerateweb.math.concepts.Object
+import org.numerateweb.math.rdf.vocab.Object
 import org.numerateweb.math.ns.Namespaces
 import org.numerateweb.math.ns.Namespaces
 import org.numerateweb.math.rdf.NWMathParser
-import org.numerateweb.math.rules.Constraint
+import org.numerateweb.math.rdf.rules.Constraint
 
 import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
 

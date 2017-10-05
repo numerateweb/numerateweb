@@ -15,8 +15,8 @@ import net.enilink.komma.core.IReference;
 /**
  * Simple numeric evaluator for OpenMath objects. 
  */
-public class ExprEvaluator extends AbstractEvaluator<Object> {
-	protected ExprEvaluator(IEntityManager manager, CacheManager cacheManager) {
+public class SimpleEvaluator extends AbstractEvaluator<Object> {
+	public SimpleEvaluator(IEntityManager manager, CacheManager cacheManager) {
 		super(manager, cacheManager);
 	}
 
