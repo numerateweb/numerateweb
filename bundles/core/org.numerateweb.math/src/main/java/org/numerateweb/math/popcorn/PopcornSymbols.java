@@ -20,7 +20,7 @@ public class PopcornSymbols {
 	// see also http://en.wikipedia.org/wiki/Order_of_operations
 	static {
 		infix.put(symbol("prog1", "block"), 150);
-		infix.put(symbol("prog1", "assign"), 140);
+		infix.put(symbol("prog1", "assignment"), 140);
 		infix.put(symbol("logic1", "implies"), 130);
 		infix.put(symbol("logic1", "equivalent"), 130);
 		infix.put(symbol("logic1", "or"), 120);
@@ -44,7 +44,7 @@ public class PopcornSymbols {
 	static {
 		// operators
 		symbolMap.put(";", symbol("prog1", "block"));
-		symbolMap.put(":=", symbol("prog1", "assign"));
+		symbolMap.put(":=", symbol("prog1", "assignment"));
 		symbolMap.put("==>", symbol("logic1", "implies"));
 		symbolMap.put("<=>", symbol("logic1", "equivalent"));
 		symbolMap.put("or", symbol("logic1", "or"));

@@ -23,4 +23,18 @@ public interface INamespaces {
 	 *         or <tt>null</tt> if there is no such prefix.
 	 */
 	String getPrefix(URI namespace);
+	
+	static INamespaces empty() {
+		return new INamespaces() {
+			@Override
+			public String getPrefix(URI namespace) {
+				return null;
+			}
+			
+			@Override
+			public URI getNamespace(String prefix) {
+				return null;
+			}
+		};
+	}
 }

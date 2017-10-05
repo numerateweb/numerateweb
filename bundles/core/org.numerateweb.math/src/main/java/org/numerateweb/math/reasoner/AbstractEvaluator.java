@@ -42,7 +42,7 @@ public abstract class AbstractEvaluator<E> {
 
 	public ICache<Pair<IReference, IReference>, ResultSpec<OMObject>> expressionCache;
 
-	private IEntityManager manager;
+	protected final IEntityManager manager;
 	public ICache<OMObject, E> parsedExpressionCache;
 	private ThreadLocal<Set<Pair<IReference, IReference>>> path = new ThreadLocal<Set<Pair<IReference, IReference>>>() {
 		protected Set<Pair<IReference, IReference>> initialValue() {
