@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+>
+   <extension
+         point="net.enilink.komma.edit.itemProviderAdapterFactories">
+      <factory
+            class="org.numerateweb.math.edit.MathAdapterFactory"
+            supportedTypes="net.enilink.komma.edit.ui.properties.support.IEditingSupport
+            net.enilink.komma.edit.provider.IItemLabelProvider"
+            uri="http://numerateweb.org/vocab/math# http://numerateweb.org/vocab/math/rules#">
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.numerateweb.math.edit.commands.ImportOpenMathCDCommandHandler"
+            id="org.numerateweb.math.edit.importOpenMathCD"
+            name="ImportOpenMathCD">  </command>
+      <command
+            defaultHandler="org.numerateweb.math.edit.actions.RunComputationsHandler"
+            id="org.numerateweb.math.edit.runComputations"
+            name="RunComputations">  </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:net.enilink.rap.workbench.uploadDataToolbar">
+         <command
+               commandId="org.numerateweb.math.edit.importOpenMathCD"
+               icon="icons/full/obj16/pi.png"
+               label="Import OpenMath CD"
+               style="pulldown">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:net.enilink.komma.edit.ui.menu">
+          <command
+               commandId="org.numerateweb.math.edit.importOpenMathCD"
+               icon="icons/full/obj16/pi.png"
+               label="Import OpenMath CD"
+               style="pulldown">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:net.enilink.komma.edit.ui.menu">
+         <command
+               commandId="org.numerateweb.math.edit.runComputations"
+               icon="icons/full/obj16/pi.png"
+               label="Run computations"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+</plugin>

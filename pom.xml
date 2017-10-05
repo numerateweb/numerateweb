@@ -12,47 +12,8 @@
 		<scala.version>2.11.1</scala.version>
 		<path.to.root>../../..</path.to.root>
 	</properties>
-	<profiles>
-		<profile>
-			<id>x86</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.eclipse.tycho</groupId>
-						<artifactId>target-platform-configuration</artifactId>
-						<configuration>
-							<executionEnvironment>JavaSE-1.8</executionEnvironment>
-							<environments>
-								<environment>
-									<os>win32</os>
-									<ws>win32</ws>
-									<arch>x86</arch>
-								</environment>
-							</environments>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<excludeResources>
-						<excludeResource>**/*.scala</excludeResource>
-					</excludeResources>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -75,6 +36,29 @@
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
+					<target>
+						<artifact>
+							<groupId>org.numerateweb</groupId>
+							<artifactId>target-platform</artifactId>
+							<version>1.0.0</version>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<excludeResources>
+						<excludeResource>**/*.scala</excludeResource>
+					</excludeResources>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -230,19 +214,15 @@
 		</pluginManagement>
 	</build>
 
-	<repositories>
-		<repository>
-			<id>enilink</id>
-			<layout>p2</layout>
-			<url>https://dl.bintray.com/enilink/snapshots/enilink/1.2.4.201709131418/</url>
-		</repository>
-	</repositories>
-
 	<modules>
+		<module>target-platform</module>
+
 		<module>bundles/core/org.numerateweb.math</module>
 		<module>bundles/core/org.numerateweb.math.edit</module>
 
 		<module>bundles/web/org.numerateweb.lift</module>
 		<module>bundles/web/org.numerateweb.website</module>
+
+		<module>bundles/ui/org.numerateweb.math.edit.ui</module>
 	</modules>
 </project>
