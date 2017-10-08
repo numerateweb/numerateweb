@@ -53,16 +53,19 @@ public abstract class AbstractEvaluator<E> {
 	private ThreadLocal<IQuery<IValue>> propertyValuesQuery = new ThreadLocal<IQuery<IValue>>();
 	public ICache<Pair<IReference, IReference>, E> valueCache;
 
+	@SuppressWarnings("unchecked")
 	protected AbstractEvaluator(IEntityManager manager, CacheManager cacheManager) {
 		this.manager = manager;
 
-		this.valueCache = cacheManager.get(new TypeLiteral<ICache<Pair<IReference, IReference>, E>>() {
-		});
+		this.valueCache = (ICache<Pair<IReference, IReference>, E>) cacheManager
+				.get(new TypeLiteral<ICache<Pair<IReference, IReference>, Object>>() {
+				});
 		this.expressionCache = cacheManager
 				.get(new TypeLiteral<ICache<Pair<IReference, IReference>, ResultSpec<OMObject>>>() {
 				});
-		this.parsedExpressionCache = cacheManager.get(new TypeLiteral<ICache<OMObject, E>>() {
-		});
+		this.parsedExpressionCache = (ICache<OMObject, E>) cacheManager
+				.get(new TypeLiteral<ICache<OMObject, Object>>() {
+				});
 	}
 
 	private ResultSpec<OMObject> cache(IReference clazz, IReference property, ResultSpec<OMObject> result) {

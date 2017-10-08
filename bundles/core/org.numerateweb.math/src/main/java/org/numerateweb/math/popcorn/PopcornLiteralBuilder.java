@@ -50,8 +50,12 @@ public class PopcornLiteralBuilder implements LiteralBuilder<PopcornExpr> {
 
 	@Override
 	public PopcornExpr ref(IReference reference) {
-		return new PopcornExpr("#"
-				+ BuilderUtils.toPNameOrUriString(reference, ns));
+		return new PopcornExpr(BuilderUtils.toPNameOrUriString(reference, ns));
+
+		// TODO correctly handle references to RDF resources and other
+		// mathematical objects
+		// return new PopcornExpr("#"
+		// + BuilderUtils.toPNameOrUriString(reference, ns));
 	}
 
 	@Override

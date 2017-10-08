@@ -23,6 +23,14 @@ public class OMObject {
 	public static OMObject OMA(OMObject... args) {
 		return new OMObject(Type.OMA, (Object[]) args);
 	}
+	
+	public static OMObject OME(List<OMObject> args) {
+		return OME(args.toArray(new OMObject[args.size()]));
+	}
+	
+	public static OMObject OME(OMObject... args) {
+		return new OMObject(Type.OME, (Object[]) args);
+	}
 
 	public static OMObject OMATTR(List<OMObject> attributes, OMObject target) {
 		return new OMObject(Type.OMATTR, new OMObject(Type.OMATP,

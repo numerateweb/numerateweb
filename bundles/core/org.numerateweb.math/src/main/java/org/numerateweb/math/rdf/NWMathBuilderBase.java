@@ -39,9 +39,8 @@ import org.parboiled.support.ParsingResult;
 public class NWMathBuilderBase<T> implements Builder<T> {
 	protected Context context;
 
-	protected abstract static class NWMathVarBuilder<B> extends
-			NWMathBuilderBase<VariablesBuilder<B>> implements
-			VariablesBuilder<B> {
+	protected abstract static class NWMathVarBuilder<B> extends NWMathBuilderBase<VariablesBuilder<B>>
+			implements VariablesBuilder<B> {
 		protected NWMathVarBuilder(Context context) {
 			super(context);
 		}
@@ -56,10 +55,8 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 				protected void addPair(IReference obj) {
 					// store key-value pair
-					AttributionPair pair = getEntityManager().create(
-							AttributionPair.class);
-					pair.setAttributeKey(getEntityManager().createNamed(
-							currentKey, Symbol.class));
+					AttributionPair pair = getEntityManager().create(AttributionPair.class);
+					pair.setAttributeKey(getEntityManager().createNamed(currentKey, Symbol.class));
 					pair.setAttributeValue(obj);
 					pairs.add(pair);
 				}
@@ -79,8 +76,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 							if (pairs.isEmpty()) {
 								return parent.build(var);
 							}
-							Attribution attribution = getEntityManager()
-									.create(Attribution.class);
+							Attribution attribution = getEntityManager().create(Attribution.class);
 							attribution.setTarget(var);
 							attribution.setArguments(pairs);
 							return parent.build(attribution);
@@ -96,8 +92,8 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		}
 	}
 
-	protected abstract static class NWMathSeqBuilder<B> extends
-			NWMathBuilderBase<SeqBuilder<B>> implements SeqBuilder<B> {
+	protected abstract static class NWMathSeqBuilder<B> extends NWMathBuilderBase<SeqBuilder<B>>
+			implements SeqBuilder<B> {
 		protected NWMathSeqBuilder(Context context) {
 			super(context);
 		}
@@ -115,9 +111,8 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		@Override
 		public SeqBuilder<B> s(URI symbol) {
 			if (!OMRdfSymbols.PREFIX.equals(symbol)) {
-				throw new IllegalArgumentException("Symbol '" + symbol
-						+ "' is not allowed as value for '"
-						+ OMRdfSymbols.PREFIXES + "'");
+				throw new IllegalArgumentException(
+						"Symbol '" + symbol + "' is not allowed as value for '" + OMRdfSymbols.PREFIXES + "'");
 			}
 			return this;
 		}
@@ -131,11 +126,9 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		@Override
 		public B end() {
 			if (args.size() != 2) {
-				throw new IllegalArgumentException(
-						"The prefix operator requires two arguments.");
+				throw new IllegalArgumentException("The prefix operator requires two arguments.");
 			}
-			namespaces.add(new Namespace(args.get(0), URIs.createURI(args
-					.get(1))));
+			namespaces.add(new Namespace(args.get(0), URIs.createURI(args.get(1))));
 			return builder();
 		}
 
@@ -152,8 +145,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 			this(em, baseNamespaces, null, null);
 		}
 
-		Context(IEntityManager em, INamespaces baseNamespaces,
-				List<Namespace> namespaces, Context parent) {
+		Context(IEntityManager em, INamespaces baseNamespaces, List<Namespace> namespaces, Context parent) {
 			this.em = em;
 			this.baseNamespaces = baseNamespaces;
 			this.namespaces = namespaces;
@@ -190,8 +182,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 	static {
 		builderFactories.put(OMRdfSymbols.RESOURCE, new BuilderFactory() {
 			@Override
-			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent,
-					final URI symbol) {
+			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent, final URI symbol) {
 				return new NWMathSeqBuilder<E>(parent.context) {
 					IReference resourceRef;
 
@@ -218,8 +209,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 		BuilderFactory valueAndValuesetBuilderFactory = new BuilderFactory() {
 			@Override
-			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent,
-					final URI symbol) {
+			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent, final URI symbol) {
 				return new NWMathSeqBuilder<E>(parent.context) {
 					List<IReference> args = new ArrayList<IReference>();
 
@@ -247,15 +237,12 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 			}
 		};
 
-		builderFactories
-				.put(OMRdfSymbols.VALUE, valueAndValuesetBuilderFactory);
-		builderFactories.put(OMRdfSymbols.VALUESET,
-				valueAndValuesetBuilderFactory);
+		builderFactories.put(OMRdfSymbols.VALUE, valueAndValuesetBuilderFactory);
+		builderFactories.put(OMRdfSymbols.VALUESET, valueAndValuesetBuilderFactory);
 
 		builderFactories.put(OMRdfSymbols.RESOURCESET, new BuilderFactory() {
 			@Override
-			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent,
-					final URI symbol) {
+			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent, final URI symbol) {
 				return new NWMathSeqBuilder<E>(parent.context) {
 					String classDescription;
 
@@ -267,33 +254,27 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 					@Override
 					public E end() {
-						ValueConverter converter = new ValueConverter(
-								getEntityManager(), new INamespaces() {
-									@Override
-									public String getPrefix(URI namespace) {
-										// not supported
-										throw new UnsupportedOperationException();
-									}
+						ValueConverter converter = new ValueConverter(getEntityManager(), new INamespaces() {
+							@Override
+							public String getPrefix(URI namespace) {
+								// not supported
+								throw new UnsupportedOperationException();
+							}
 
-									@Override
-									public URI getNamespace(String prefix) {
-										return context.getURI(prefix);
-									}
-								});
-						StatementConverterActions actions = new StatementConverterActions(
-								converter);
+							@Override
+							public URI getNamespace(String prefix) {
+								return context.getURI(prefix);
+							}
+						});
+						StatementConverterActions actions = new StatementConverterActions(converter);
 
-						ManchesterSyntaxParser manchesterParser = Parboiled
-								.createParser(ManchesterSyntaxParser.class,
-										actions);
-						ParsingResult<Object> result = new BasicParseRunner<Object>(
-								manchesterParser.Description())
+						ManchesterSyntaxParser manchesterParser = Parboiled.createParser(ManchesterSyntaxParser.class,
+								actions);
+						ParsingResult<Object> result = new BasicParseRunner<Object>(manchesterParser.Description())
 								.run(classDescription);
 
 						Application application = createApplication(symbol);
-						application.setArguments(Arrays
-								.asList((IReference) converter
-										.toValue(result.resultValue)));
+						application.setArguments(Arrays.asList((IReference) converter.toValue(result.resultValue)));
 						getEntityManager().add(actions.getResult());
 						return parent.build(application);
 					}
@@ -304,15 +285,13 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 	protected URI toUri(Context context, String uriOrPrefixedName) {
 		if (uriOrPrefixedName.startsWith("<")) {
-			return URIs.createURI(uriOrPrefixedName.substring(1,
-					uriOrPrefixedName.length() - 1));
+			return URIs.createURI(uriOrPrefixedName.substring(1, uriOrPrefixedName.length() - 1));
 		}
 		int colonIndex = uriOrPrefixedName.indexOf(':');
 		String prefix, localPart;
 		if (colonIndex >= 0) {
 			prefix = uriOrPrefixedName.substring(0, colonIndex);
-			localPart = uriOrPrefixedName.substring(colonIndex + 1,
-					uriOrPrefixedName.length());
+			localPart = uriOrPrefixedName.substring(colonIndex + 1, uriOrPrefixedName.length());
 		} else {
 			prefix = "";
 			localPart = uriOrPrefixedName;
@@ -323,8 +302,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		if (nsUri != null) {
 			return nsUri.appendLocalPart(localPart);
 		} else {
-			throw new IllegalArgumentException("Unknown prefix: \"" + prefix
-					+ "\"");
+			throw new IllegalArgumentException("Unknown prefix: \"" + prefix + "\"");
 		}
 
 	}
@@ -365,7 +343,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 	protected Application createApplication(URI symbol) {
 		Application application = create(Application.class);
-		application.setOperator(getEntityManager().find(symbol, Symbol.class));
+		application.setOperator(getEntityManager().findRestricted(symbol, Symbol.class));
 		return application;
 	}
 
@@ -375,7 +353,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 	@Override
 	public T s(URI symbol) {
-		return build(getEntityManager().find(symbol));
+		return build(getEntityManager().findRestricted(symbol, Symbol.class));
 	}
 
 	@Override
@@ -388,8 +366,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 	@Override
 	public T i(BigInteger value) {
 		Literal literal = create(Literal.class);
-		literal.setValue(getEntityManager().createLiteral(value,
-				XMLSCHEMA.TYPE_INTEGER));
+		literal.setValue(getEntityManager().createLiteral(value, XMLSCHEMA.TYPE_INTEGER));
 		return build(literal);
 	}
 
@@ -402,24 +379,21 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 	@Override
 	public T b(String base64Binary) {
 		Literal literal = create(Literal.class);
-		literal.setValue(getEntityManager().createLiteral(base64Binary,
-				XMLSCHEMA.TYPE_BASE64BINARY));
+		literal.setValue(getEntityManager().createLiteral(base64Binary, XMLSCHEMA.TYPE_BASE64BINARY));
 		return build(literal);
 	}
 
 	@Override
 	public T str(String value) {
 		Literal literal = create(Literal.class);
-		literal.setValue(getEntityManager().createLiteral(value,
-				XMLSCHEMA.TYPE_STRING));
+		literal.setValue(getEntityManager().createLiteral(value, XMLSCHEMA.TYPE_STRING));
 		return build(literal);
 	}
 
 	@Override
 	public T f(double value) {
 		Literal literal = create(Literal.class);
-		literal.setValue(getEntityManager().createLiteral(value,
-				XMLSCHEMA.TYPE_DOUBLE));
+		literal.setValue(getEntityManager().createLiteral(value, XMLSCHEMA.TYPE_DOUBLE));
 		return build(literal);
 	}
 
@@ -438,11 +412,9 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 			@Override
 			public SeqBuilder<T> s(URI symbol) {
 				if (application == null) {
-					BuilderFactory factory = NWMathBuilderBase.this
-							.getBuilderFactory(symbol);
+					BuilderFactory factory = NWMathBuilderBase.this.getBuilderFactory(symbol);
 					if (factory != null) {
-						delegatingBuilder.delegate(factory.create(parent,
-								symbol));
+						delegatingBuilder.delegate(factory.create(parent, symbol));
 						return delegatingBuilder;
 					}
 				}
@@ -514,8 +486,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 			public VariablesBuilder<BindingBuilder<T>> variables() {
 				return new NWMathVarBuilder<BindingBuilder<T>>(context) {
 					@Override
-					public VariablesBuilder<BindingBuilder<T>> build(
-							IReference obj) {
+					public VariablesBuilder<BindingBuilder<T>> build(IReference obj) {
 						if (obj instanceof Variable) {
 							variables.add((Variable) obj);
 						}
@@ -535,7 +506,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 	public SeqBuilder<T> error(final URI symbol) {
 		final NWMathBuilderBase<T> parent = this;
 		final Error error = create(Error.class);
-		error.setSymbol(getEntityManager().find(symbol, Symbol.class));
+		error.setSymbol(getEntityManager().findRestricted(symbol, Symbol.class));
 		return new NWMathSeqBuilder<T>(context) {
 			List<IReference> args = null;
 
@@ -568,8 +539,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 						boolean isSet = false;
 
 						public SeqBuilder<Builder<T>> s(URI symbol) {
-							if ("http://www.openmath.org/cd/set1#set"
-									.equals(symbol.toString())) {
+							if ("http://www.openmath.org/cd/set1#set".equals(symbol.toString())) {
 								// support set1.set for multiple prefix
 								// declarations
 								isSet = true;
@@ -581,8 +551,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 						@Override
 						public SeqBuilder<SeqBuilder<Builder<T>>> apply() {
 							final SeqBuilder<Builder<T>> parent = this;
-							return new NamespaceBuilder<SeqBuilder<Builder<T>>>(
-									context, namespaces) {
+							return new NamespaceBuilder<SeqBuilder<Builder<T>>>(context, namespaces) {
 								@Override
 								SeqBuilder<Builder<T>> builder() {
 									return parent;
@@ -601,8 +570,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 						@Override
 						Builder<T> builder() {
 							return namespaces.isEmpty() ? parent
-									: new NWMathBuilderBase<T>(
-											context.childContext(namespaces)) {
+									: new NWMathBuilderBase<T>(context.childContext(namespaces)) {
 										@Override
 										public T build(IReference target) {
 											return parent.build(target);
@@ -621,10 +589,8 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 			protected void addPair(IReference obj) {
 				// store key-value pair
-				AttributionPair pair = getEntityManager().create(
-						AttributionPair.class);
-				pair.setAttributeKey(getEntityManager().createNamed(currentKey,
-						Symbol.class));
+				AttributionPair pair = getEntityManager().create(AttributionPair.class);
+				pair.setAttributeKey(getEntityManager().createNamed(currentKey, Symbol.class));
 				pair.setAttributeValue(obj);
 				pairs.add(pair);
 			}
@@ -677,5 +643,4 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 	public T rdfClass(IReference reference, INamespaces ns) {
 		return build(getEntityManager().find(reference));
 	}
-
 }

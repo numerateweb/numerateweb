@@ -86,8 +86,7 @@
 			A symbol to be used within an OpenMath attribute to specify one or
 			more RDF namespace prefixes.
 			The annotation value should be a set1.set of pairs of strings (prefix
-			name, namespace URI) constructed
-			with the prefix symbol.
+			name, namespace URI) constructed with the prefix symbol.
 		</Description>
 	</CDDefinition>
 
@@ -99,8 +98,7 @@
 			to construct a prefix mapping that can be used as a value of the
 			prefixes attribution.
 			The two arguments of this function should be OpenMath strings
-			representing
-			in order, the prefix and the corresponding namespace URI.
+			representing in order, the prefix and the corresponding namespace URI.
 		</Description>
 		<Example>
 			The prefix mappings

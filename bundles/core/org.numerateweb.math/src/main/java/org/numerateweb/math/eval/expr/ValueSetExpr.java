@@ -33,8 +33,12 @@ public class ValueSetExpr implements Expr, EvalWithRestriction {
 
 	@Override
 	public Object evalWithRestriction(Optional<IReference> restriction) {
-		IReference subject = subjectExpr.map(e -> Expressions.toReference((IReference) e.eval()))
-				.orElse(Expressions.getResource());
-		return query(subject, property, restriction);
+		Object subject = subjectExpr.map(e -> e.eval()).orElse(Expressions.getResource());
+		if (!(subject instanceof IReference)) {
+			// TODO log error
+			return Double.NaN;
+		} else {
+			return query((IReference) subject, property, restriction);
+		}
 	}
 }

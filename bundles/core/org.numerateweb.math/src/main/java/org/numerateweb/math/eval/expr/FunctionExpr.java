@@ -33,6 +33,10 @@ public class FunctionExpr implements Expr {
 			Expr arg = args[i];
 			values[i] = arg.eval();
 		}
-		return f.apply(values);
+		try {
+			return f.apply(values);
+		} catch (NumberFormatException e) {
+			return Double.NaN;
+		}
 	}
 }

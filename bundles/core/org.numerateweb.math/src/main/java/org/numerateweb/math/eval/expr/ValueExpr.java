@@ -15,14 +15,12 @@ public class ValueExpr extends ValueSetExpr {
 		IExtendedIterator<?> it = (IExtendedIterator<?>) super.query(subject, property, restriction);
 		if (!it.hasNext()) {
 			it.close();
-			throw new IllegalArgumentException("Expected exactly one value for property " + property + " of resource "
-					+ subject + " but it has no value.");
+			throw new IllegalArgumentException("No value for " + property + " of " + subject);
 		}
 		try {
 			Object value = it.next();
 			if (it.hasNext()) {
-				throw new IllegalArgumentException("Expected exactly one value for property " + property
-						+ " of resource " + subject + " but it has multiple values.");
+				throw new IllegalArgumentException("Multiple values for " + property + " of " + subject);
 			}
 			return value;
 		} finally {

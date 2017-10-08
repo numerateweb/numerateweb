@@ -1,6 +1,4 @@
-package org.numerateweb.math.search;
-
-import org.numerateweb.math.rdf.NWMathModule;
+package org.numerateweb.math.rdf;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -17,7 +15,10 @@ import net.enilink.komma.em.util.KommaUtil;
 import net.enilink.komma.em.util.UnitOfWork;
 import net.enilink.komma.rdf4j.RDF4JMemoryStoreModule;
 
-public class Helper {
+/**
+ * Helper methods for working with RDF data.
+ */
+public class RdfHelpers {
 	static KommaModule mathModule = new NWMathModule();
 
 	public static IEntityManagerFactory createInMemoryEMFactory() {
@@ -25,8 +26,7 @@ public class Helper {
 		kommaModule.includeModule(KommaUtil.getCoreModule());
 		kommaModule.includeModule(mathModule);
 		Injector injector = Guice.createInjector(new RDF4JMemoryStoreModule(),
-				new EntityManagerFactoryModule(kommaModule, null,
-						new DecoratingEntityManagerModule()),
+				new EntityManagerFactoryModule(kommaModule, null, new DecoratingEntityManagerModule()),
 				new AbstractModule() {
 					@Override
 					protected void configure() {
@@ -34,8 +34,7 @@ public class Helper {
 						uow.begin();
 						bind(UnitOfWork.class).toInstance(uow);
 						bind(IUnitOfWork.class).toInstance(uow);
-						bind(IDataManager.class).toProvider(
-								IDataManagerFactory.class);
+						bind(IDataManager.class).toProvider(IDataManagerFactory.class);
 					}
 				});
 		return injector.getInstance(IEntityManagerFactory.class);

@@ -10,10 +10,10 @@ import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.core.runtime.IStatus;
 import org.numerateweb.math.ns.Namespaces;
+import org.numerateweb.math.rdf.RdfHelpers;
 import org.numerateweb.math.rdf.meta.NWMETA;
 import org.numerateweb.math.rdf.meta.NWMetaBuilder;
 import org.numerateweb.math.rdf.vocab.NWMATH;
-import org.numerateweb.math.search.Helper;
 import org.numerateweb.math.util.stax.ParseException;
 import org.numerateweb.math.xml.IOMXmlParser;
 import org.numerateweb.math.xml.OMReader;
@@ -59,7 +59,7 @@ public class ConvertOMCD implements CLICommand {
 		nsMap.put("rdf", RDF.NAMESPACE_URI);
 		nsMap.put("math", NWMATH.NAMESPACE_URI);
 		nsMap.put("math-meta", NWMETA.NAMESPACE_URI);
-		try (IEntityManagerFactory emFactory = Helper.createInMemoryEMFactory();
+		try (IEntityManagerFactory emFactory = RdfHelpers.createInMemoryEMFactory();
 				final IEntityManager em = emFactory.get()) {
 			for (Map.Entry<String, URI> e : nsMap.entrySet()) {
 				em.setNamespace(e.getKey(), e.getValue());

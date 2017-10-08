@@ -101,6 +101,11 @@ public class Expressions {
 
 		constants.put(CDBASE + "/nums1#pi", new ConstantExpr(Math.PI));
 	}
+	
+	static Object divide(Object a, Object b) {
+		// TODO improve for integer division and big decimals
+		return values.divide(a, values.doubleValue(b));
+	}
 
 	static Object max(Object a, Object b) {
 		if (values.compareWithConversion(a, b) >= 0) {

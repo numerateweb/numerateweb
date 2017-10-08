@@ -12,8 +12,10 @@ import org.numerateweb.math.reasoner.CacheManager;
 import net.enilink.komma.core.IEntityManager;
 import net.enilink.komma.core.IReference;
 
+import static org.numerateweb.math.model.OMObject.*;
+
 /**
- * Simple numeric evaluator for OpenMath objects. 
+ * Simple numeric evaluator for OpenMath objects.
  */
 public class SimpleEvaluator extends AbstractEvaluator<Object> {
 	public SimpleEvaluator(IEntityManager manager, CacheManager cacheManager) {
@@ -27,11 +29,15 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 
 	@Override
 	protected Object eval(IReference subject, Object expression) {
-		return Expressions.withManager(manager, () -> {
-			return Expressions.withResource(subject, () -> {
-				return ((Expr) expression).eval();
+		try {
+			return Expressions.withManager(manager, () -> {
+				return Expressions.withResource(subject, () -> {
+					return ((Expr) expression).eval();
+				});
 			});
-		});
+		} catch (Exception e) {
+			return OME(OMS("nw:error"), OMSTR(e.getMessage()));
+		}
 	}
 
 	@Override
@@ -46,7 +52,9 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 
 	@Override
 	protected OMObject unparse(Object expr) {
-		if (expr instanceof Double || expr instanceof Float) {
+		if (expr instanceof OMObject) {
+			return (OMObject) expr;
+		} else if (expr instanceof Double || expr instanceof Float) {
 			return OMObject.OMF(((Number) expr).doubleValue());
 		} else if (expr instanceof BigInteger) {
 			return OMObject.OMI((BigInteger) expr);

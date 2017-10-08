@@ -14,8 +14,8 @@ import net.enilink.komma.model.ModelUtil;
 import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.ns.Namespaces;
 import org.numerateweb.math.popcorn.PopcornBuilder;
+import org.numerateweb.math.rdf.RdfHelpers;
 import org.numerateweb.math.rdf.NWMathParser;
-import org.numerateweb.math.search.Helper;
 import org.numerateweb.math.search.PopcornPatternToSparql;
 import org.numerateweb.math.util.SparqlUtils;
 
@@ -49,7 +49,7 @@ public class PopcornPatternSearch implements CLICommand {
 			mimeType = ModelUtil.mimeType("file." + type);
 		}
 		String baseUri = "urn:base:";
-		try (IEntityManagerFactory emFactory = Helper.createInMemoryEMFactory();
+		try (IEntityManagerFactory emFactory = RdfHelpers.createInMemoryEMFactory();
 				IEntityManager em = emFactory.get()) {
 			final List<IStatement> stmts = new ArrayList<>();
 			ModelUtil.readData(System.in, baseUri, mimeType,

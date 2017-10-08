@@ -17,6 +17,7 @@ import net.enilink.vocab.rdf.RDF;
 
 import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.popcorn.PopcornParser;
+import org.numerateweb.math.rdf.RdfHelpers;
 import org.numerateweb.math.rdf.NWMathBuilder;
 import org.numerateweb.math.rdf.vocab.NWMATH;
 import org.numerateweb.math.util.SparqlUtils;
@@ -277,7 +278,7 @@ public class PopcornPatternToSparql {
 
 	protected Result toSparql(String popcornPattern, String rootVariable) {
 		PopcornParser parser = Parboiled.createParser(PopcornParser.class, ns);
-		try (IEntityManagerFactory emFactory = Helper.createInMemoryEMFactory();
+		try (IEntityManagerFactory emFactory = RdfHelpers.createInMemoryEMFactory();
 				IEntityManager em = emFactory.get()) {
 			// parse Popcorn expression into OMObject representation
 			final ParsingResult<IReference> result = new ReportingParseRunner<IReference>(
