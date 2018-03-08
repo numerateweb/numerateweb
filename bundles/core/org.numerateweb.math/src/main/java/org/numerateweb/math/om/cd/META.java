@@ -3,10 +3,9 @@ package org.numerateweb.math.om.cd;
 import net.enilink.komma.core.URI;
 import net.enilink.komma.core.URIs;
 
-
 public interface META {
 	final URI NS = URIs.createURI("http://www.openmath.org/cd/meta#");
-	
+
 	final URI CD = NS.appendLocalPart("CD");
 	final URI CDBASE = NS.appendLocalPart("CDBase");
 	final URI CDCOMMENT = NS.appendLocalPart("CDComment");

@@ -190,7 +190,7 @@ public class PopcornParser extends BaseRdfParser {
 	public boolean startList() {
 		pushSymbol(match());
 		push(LIST_BEGIN);
-		swap3();
+		swap(3);
 		return true;
 	}
 
