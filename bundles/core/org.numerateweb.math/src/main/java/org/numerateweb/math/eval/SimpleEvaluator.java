@@ -1,5 +1,9 @@
 package org.numerateweb.math.eval;
 
+import static org.numerateweb.math.model.OMObject.OME;
+import static org.numerateweb.math.model.OMObject.OMS;
+import static org.numerateweb.math.model.OMObject.OMSTR;
+
 import java.math.BigInteger;
 
 import org.numerateweb.math.eval.expr.ConstantExpr;
@@ -8,18 +12,14 @@ import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObjectParser;
 import org.numerateweb.math.reasoner.AbstractEvaluator;
 import org.numerateweb.math.reasoner.CacheManager;
-
-import net.enilink.komma.core.IEntityManager;
-import net.enilink.komma.core.IReference;
-
-import static org.numerateweb.math.model.OMObject.*;
+import org.numerateweb.math.reasoner.IModelAccess;
 
 /**
  * Simple numeric evaluator for OpenMath objects.
  */
 public class SimpleEvaluator extends AbstractEvaluator<Object> {
-	public SimpleEvaluator(IEntityManager manager, CacheManager cacheManager) {
-		super(manager, cacheManager);
+	public SimpleEvaluator(IModelAccess modelAccess, CacheManager cacheManager) {
+		super(modelAccess, cacheManager);
 	}
 
 	@Override
@@ -28,10 +28,10 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 	}
 
 	@Override
-	protected Object eval(IReference subject, Object expression) {
+	protected Object eval(Object subject, Object expression) {
 		try {
-			return Expressions.withManager(manager, () -> {
-				return Expressions.withResource(subject, () -> {
+			return Expressions.withModelAccess(modelAccess, () -> {
+				return Expressions.withSubject(subject, () -> {
 					return ((Expr) expression).eval();
 				});
 			});

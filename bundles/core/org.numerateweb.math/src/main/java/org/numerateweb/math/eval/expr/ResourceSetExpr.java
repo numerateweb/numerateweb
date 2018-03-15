@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.numerateweb.math.eval.Expressions;
 
 import net.enilink.komma.core.IReference;
-import net.enilink.komma.em.concepts.IClass;
 
 public class ResourceSetExpr implements Expr, EvalWithRestriction {
 	/**
@@ -26,6 +25,6 @@ public class ResourceSetExpr implements Expr, EvalWithRestriction {
 
 	@Override
 	public Object evalWithRestriction(Optional<IReference> restriction) {
-		return Expressions.getManager().find(rdfClass, IClass.class).getInstancesAsReferences();
+		return Expressions.getModelAccess().getInstances(rdfClass);
 	}
 }

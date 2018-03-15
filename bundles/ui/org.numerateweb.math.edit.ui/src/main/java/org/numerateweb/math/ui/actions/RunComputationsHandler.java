@@ -18,6 +18,7 @@ import org.numerateweb.math.edit.ui.MathEditUIPlugin;
 import org.numerateweb.math.eval.SimpleEvaluator;
 import org.numerateweb.math.reasoner.CacheManager;
 import org.numerateweb.math.reasoner.GuavaCacheFactory;
+import org.numerateweb.math.reasoner.RdfModelAccess;
 import org.numerateweb.math.reasoner.Reasoner;
 
 import net.enilink.komma.core.IUnitOfWork;
@@ -85,9 +86,9 @@ public class RunComputationsHandler extends AbstractHandler {
 	}
 
 	Reasoner createReasoner(IModel model) {
+		CacheManager cacheManager = new CacheManager(new GuavaCacheFactory());
 		Reasoner reasoner = new Reasoner(model.getManager(),
-				new SimpleEvaluator(model.getManager(), new CacheManager(
-						new GuavaCacheFactory())));
+				new SimpleEvaluator(new RdfModelAccess(model.getManager(), cacheManager), cacheManager));
 		return reasoner;
 	}
 

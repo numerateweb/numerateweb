@@ -10,7 +10,6 @@ import static org.numerateweb.math.eval.Helpers.valueToStream;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.Function;
@@ -21,15 +20,12 @@ import java.util.stream.Stream;
 
 import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.Expr;
+import org.numerateweb.math.reasoner.IModelAccess;
 
-import net.enilink.commons.iterator.IExtendedIterator;
 import net.enilink.commons.util.ValueUtils;
-import net.enilink.komma.core.IEntityManager;
-import net.enilink.komma.core.IQuery;
 import net.enilink.komma.core.IReference;
 import net.enilink.komma.core.URI;
 import net.enilink.komma.core.URIs;
-import net.enilink.komma.em.util.ISparqlConstants;
 
 public class Expressions {
 	static final Map<String, Expr> constants = new HashMap<>();
@@ -101,7 +97,7 @@ public class Expressions {
 
 		constants.put(CDBASE + "/nums1#pi", new ConstantExpr(Math.PI));
 	}
-	
+
 	static Object divide(Object a, Object b) {
 		// TODO improve for integer division and big decimals
 		return values.divide(a, values.doubleValue(b));
@@ -139,36 +135,36 @@ public class Expressions {
 		return Math.round(x);
 	}
 
-	static final ThreadLocal<IEntityManager> currentManager = new ThreadLocal<>();
+	static final ThreadLocal<IModelAccess> currentModelAccess = new ThreadLocal<>();
 
-	public static Object withManager(IEntityManager manager, Supplier<Object> func) {
-		IEntityManager last = currentManager.get();
+	public static Object withModelAccess(IModelAccess modelAccess, Supplier<Object> func) {
+		IModelAccess last = currentModelAccess.get();
 		try {
-			currentManager.set(manager);
+			currentModelAccess.set(modelAccess);
 			return func.get();
 		} finally {
-			currentManager.set(last);
+			currentModelAccess.set(last);
 		}
 	}
 
-	public static IEntityManager getManager() {
-		return currentManager.get();
+	public static IModelAccess getModelAccess() {
+		return currentModelAccess.get();
 	}
 
-	static final ThreadLocal<IReference> currentResource = new ThreadLocal<>();
+	static final ThreadLocal<Object> currentSubject = new ThreadLocal<>();
 
-	public static Object withResource(IReference resource, Supplier<Object> func) {
-		IReference last = currentResource.get();
+	public static Object withSubject(Object subject, Supplier<Object> func) {
+		Object last = currentSubject.get();
 		try {
-			currentResource.set(resource);
+			currentSubject.set(subject);
 			return func.get();
 		} finally {
-			currentResource.set(last);
+			currentSubject.set(last);
 		}
 	}
 
-	public static IReference getResource() {
-		return currentResource.get();
+	public static Object getSubject() {
+		return currentSubject.get();
 	}
 
 	static final ThreadLocal<Map<String, Stack<Object>>> currentVars = ThreadLocal.withInitial(() -> {
@@ -210,50 +206,5 @@ public class Expressions {
 		} else {
 			return values.peek();
 		}
-	}
-
-	public static IReference toReference(Object value) {
-		if (value instanceof IReference) {
-			return (IReference) value;
-		} else if (value instanceof String) {
-			String pname = value.toString();
-			int pos = pname.indexOf(":");
-			if (pos > 0) {
-				String prefix = pname.substring(0, pos);
-				URI namespace = getManager().getNamespace(prefix);
-				if (namespace == null) {
-					throw new RuntimeException("Namespace not found");
-				} else {
-					return namespace.appendFragment(pname.substring(pos + 1));
-				}
-			} else {
-				return URIs.createURI(pname.toString());
-			}
-		}
-
-		throw new RuntimeException("Reference expected");
-	}
-
-	public static IExtendedIterator<?> queryValues(IReference subject, IReference property,
-			Optional<IReference> restriction) {
-		// DISTINCT is required to suppress duplicates due to explicit and
-		// inferred statements
-		StringBuilder builder = new StringBuilder(ISparqlConstants.PREFIX + //
-				"SELECT DISTINCT ?value WHERE {");
-		builder.append("?subject ?property ?value . ");
-		restriction.ifPresent(r -> {
-			builder.append("?value a ?restriction .");
-		});
-		builder.append("}");
-
-		IEntityManager em = getManager();
-		IQuery<?> query = em.createQuery(builder.toString()).setParameter("subject", subject).setParameter("property",
-				property);
-		restriction.ifPresent(r -> {
-			query.setParameter("restriction", restriction);
-		});
-
-		IExtendedIterator<?> it = query.evaluate();
-		return it;
 	}
 }

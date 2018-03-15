@@ -23,7 +23,7 @@ public class ValueSetExpr implements Expr, EvalWithRestriction {
 	}
 
 	protected Object query(IReference subject, IReference property, Optional<IReference> restriction) {
-		return Expressions.queryValues(subject, property, restriction);
+		return Expressions.getModelAccess().getPropertyValues(subject, property, restriction);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ValueSetExpr implements Expr, EvalWithRestriction {
 
 	@Override
 	public Object evalWithRestriction(Optional<IReference> restriction) {
-		Object subject = subjectExpr.map(e -> e.eval()).orElse(Expressions.getResource());
+		Object subject = subjectExpr.map(e -> e.eval()).orElse(Expressions.getSubject());
 		if (!(subject instanceof IReference)) {
 			// TODO log error
 			return Double.NaN;
