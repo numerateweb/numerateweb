@@ -66,7 +66,7 @@ public class Reasoner {
 				final IResource resource = (IResource) bindings.get("instance");
 				final IResource property = (IResource) bindings.get("property");
 				final Object currentValue = bindings.get("currentValue");
-				final OMObject result = evaluator.evaluate(resource, property, true);
+				final OMObject result = evaluator.evaluate(resource, property);
 				if (result != null) {
 					System.out.println(resource + " - " + property);
 					if (currentValue instanceof IReference && ((IReference) currentValue).getURI() == null) {

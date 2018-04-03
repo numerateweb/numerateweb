@@ -58,7 +58,7 @@ public abstract class AbstractEvaluator<E> {
 	 */
 	protected abstract E eval(Object subject, E expression);
 
-	public OMObject evaluate(Object subject, IReference property, boolean usePersistentValue) {
+	public OMObject evaluate(Object subject, IReference property) {
 		E result = null;
 		Pair<Object, IReference> key = new Pair<>(subject, property);
 		CacheResult<E> cacheResult = valueCache.get(key);
@@ -68,7 +68,8 @@ public abstract class AbstractEvaluator<E> {
 			OMObject omobj = getConstraintExpression(subject, property);
 			if (omobj != null) {
 				result = evaluateExpression(subject, property, omobj);
-			} else if (usePersistentValue) {
+			} else {
+				// use already existing value
 				result = getPropertyValue(subject, property);
 			}
 			valueCache.put(key, result);

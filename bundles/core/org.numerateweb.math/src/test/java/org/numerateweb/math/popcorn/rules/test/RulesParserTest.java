@@ -15,9 +15,9 @@ import org.parboiled.support.ParsingResult;
 import com.github.parboiled1.grappa.stack.DefaultValueStack;
 
 /**
- * Simple JUnit Test for the SCL Parser
+ * Simple JUnit Test for the POPCORN rules parser
  */
-public class RulesTest extends GUnitBaseTestCase {
+public class RulesParserTest extends GUnitBaseTestCase {
 	final MathRulesParser parser = Parboiled.createParser(MathRulesParser.class);
 
 	@Test

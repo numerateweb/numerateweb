@@ -1,0 +1,9 @@
+Prefix: : <http://example.org/>
+
+Class: Rectangle
+Constraints:
+:area := @a * @b
+
+Class: Rectangles
+Constraints:
+:areaSum := sum(@@rectangles, $r -> @area($r))

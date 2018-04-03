@@ -34,13 +34,17 @@ public class PojoModelAccess implements IModelAccess {
 		for (OMObject constraint : constraints) {
 			if (constraint.getType() == Type.OMA) {
 				// load constraints into a map
-				URI classUri = (URI) constraint.getArgs()[1];
-				URI propertyUri = (URI) constraint.getArgs()[2];
+				URI classUri = omrToUri((OMObject) constraint.getArgs()[1]);
+				URI propertyUri = omrToUri((OMObject) constraint.getArgs()[2]);
 				OMObject expression = (OMObject) constraint.getArgs()[3];
 
 				addConstraint(classUri.localPart(), propertyUri.localPart(), expression);
 			}
 		}
+	}
+
+	private URI omrToUri(OMObject omr) {
+		return (URI) omr.getArgs()[0];
 	}
 
 	private void addConstraint(String className, String propertyName, OMObject expression) {
