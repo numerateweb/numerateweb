@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class SimpleRulesTest {
 
 			Rectangle rect = new Rectangle(2, 4);
 
-			System.out.println(evaluator.evaluate(rect, URIs.createURI("java:area")));
+			System.out.println(evaluator.evaluate(rect, URIs.createURI("java:area"), Optional.empty()).asOpenMath());
 		} else {
 			System.err.println(ErrorUtils.printParseErrors(result));
 			fail("Invalid rules format.");

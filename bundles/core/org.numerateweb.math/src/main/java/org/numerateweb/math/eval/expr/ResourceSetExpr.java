@@ -25,6 +25,6 @@ public class ResourceSetExpr implements Expr, EvalWithRestriction {
 
 	@Override
 	public Object evalWithRestriction(Optional<IReference> restriction) {
-		return Expressions.getModelAccess().getInstances(rdfClass);
+		return Expressions.getEvaluator().getInstances(rdfClass);
 	}
 }

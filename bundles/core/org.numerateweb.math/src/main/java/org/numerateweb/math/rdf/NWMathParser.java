@@ -41,7 +41,7 @@ public class NWMathParser {
 		}
 
 		String getPrefix(String uri) {
-			if (this.uri.equals(uri)) {
+			if (this.uri.toString().equals(uri)) {
 				return prefix;
 			}
 			return previous != null ? previous.getPrefix(uri) : null;
@@ -94,11 +94,8 @@ public class NWMathParser {
 		try {
 			return doParse(mathobj, builder);
 		} catch (Exception e) {
-			return builder
-					.error(URIs
-							.createURI("http://www.openmath.org/cd/moreerrors#unexpected"))
-					.str("Reading math object failed.").str(e.getMessage())
-					.end();
+			return builder.error(URIs.createURI("http://www.openmath.org/cd/moreerrors#unexpected"))
+					.str("Reading math object failed.").str(e.getMessage()).end();
 		}
 	}
 
@@ -106,8 +103,8 @@ public class NWMathParser {
 	 * Controls if URI references are resolved or not.
 	 * 
 	 * @param resolveURIs
-	 *            <code>true</code> if parse should dive into named resource,
-	 *            else <code>false</code>.
+	 *            <code>true</code> if parse should dive into named resource, else
+	 *            <code>false</code>.
 	 * @return The parser instance
 	 */
 	public NWMathParser resolveURIs(boolean resolveURIs) {
@@ -119,8 +116,7 @@ public class NWMathParser {
 		URI uri = mathobj.getURI();
 
 		// resolve reference objects
-		if ((uri == null || resolveURIs) && mathobj instanceof Reference
-				&& ((Reference) mathobj).getTarget() != null) {
+		if ((uri == null || resolveURIs) && mathobj instanceof Reference && ((Reference) mathobj).getTarget() != null) {
 			Set<IReference> seen = new HashSet<>();
 			seen.add(mathobj);
 			IReference refTo = ((Reference) mathobj).getTarget();
@@ -146,12 +142,10 @@ public class NWMathParser {
 				ILiteral value = l.getValue();
 				if (value != null) {
 					URI type = value.getDatatype();
-					if (XMLSCHEMA.TYPE_INTEGER.equals(type)
-							|| XMLSCHEMA.TYPE_INT.equals(type)
+					if (XMLSCHEMA.TYPE_INTEGER.equals(type) || XMLSCHEMA.TYPE_INT.equals(type)
 							|| XMLSCHEMA.TYPE_LONG.equals(type)) {
 						return createOMI(l, builder);
-					} else if (XMLSCHEMA.TYPE_FLOAT.equals(type)
-							|| XMLSCHEMA.TYPE_DOUBLE.equals(type)
+					} else if (XMLSCHEMA.TYPE_FLOAT.equals(type) || XMLSCHEMA.TYPE_DOUBLE.equals(type)
 							|| XMLSCHEMA.TYPE_DECIMAL.equals(type)) {
 						return createOMF(l, builder);
 					} else if (XMLSCHEMA.TYPE_BASE64BINARY.equals(type)) {
@@ -171,8 +165,7 @@ public class NWMathParser {
 				return createOMFOREIGN((Foreign) mathobj, builder);
 			}
 		}
-		if (uri != null
-				&& uri.toString().startsWith("http://www.openmath.org/cd/")) {
+		if (uri != null && uri.toString().startsWith("http://www.openmath.org/cd/")) {
 			// this is likely a mathematical symbol
 			return builder.s(uri);
 		}
@@ -180,8 +173,7 @@ public class NWMathParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> T doParse(Iterable<? extends IReference> objs,
-			Builder<T> builder) {
+	protected <T> T doParse(Iterable<? extends IReference> objs, Builder<T> builder) {
 		T result = null;
 		if (objs != null) {
 			for (IReference obj : objs) {
@@ -226,8 +218,7 @@ public class NWMathParser {
 		URI uri = ((IReference) value).getURI();
 		if (uri != null) {
 			String prefix = allNamespaces.getPrefix(uri.namespace());
-			return builder.str(prefix == null ? "<" + uri.toString() + ">"
-					: prefix + ":" + uri.localPart());
+			return builder.str(prefix == null ? "<" + uri.toString() + ">" : prefix + ":" + uri.localPart());
 		}
 		return builder.str(value.toString());
 	}
@@ -252,8 +243,7 @@ public class NWMathParser {
 			if (it.hasNext()) {
 				createResource(it.next(), appBuilder);
 			}
-		} else if (OMRdfSymbols.VALUE.equals(operator)
-				|| OMRdfSymbols.VALUESET.equals(operator)) {
+		} else if (OMRdfSymbols.VALUE.equals(operator) || OMRdfSymbols.VALUESET.equals(operator)) {
 			Iterator<IReference> it = application.getArguments().iterator();
 			if (it.hasNext()) {
 				createResource(it.next(), appBuilder);
@@ -278,8 +268,7 @@ public class NWMathParser {
 
 	public <T> T createOMBIND(Binding binding, Builder<T> builder) {
 		BindingBuilder<T> bindingBuilder = builder.bind();
-		VariablesBuilder<?> varBuilder = doParse(binding.getBinder(),
-				bindingBuilder.binder()).variables();
+		VariablesBuilder<?> varBuilder = doParse(binding.getBinder(), bindingBuilder.binder()).variables();
 		List<Variable> variables = binding.getVariables();
 		if (variables != null) {
 			for (Variable var : variables) {
@@ -291,19 +280,16 @@ public class NWMathParser {
 	}
 
 	public <T> T createOME(Error error, Builder<T> builder) {
-		return doParse(error.getArguments(),
-				builder.error(error.getSymbol().getURI())).end();
+		return doParse(error.getArguments(), builder.error(error.getSymbol().getURI())).end();
 	}
 
 	public <T> T createOMATTR(Attribution attribution, Builder<T> builder) {
 		NamespaceBinding oldNamespaces = embeddedNamespaces;
 		try {
 			for (AttributionPair pair : attribution.getArguments()) {
-				builder = doParse(pair.getAttributeValue(),
-						builder.attr(pair.getAttributeKey().getURI()));
-				if (OMRdfSymbols.PREFIXES.equals(pair.getAttributeKey())) {
-					embeddedNamespaces = extractBindings(
-							pair.getAttributeValue(), oldNamespaces);
+				builder = doParse(pair.getAttributeValue(), builder.attr(pair.getAttributeKey().getURI()));
+				if (OMRdfSymbols.PREFIXES.equals(pair.getAttributeKey().getURI())) {
+					embeddedNamespaces = extractBindings(pair.getAttributeValue(), oldNamespaces);
 				}
 			}
 			return doParse(attribution.getTarget(), builder);
@@ -312,18 +298,14 @@ public class NWMathParser {
 		}
 	}
 
-	private NamespaceBinding extractBindings(Object value,
-			NamespaceBinding namespaces) {
+	private NamespaceBinding extractBindings(Object value, NamespaceBinding namespaces) {
 		if (value instanceof Application) {
 			Application application = (Application) value;
 			List<?> arguments = application.getArguments();
-			if (OMRdfSymbols.PREFIX
-					.equals(application.getOperator().toString())) {
+			if (OMRdfSymbols.PREFIX.equals(application.getOperator())) {
 				if (arguments.size() == 2) {
-					return new NamespaceBinding(
-							((Literal) arguments.get(0)).toString(),
-							URIs.createURI(((Literal) arguments.get(1))
-									.toString()), namespaces);
+					return new NamespaceBinding(((Literal) arguments.get(0)).toString(),
+							URIs.createURI(((Literal) arguments.get(1)).toString()), namespaces);
 				}
 			} else {
 				for (Object arg : arguments) {

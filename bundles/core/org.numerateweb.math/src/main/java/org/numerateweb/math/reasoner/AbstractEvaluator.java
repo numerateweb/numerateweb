@@ -1,19 +1,78 @@
 package org.numerateweb.math.reasoner;
 
+import static org.numerateweb.math.model.OMObject.OMS;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.numerateweb.math.eval.IEvaluator;
 import org.numerateweb.math.model.OMObject;
+import org.numerateweb.math.model.OMObject.Type;
+import org.numerateweb.math.util.SingletonIterator;
 
 import com.google.inject.TypeLiteral;
 
 import net.enilink.commons.iterator.IExtendedIterator;
+import net.enilink.commons.iterator.NiceIterator;
+import net.enilink.commons.iterator.WrappedIterator;
 import net.enilink.commons.util.Pair;
 import net.enilink.komma.core.IReference;
 import net.enilink.komma.model.ModelUtil;
 
-public abstract class AbstractEvaluator<E> {
+public abstract class AbstractEvaluator<E> implements IEvaluator {
+	class ResultIterator extends WrappedIterator<Object> implements Result {
+		public ResultIterator(Iterator<?> base) {
+			super(base, true);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public OMObject asOpenMath() {
+			List<OMObject> results = toList().stream().map(e -> unparse((E) e))
+					.collect(Collectors.toCollection(ArrayList::new));
+			if (results.size() == 1) {
+				return results.get(0);
+			} else {
+				results.add(0, OMS("http://www.openmath.org/cd/list1#list"));
+				return new OMObject(Type.OMA, results.toArray());
+			}
+		}
+	}
+
+	class SingleResult extends NiceIterator<Object> implements Result {
+		protected Object value;
+
+		public SingleResult(Object value) {
+			this.value = value;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return value != null;
+		}
+
+		@Override
+		public Object next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			Object result = value;
+			value = null;
+			return result;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public OMObject asOpenMath() {
+			return unparse((E) next());
+		}
+	}
 
 	public ICache<OMObject, E> parsedExpressionCache;
 	private ThreadLocal<Set<Pair<Object, IReference>>> path = new ThreadLocal<Set<Pair<Object, IReference>>>() {
@@ -58,7 +117,7 @@ public abstract class AbstractEvaluator<E> {
 	 */
 	protected abstract E eval(Object subject, E expression);
 
-	public OMObject evaluate(Object subject, IReference property) {
+	public Result evaluate(Object subject, IReference property, Optional<IReference> restriction) {
 		E result = null;
 		Pair<Object, IReference> key = new Pair<>(subject, property);
 		CacheResult<E> cacheResult = valueCache.get(key);
@@ -74,7 +133,7 @@ public abstract class AbstractEvaluator<E> {
 			}
 			valueCache.put(key, result);
 		}
-		return unparse(result);
+		return new SingleResult(result);
 	}
 
 	public E evaluateExpression(Object subject, IReference property, OMObject omobj) {
@@ -178,4 +237,9 @@ public abstract class AbstractEvaluator<E> {
 	 * @return An OM object for the given expression.
 	 */
 	protected abstract OMObject unparse(E expr);
+
+	@Override
+	public IExtendedIterator<?> getInstances(IReference clazz) {
+		return modelAccess.getInstances(clazz);
+	}
 }

@@ -44,8 +44,7 @@ import org.parboiled.support.Var;
 public class PopcornParser extends BaseRdfParser {
 	public static final Class<OMObject> objClass = OMObject.class;
 
-	public ManchesterSyntaxParser manchesterParser = Parboiled
-			.createParser(ManchesterSyntaxParser.class);
+	public ManchesterSyntaxParser manchesterParser = Parboiled.createParser(ManchesterSyntaxParser.class);
 
 	static class Namespaces implements INamespaces {
 		INamespaces next;
@@ -115,6 +114,10 @@ public class PopcornParser extends BaseRdfParser {
 		return pushSymbolOrRef(value, true);
 	}
 
+	public boolean pushRef(Object value) {
+		return pushSymbolOrRef(value, false);
+	}
+
 	public boolean pushSymbolOrRef(Object value, boolean isSymbol) {
 		Type type = isSymbol ? Type.OMS : Type.OMR;
 		if (value instanceof URI) {
@@ -123,8 +126,8 @@ public class PopcornParser extends BaseRdfParser {
 			String prefix = ((QName) value).getPrefix();
 			String localPart = ((QName) value).getLocalPart();
 			if (isSymbol) {
-				return pushSymbol(prefix != null && prefix.length() > 0 ? new StringBuilder(
-						prefix).append(":").append(localPart).toString()
+				return pushSymbol(prefix != null && prefix.length() > 0
+						? new StringBuilder(prefix).append(":").append(localPart).toString()
 						: localPart);
 			} else {
 				return pushSymbolOrRef(prefix, localPart, false);
@@ -136,8 +139,7 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public boolean pushSymbol(String opOrShortHand) {
-		URI symbol = PopcornSymbols.toOpenMath(opOrShortHand.trim()
-				.toLowerCase());
+		URI symbol = PopcornSymbols.toOpenMath(opOrShortHand.trim().toLowerCase());
 		if (symbol != null) {
 			push(OMS(symbol));
 		} else {
@@ -152,16 +154,13 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule Start(Builder<?> builder) {
-		return sequence(
-				Expr(),
-				push(builder != null ? new OMObjectParser().parse(
-						(OMObject) pop(), builder) : pop()), EOI);
+		return sequence(Expr(), push(builder != null ? new OMObjectParser().parse((OMObject) pop(), builder) : pop()),
+				EOI);
 	}
 
 	public Rule Expr() {
 		Var<Boolean> nsChanged = new Var<>(false);
-		return sequence(optional(PrefixDecl(), nsChanged.set(true)),
-				BlockExpr(), resetNamespaces(nsChanged.get()));
+		return sequence(optional(PrefixDecl(), nsChanged.set(true)), BlockExpr(), resetNamespaces(nsChanged.get()));
 	}
 
 	public boolean updateNamespaces(String prefix, URI namespace) {
@@ -179,12 +178,8 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule PrefixDecl() {
-		return sequence("prefix",
-				PNAME_NS(),
-				WS(),
-				IRI_REF(), //
-				updateNamespaces((String) pop(1),
-						URIs.createURI(((IriRef) pop()).getIri())));
+		return sequence("prefix", PNAME_NS(), WS(), IRI_REF(), //
+				updateNamespaces((String) pop(1), URIs.createURI(((IriRef) pop()).getIri())));
 	}
 
 	public boolean startList() {
@@ -199,17 +194,11 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule AssignExpr() {
-		return sequence(
-				ImplExpr(),
-				optional(":=", startList(), ImplExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(ImplExpr(), optional(":=", startList(), ImplExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule ImplExpr() {
-		return sequence(
-				OrExpr(),
-				optional(firstOf("==>", "<=>"), startList(), OrExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(OrExpr(), optional(firstOf("==>", "<=>"), startList(), OrExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule OrExpr() {
@@ -221,53 +210,32 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule RelExpr() {
-		return sequence(
-				IntervalExpr(),
-				optional(firstOf('=', '<', "<=", '>', ">=", "!=", "<>"),
-						startList(), IntervalExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(IntervalExpr(), optional(firstOf('=', '<', "<=", '>', ">=", "!=", "<>"), startList(),
+				IntervalExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule IntervalExpr() {
-		return sequence(
-				AddExpr(),
-				optional("..", startList(), AddExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(AddExpr(), optional("..", startList(), AddExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule AddExpr() {
-		return sequence(
-				MultExpr(),
-				zeroOrMore(firstOf(OpList('-', MultExpr()),
-						OpList('+', MultExpr()))));
+		return sequence(MultExpr(), zeroOrMore(firstOf(OpList('-', MultExpr()), OpList('+', MultExpr()))));
 	}
 
 	public Rule MultExpr() {
-		return sequence(
-				PowerExpr(),
-				zeroOrMore(firstOf(OpList('/', PowerExpr()),
-						OpList('*', PowerExpr()))));
+		return sequence(PowerExpr(), zeroOrMore(firstOf(OpList('/', PowerExpr()), OpList('*', PowerExpr()))));
 	}
 
 	public Rule PowerExpr() {
-		return sequence(
-				ComplexExpr(),
-				optional('^', startList(), ComplexExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(ComplexExpr(), optional('^', startList(), ComplexExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule ComplexExpr() {
-		return sequence(
-				RationalExpr(),
-				optional('|', startList(), RationalExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(RationalExpr(), optional('|', startList(), RationalExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule RationalExpr() {
-		return sequence(
-				NegExpr(),
-				optional("//", startList(), NegExpr(),
-						push(OMA(popList(objClass)))));
+		return sequence(NegExpr(), optional("//", startList(), NegExpr(), push(OMA(popList(objClass)))));
 	}
 
 	/**
@@ -279,19 +247,16 @@ public class PopcornParser extends BaseRdfParser {
 	 */
 	@DontLabel
 	public Rule OpList(Object operator, Object operand) {
-		return sequence(operator, startList(), operand,
-				zeroOrMore(operator, operand), push(OMA(popList(objClass))));
+		return sequence(operator, startList(), operand, zeroOrMore(operator, operand), push(OMA(popList(objClass))));
 	}
 
 	public Rule NegExpr() {
 		Var<String> unaryOp = new Var<>();
-		return sequence(
-				optional(firstOf('-', "not"), unaryOp.set(match())),
-				CompExpr(),
-				unaryOp.get() != null ? push(OMA(
-						OMS("-".equals(unaryOp.get()) ? symbol("arith1",
-								"unary_minus") : symbol("logic1", "not")),
-						(OMObject) pop())) : true);
+		return sequence(optional(firstOf('-', "not"), unaryOp.set(match())), CompExpr(),
+				unaryOp.get() != null ? push(
+						OMA(OMS("-".equals(unaryOp.get()) ? symbol("arith1", "unary_minus") : symbol("logic1", "not")),
+								(OMObject) pop()))
+						: true);
 	}
 
 	public Rule CompExpr() {
@@ -302,7 +267,7 @@ public class PopcornParser extends BaseRdfParser {
 				SetExpr(), //
 				CompactLambda(), //
 				sequence(Anchor(), optional(BindingSuffix())) //
-				), optional(AttributionSuffix()));
+		), optional(AttributionSuffix()));
 	}
 
 	public Rule CommaList(Rule element) {
@@ -310,8 +275,7 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule Call() {
-		return sequence(push(LIST_BEGIN), Anchor(), '(', CommaList(Expr()),
-				')', push(OMA(popList(objClass))));
+		return sequence(push(LIST_BEGIN), Anchor(), '(', CommaList(Expr()), ')', push(OMA(popList(objClass))));
 	}
 
 	// public Rule ECall() {
@@ -319,13 +283,13 @@ public class PopcornParser extends BaseRdfParser {
 	// }
 
 	public Rule ListExpr() {
-		return sequence('[', push(LIST_BEGIN), pushSymbol("list1", "list"),
-				CommaList(Expr()), ']', push(OMA(popList(objClass))));
+		return sequence('[', push(LIST_BEGIN), pushSymbol("list1", "list"), CommaList(Expr()), ']',
+				push(OMA(popList(objClass))));
 	}
 
 	public Rule SetExpr() {
-		return sequence('{', push(LIST_BEGIN), pushSymbol("set1", "set"),
-				CommaList(Expr()), '}', push(OMA(popList(objClass))));
+		return sequence('{', push(LIST_BEGIN), pushSymbol("set1", "set"), CommaList(Expr()), '}',
+				push(OMA(popList(objClass))));
 	}
 
 	public Rule AttributionSuffix() {
@@ -345,36 +309,28 @@ public class PopcornParser extends BaseRdfParser {
 	// lambda expression in the form: $a, $b -> $a + $b
 	public Rule CompactLambda() {
 		Var<List<OMObject>> vars = new Var<>();
-		return sequence(
-				push(LIST_BEGIN),
+		return sequence(push(LIST_BEGIN),
 				// list of variables with optional attributions
-				CommaList(sequence(Var(), optional(AttributionSuffix()))),
-				vars.set(popList(objClass)),
-				"->",
-				Expr(),
-				push(OMBIND(OMS(symbol("fns1", "lambda")), vars.get(),
-						(OMObject) pop())));
+				CommaList(sequence(Var(), optional(AttributionSuffix()))), vars.set(popList(objClass)), "->", Expr(),
+				push(OMBIND(OMS(symbol("fns1", "lambda")), vars.get(), (OMObject) pop())));
 	}
 
 	public Rule BindingSuffix() {
 		Var<List<OMObject>> vars = new Var<>();
-		return sequence('[',
-				push(LIST_BEGIN),
+		return sequence('[', push(LIST_BEGIN),
 				// list of variables with optional attributions
-				CommaList(sequence(Var(), optional(AttributionSuffix()))),
-				vars.set(popList(objClass)), "->", Expr(), ']',
-				push(OMBIND((OMObject) pop(1), vars.get(), (OMObject) pop())));
+				CommaList(sequence(Var(), optional(AttributionSuffix()))), vars.set(popList(objClass)), "->", Expr(),
+				']', push(OMBIND((OMObject) pop(1), vars.get(), (OMObject) pop())));
 	}
 
 	public Rule Anchor() {
 		return sequence(Atom(), optional(":", ID(),
-		// TODO handle ID
+				// TODO handle ID
 				drop()));
 	}
 
 	public Rule Atom() {
-		return firstOf(
-				ParaExpr(), //
+		return firstOf(ParaExpr(), //
 				Var(), //
 				Rdf(), //
 				IfExpr(), //
@@ -382,8 +338,7 @@ public class PopcornParser extends BaseRdfParser {
 				Pattern(), //
 				Ref(), //
 				Symbol(), //
-				sequence(NumericLiteral(),
-						push(createNumber((NumericLiteral) pop()))), //
+				sequence(NumericLiteral(), push(createNumber((NumericLiteral) pop()))), //
 				OMB(), //
 				FOREIGN(), //
 				sequence(StringLiteral(), push(OMSTR((String) pop()))) //
@@ -395,26 +350,23 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule Ref() {
-		return sequence(ch('#'), IriRef(), pushSymbolOrRef(pop(), false));
+		return sequence(ch('#'), IriRef(), pushRef(pop()));
 	}
 
 	public Object createNumber(NumericLiteral literal) {
 		if (literal instanceof IntegerLiteral) {
-			return OMI(new BigInteger(String.valueOf(((IntegerLiteral) literal)
-					.getValue())));
+			return OMI(new BigInteger(String.valueOf(((IntegerLiteral) literal).getValue())));
 		}
 		return OMF(((DoubleLiteral) literal).getValue());
 	}
 
 	public Rule IfExpr() {
-		return sequence(push(LIST_BEGIN), pushSymbol("prog1", "if"), "if",
-				Expr(), "then", Expr(), "else", Expr(), "endif",
-				push(OMA(popList(objClass))));
+		return sequence(push(LIST_BEGIN), pushSymbol("prog1", "if"), "if", Expr(), "then", Expr(), "else", Expr(),
+				"endif", push(OMA(popList(objClass))));
 	}
 
 	public Rule WhileExpr() {
-		return sequence(push(LIST_BEGIN), pushSymbol("prog1", "while"),
-				"while", Expr(), "do", Expr(), "endwhile",
+		return sequence(push(LIST_BEGIN), pushSymbol("prog1", "while"), "while", Expr(), "do", Expr(), "endwhile",
 				push(OMA(popList(objClass))));
 	}
 
@@ -427,17 +379,12 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule OMB() {
-		return sequence(
-				string("%"),
-				zeroOrMore(firstOf(DIGIT(), charRange('a', 'z'),
-						charRange('A', 'Z'))), push(OMObject.OMB(match())), "%");
+		return sequence(string("%"), zeroOrMore(firstOf(DIGIT(), charRange('a', 'z'), charRange('A', 'Z'))),
+				push(OMObject.OMB(match())), "%");
 	}
 
 	public Rule ID() {
-		return sequence(
-				sequence(PN_CHARS_U(),
-						zeroOrMore(firstOf(DIGIT(), PN_CHARS_U()))),
-				push(match()), WS());
+		return sequence(sequence(PN_CHARS_U(), zeroOrMore(firstOf(DIGIT(), PN_CHARS_U()))), push(match()), WS());
 	}
 
 	/* <RDF support> */
@@ -451,76 +398,67 @@ public class PopcornParser extends BaseRdfParser {
 	public Rule RdfResourceSet() {
 		// set of resources
 		return sequence('[', manchesterParser.Description(), drop(),
-				push(OMA(Arrays.asList(OMS(symbol("rdf", "resourceset")),
-						OMSTR(match().trim())))), ']');
+				push(OMA(Arrays.asList(OMS(symbol("rdf", "resourceset")), //
+						// TODO check if this can be directly converted to OpenMath
+						OMSTR(match().trim())))),
+				']');
 	}
 
 	public Rule RdfResource() {
 		// exactly one resource
-		return sequence('(', IriRef(), drop(), push(OMA(Arrays.asList(
-				OMS(symbol("rdf", "resource")), OMSTR(match().trim())))), ')');
+		return sequence('(', IriRef(), pushRef(pop()), // save reference to value stack
+				push(OMA(Arrays.asList(OMS(symbol("rdf", "resource")), //
+						(OMObject) pop() // use reference from value stack
+				))), ')');
 	}
 
 	public OMObject createPropertyPath(boolean isSet, boolean hasArg) {
 		OMObject arg = hasArg ? (OMObject) pop() : null;
-		for (Iterator<OMObject> pathIt = popList(objClass).iterator(); pathIt
-				.hasNext();) {
+		for (Iterator<OMObject> pathIt = popList(objClass).iterator(); pathIt.hasNext();) {
 			OMObject pathElem = pathIt.next();
-			OMObject valueFunc = OMS(!pathIt.hasNext() && isSet ? OMRdfSymbols.VALUESET
-					: OMRdfSymbols.VALUE);
-			arg = arg == null ? OMA(valueFunc, pathElem) : OMA(valueFunc,
-					pathElem, arg);
+			OMObject valueFunc = OMS(!pathIt.hasNext() && isSet ? OMRdfSymbols.VALUESET : OMRdfSymbols.VALUE);
+			arg = arg == null ? OMA(valueFunc, pathElem) : OMA(valueFunc, pathElem, arg);
 		}
 		return arg;
 	}
 
 	public Rule RdfPropertyPathElem() {
-		return sequence(IriRef(), drop(), push(OMSTR(match().trim())));
+		return sequence(IriRef(), pushRef(pop()));
 	}
 
 	public Rule RdfProperty() {
 		Var<Boolean> isSet = new Var<>(false);
 		Var<Boolean> hasArg = new Var<>(false);
-		return sequence(
-				optional(ch('@'), isSet.set(true)),
-				push(LIST_BEGIN),
+		return sequence(optional(ch('@'), isSet.set(true)), push(LIST_BEGIN),
 				firstOf(RdfPropertyPathElem(),
-						sequence("'", RdfPropertyPathElem(),
-								zeroOrMore("/", RdfPropertyPathElem(), "'"))),
-				optional('(', Expr(), hasArg.set(true), ')'),
-				push(createPropertyPath(isSet.get(), hasArg.get())),
+						sequence("'", RdfPropertyPathElem(), zeroOrMore("/", RdfPropertyPathElem(), "'"))),
+				optional('(', Expr(), hasArg.set(true), ')'), push(createPropertyPath(isSet.get(), hasArg.get())),
 				// an optional restriction @@property(...)[Restriction]
 				optional(!!isSet.get(), // fail if this is not a set
-						RdfResourceSet(), push(OMA(Arrays.asList(
-								OMS(symbol("set1", "intersect")),
-								(OMObject) pop(1), (OMObject) pop())))));
+						RdfResourceSet(), push(OMA(Arrays.asList(OMS(symbol("set1", "intersect")), (OMObject) pop(1),
+								(OMObject) pop())))));
 	}
 
 	/* </RDF support> */
 
 	// allow to use a wider range of prefixed names, e.g. 3Dgeo1:circle
 	public Rule PN_PREFIX() {
-		return sequence(zeroOrMore(DIGIT()), PN_CHARS_U(),
-				zeroOrMore(firstOf(PN_CHARS(), sequence('.', PN_CHARS()))));
+		return sequence(zeroOrMore(DIGIT()), PN_CHARS_U(), zeroOrMore(firstOf(PN_CHARS(), sequence('.', PN_CHARS()))));
 	}
 
 	public Rule IriRef() {
-		return sequence(
-				firstOf(IRI_REF(),
-						// PrefixedNameEscaped(),
-						PrefixedName(),
-						// allow pure local names without using ':'
-						sequence(
-								sequence(zeroOrMore(DIGIT()), PN_CHARS_U(),
-										optional(PN_LOCAL(), drop()) //
-								), push(new QName("", match().trim())))//
-				), WS());
+		return sequence(firstOf(IRI_REF(),
+				// PrefixedNameEscaped(),
+				PrefixedName(),
+				// allow pure local names without using ':'
+				sequence(sequence(zeroOrMore(DIGIT()), PN_CHARS_U(), optional(PN_LOCAL(), drop()) //
+				), push(new QName("", match().trim())))//
+		), WS());
 	}
 
 	public Rule FOREIGN() {
 		return sequence('`', zeroOrMore(noneOf("<`")), push(match().trim()),
-				sequence('<', oneOrMore(testNot("`"), ANY)),
-				push(OMFOREIGN((String) pop(), match())), '`');
+				sequence('<', oneOrMore(testNot("`"), ANY)), push(OMFOREIGN((String) pop(), match())), '`');
 	}
 
 	public Rule COMMENT() {
@@ -531,34 +469,25 @@ public class PopcornParser extends BaseRdfParser {
 	// least one decimal place
 	public Rule DECIMAL() {
 		return sequence(
-				firstOf(sequence(oneOrMore(DIGIT()), '.', oneOrMore(DIGIT())),
-						sequence('.', oneOrMore(DIGIT()))),
-				push(new DoubleLiteral(Double.parseDouble(match().trim()))),
-				WS());
+				firstOf(sequence(oneOrMore(DIGIT()), '.', oneOrMore(DIGIT())), sequence('.', oneOrMore(DIGIT()))),
+				push(new DoubleLiteral(Double.parseDouble(match().trim()))), WS());
 	}
 
 	public Rule DOUBLE() {
 		return sequence(
-				firstOf(sequence(oneOrMore(DIGIT()), '.', oneOrMore(DIGIT()),
-						EXPONENT()),
-						sequence('.', oneOrMore(DIGIT()), EXPONENT()),
-						sequence(oneOrMore(DIGIT()), EXPONENT())),
-				push(new DoubleLiteral(Double.parseDouble(match().trim()))),
-				WS());
+				firstOf(sequence(oneOrMore(DIGIT()), '.', oneOrMore(DIGIT()), EXPONENT()),
+						sequence('.', oneOrMore(DIGIT()), EXPONENT()), sequence(oneOrMore(DIGIT()), EXPONENT())),
+				push(new DoubleLiteral(Double.parseDouble(match().trim()))), WS());
 	}
 
 	public Rule Pattern() {
-		return firstOf(sequence(".!", pushSymbol(MATCH.NOT)),
-				sequence(".|", pushSymbol(MATCH.ANY)),
-				sequence(".&", pushSymbol(MATCH.ALL)),
-				sequence(".^", pushSymbol(MATCH.ROOT)),
-				sequence("...", pushSymbol(MATCH.SELF_OR_DESCENDANT)),
-				sequence("..+", pushSymbol(MATCH.DESCENDANT)), //
+		return firstOf(sequence(".!", pushSymbol(MATCH.NOT)), sequence(".|", pushSymbol(MATCH.ANY)),
+				sequence(".&", pushSymbol(MATCH.ALL)), sequence(".^", pushSymbol(MATCH.ROOT)),
+				sequence("...", pushSymbol(MATCH.SELF_OR_DESCENDANT)), sequence("..+", pushSymbol(MATCH.DESCENDANT)), //
 				Wildcard());
 	}
 
 	public Rule Wildcard() {
-		return sequence(ch('?'), firstOf(ID(), sequence(WS(), push(""))),
-				pushSymbol(MATCH.variable((String) pop())));
+		return sequence(ch('?'), firstOf(ID(), sequence(WS(), push(""))), pushSymbol(MATCH.variable((String) pop())));
 	}
 }

@@ -1,6 +1,9 @@
 package org.numerateweb.math.reasoner;
 
+import static java.util.Locale.ENGLISH;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +21,23 @@ import net.enilink.komma.core.IReference;
 import net.enilink.komma.core.URI;
 
 /**
- * 
  * Support for the evaluation of mathematical formulas on POJO models.
- *
  */
 public class PojoModelAccess implements IModelAccess {
+	@FunctionalInterface
+	interface CheckedFunction<T, R> {
+		R apply(T t) throws Exception;
+	}
+
+	@FunctionalInterface
+	interface CheckedBiFunction<T, U, R> {
+		R apply(T t, U u) throws Exception;
+	}
+
+	private static final String GET_PREFIX = "get";
+	private static final String SET_PREFIX = "set";
+	private static final String IS_PREFIX = "is";
+
 	// the constraints for a class
 	static class ClassSpec {
 		final Map<String, OMObject> constraints = new HashMap<>();
@@ -76,7 +91,7 @@ public class PojoModelAccess implements IModelAccess {
 			}
 			clazz = clazz.getSuperclass();
 		}
-		return null;
+		return ResultSpec.empty();
 	}
 
 	@Override
@@ -85,20 +100,87 @@ public class PojoModelAccess implements IModelAccess {
 		return NiceIterator.emptyIterator();
 	}
 
+	protected CheckedFunction<Object, Object> findGetter(Class<?> clazz, String propertyName) {
+		CheckedFunction<Object, Object> getter;
+
+		Method m = getMethod(clazz, GET_PREFIX + capitalize(propertyName));
+		if (m != null) {
+			if (!m.isAccessible()) {
+				m.setAccessible(true);
+			}
+			getter = s -> m.invoke(s);
+		} else {
+			Field f = getField(clazz, propertyName);
+			if (f != null) {
+				if (!f.isAccessible()) {
+					f.setAccessible(true);
+				}
+				getter = s -> f.get(s);
+			} else {
+				getter = null;
+			}
+		}
+
+		return getter;
+	}
+
 	@Override
 	public IExtendedIterator<?> getPropertyValues(Object subject, IReference property,
 			Optional<IReference> restriction) {
-		try {
-			// TODO cache field
-			Field f = subject.getClass().getField(property.getURI().localPart());
-			return WrappedIterator.create(Iterators.singletonIterator(f.get(subject)));
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+		// TODO cache getter
+		String propertyName = property.getURI().localPart();
+		CheckedFunction<Object, Object> getter = findGetter(subject.getClass(), propertyName);
+		if (getter != null) {
+			try {
+				return WrappedIterator.create(Iterators.singletonIterator(getter.apply(subject)));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return NiceIterator.emptyIterator();
+	}
+
+	public void setPropertyValue(Object subject, IReference property, Object value) {
+
+	}
+
+	/**
+	 * Returns the first {@link Field} (also private and package protected ones) in
+	 * the hierarchy for the specified name.
+	 */
+	private static Field getField(Class<?> clazz, String name) {
+		Field field = null;
+		while (clazz != null && field == null) {
+			try {
+				field = clazz.getDeclaredField(name);
+			} catch (Exception e) {
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return field;
+	}
+
+	/**
+	 * Returns the first {@link Method} (also private and package protected ones) in
+	 * the hierarchy for the specified name.
+	 */
+	private static Method getMethod(Class<?> clazz, String name) {
+		Method method = null;
+		while (clazz != null && method == null) {
+			try {
+				method = clazz.getDeclaredMethod(name);
+			} catch (Exception e) {
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return method;
+	}
+
+	private static String capitalize(String name) {
+		if (name == null || name.length() == 0) {
+			return name;
+		}
+		return name.substring(0, 1).toUpperCase(ENGLISH) + name.substring(1);
 	}
 }

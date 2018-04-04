@@ -2,7 +2,9 @@ package org.numerateweb.math.reasoner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.numerateweb.math.eval.IEvaluator;
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObjectParser;
 import org.numerateweb.math.ns.Namespaces;
@@ -19,11 +21,11 @@ import net.enilink.komma.em.concepts.IResource;
 import net.enilink.vocab.rdf.RDF;
 
 public class Reasoner {
-	private AbstractEvaluator<?> evaluator;
+	private IEvaluator evaluator;
 	private IEntityManager em;
 	private NWMathBuilder nwMathBuilder;
 
-	public Reasoner(IEntityManager em, AbstractEvaluator<?> evaluator) {
+	public Reasoner(IEntityManager em, IEvaluator evaluator) {
 		this.em = em;
 		this.evaluator = evaluator;
 		this.nwMathBuilder = new NWMathBuilder(em, new Namespaces(em));
@@ -66,9 +68,8 @@ public class Reasoner {
 				final IResource resource = (IResource) bindings.get("instance");
 				final IResource property = (IResource) bindings.get("property");
 				final Object currentValue = bindings.get("currentValue");
-				final OMObject result = evaluator.evaluate(resource, property);
+				final OMObject result = evaluator.evaluate(resource, property, Optional.empty()).asOpenMath();
 				if (result != null) {
-					System.out.println(resource + " - " + property);
 					if (currentValue instanceof IReference && ((IReference) currentValue).getURI() == null) {
 						removeCmds.add(() -> {
 							// remove RDF resources completely, e.g. OM error

@@ -30,7 +30,7 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 	@Override
 	protected Object eval(Object subject, Object expression) {
 		try {
-			return Expressions.withModelAccess(modelAccess, () -> {
+			return Expressions.withEvaluator(this, () -> {
 				return Expressions.withSubject(subject, () -> {
 					return ((Expr) expression).eval();
 				});
@@ -42,7 +42,7 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 
 	@Override
 	protected Object javaValueToExpression(Object value) {
-		return new ConstantExpr(value);
+		return value; //new ConstantExpr(value);
 	}
 
 	@Override

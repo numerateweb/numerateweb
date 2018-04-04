@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 
 import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.Expr;
-import org.numerateweb.math.reasoner.IModelAccess;
 
 import net.enilink.commons.util.ValueUtils;
 import net.enilink.komma.core.IReference;
@@ -135,20 +134,20 @@ public class Expressions {
 		return Math.round(x);
 	}
 
-	static final ThreadLocal<IModelAccess> currentModelAccess = new ThreadLocal<>();
+	static final ThreadLocal<IEvaluator> currentEvaluator = new ThreadLocal<>();
 
-	public static Object withModelAccess(IModelAccess modelAccess, Supplier<Object> func) {
-		IModelAccess last = currentModelAccess.get();
+	public static Object withEvaluator(IEvaluator evaluator, Supplier<Object> func) {
+		IEvaluator last = currentEvaluator.get();
 		try {
-			currentModelAccess.set(modelAccess);
+			currentEvaluator.set(evaluator);
 			return func.get();
 		} finally {
-			currentModelAccess.set(last);
+			currentEvaluator.set(last);
 		}
 	}
 
-	public static IModelAccess getModelAccess() {
-		return currentModelAccess.get();
+	public static IEvaluator getEvaluator() {
+		return currentEvaluator.get();
 	}
 
 	static final ThreadLocal<Object> currentSubject = new ThreadLocal<>();

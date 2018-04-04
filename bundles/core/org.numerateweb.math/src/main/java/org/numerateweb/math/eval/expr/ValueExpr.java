@@ -11,7 +11,7 @@ public class ValueExpr extends ValueSetExpr {
 	}
 
 	@Override
-	protected Object query(IReference subject, IReference property, Optional<IReference> restriction) {
+	protected Object query(Object subject, IReference property, Optional<IReference> restriction) {
 		IExtendedIterator<?> it = (IExtendedIterator<?>) super.query(subject, property, restriction);
 		if (!it.hasNext()) {
 			it.close();
