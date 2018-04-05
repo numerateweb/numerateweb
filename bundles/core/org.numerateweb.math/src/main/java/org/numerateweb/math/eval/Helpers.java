@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -76,6 +77,8 @@ public class Helpers {
 		Spliterator<?> it;
 		if (value instanceof Object[]) {
 			it = Arrays.spliterator((Object[]) value);
+		} else if (value instanceof Iterator<?>) {
+			it = Spliterators.spliteratorUnknownSize((Iterator<?>) value, Spliterator.ORDERED);
 		} else if (value instanceof Iterable<?>) {
 			it = ((Iterable<?>) value).spliterator();
 		} else {

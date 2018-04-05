@@ -12,6 +12,9 @@ import net.enilink.komma.core.URIs;
  * 
  */
 public class OMObject {
+	public static final OMObject LOGIC1_TRUE = OMS("http://www.openmath.org/cd/logic1#true");
+	public static final OMObject LOGIC1_FALSE = OMS("http://www.openmath.org/cd/logic1#false");
+	
 	public enum Type {
 		OMS, OMV, OMI, OMB, OMSTR, OMF, OMA, OMBIND, OME, OMATTR, OMR, OMATP, OMFOREIGN, OMBVAR, RDF_CLASS
 	}

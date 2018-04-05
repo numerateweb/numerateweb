@@ -61,9 +61,10 @@ public class SetOperatorExpr implements Expr {
 			// simply evaluate the body here
 			return binding.body.eval();
 		};
+
 		return Helpers.valueToStream(interval.eval()).map(v -> {
 			// set var before evaluation or none
-			return varName.map(name -> Expressions.withVar(name, v, func)).orElse(func.get());
+			return varName.map(name -> Expressions.withVar(name, v, func)).orElseGet(func);
 		}).reduce(accumulator).orElse(defaultValue);
 	}
 }

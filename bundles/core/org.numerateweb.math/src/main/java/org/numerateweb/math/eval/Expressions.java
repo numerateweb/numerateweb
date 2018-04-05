@@ -89,6 +89,13 @@ public class Expressions {
 		functions.put(CDBASE + "/arith1#power", binaryDouble(Math::pow));
 		functions.put(CDBASE + "/arith1#divide", binaryObj(values::divide));
 
+		functions.put(CDBASE + "/relation1#eq", binaryObj((a, b) -> values.compareWithConversion(a, b) == 0));
+		functions.put(CDBASE + "/relation1#lt", binaryObj((a, b) -> values.compareWithConversion(a, b) < 0));
+		functions.put(CDBASE + "/relation1#leq", binaryObj((a, b) -> values.compareWithConversion(a, b) <= 0));
+		functions.put(CDBASE + "/relation1#gt", binaryObj((a, b) -> values.compareWithConversion(a, b) >= 0));
+		functions.put(CDBASE + "/relation1#geq", binaryObj((a, b) -> values.compareWithConversion(a, b) >= 0));
+		functions.put(CDBASE + "/relation1#neq", binaryObj((a, b) -> values.compareWithConversion(a, b) != 0));
+
 		functions.put(CDBASE + "/rounding1#round", unaryDouble(Expressions::round));
 		functions.put(CDBASE + "/rounding1#ceiling", unaryDouble(Math::ceil));
 		functions.put(CDBASE + "/rounding1#floor", unaryDouble(Math::floor));
@@ -178,6 +185,9 @@ public class Expressions {
 		try {
 			values.push(value);
 			return func.get();
+		} catch (Throwable t) {
+			t.printStackTrace();
+			throw t;
 		} finally {
 			values.pop();
 		}

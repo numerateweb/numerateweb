@@ -6,7 +6,6 @@ import static org.numerateweb.math.model.OMObject.OMSTR;
 
 import java.math.BigInteger;
 
-import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.Expr;
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObjectParser;
@@ -42,7 +41,7 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 
 	@Override
 	protected Object javaValueToExpression(Object value) {
-		return value; //new ConstantExpr(value);
+		return value; // new ConstantExpr(value);
 	}
 
 	@Override
@@ -54,6 +53,8 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 	protected OMObject unparse(Object expr) {
 		if (expr instanceof OMObject) {
 			return (OMObject) expr;
+		} else if (expr instanceof Boolean) {
+			return ((Boolean) expr).booleanValue() ? OMObject.LOGIC1_TRUE : OMObject.LOGIC1_FALSE;
 		} else if (expr instanceof Double || expr instanceof Float) {
 			return OMObject.OMF(((Number) expr).doubleValue());
 		} else if (expr instanceof BigInteger) {

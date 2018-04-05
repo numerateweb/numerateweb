@@ -6,4 +6,5 @@ Constraints:
 
 Class: Rectangles
 Constraints:
-:areaSum := sum(@@rectangles, $r -> @area($r))
+:areaSum := sum(@@rectangles, $r -> @area($r)),
+:sumOk := @areaSum = 9.0

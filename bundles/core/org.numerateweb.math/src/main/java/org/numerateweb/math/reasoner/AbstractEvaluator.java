@@ -3,6 +3,7 @@ package org.numerateweb.math.reasoner;
 import static org.numerateweb.math.model.OMObject.OMS;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 import org.numerateweb.math.eval.IEvaluator;
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObject.Type;
-import org.numerateweb.math.util.SingletonIterator;
 
 import com.google.inject.TypeLiteral;
 
@@ -133,7 +133,14 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 			}
 			valueCache.put(key, result);
 		}
-		return new SingleResult(result);
+		
+		if (result instanceof Collection<?>) {
+			return new ResultIterator(((Collection<?>) result).iterator());
+		} else if (result instanceof Iterator<?>) {
+			return new ResultIterator((Iterator<?>) result);
+		} else {
+			return new SingleResult(result);
+		}
 	}
 
 	public E evaluateExpression(Object subject, IReference property, OMObject omobj) {

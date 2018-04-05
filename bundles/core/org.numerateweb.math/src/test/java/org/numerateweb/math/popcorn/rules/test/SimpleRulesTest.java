@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,10 @@ public class SimpleRulesTest {
 			return area;
 		}
 	}
+	
+	static class Rectangles {
+		List<Rectangle> rectangles = new ArrayList<>();
+	}
 
 	@Test
 	public void test() throws Exception {
@@ -75,6 +80,14 @@ public class SimpleRulesTest {
 			Rectangle rect = new Rectangle(2, 4);
 
 			System.out.println(evaluator.evaluate(rect, URIs.createURI("java:area"), Optional.empty()).asOpenMath());
+			
+			Rectangles rectangles = new Rectangles();
+			rectangles.rectangles.add(new Rectangle(1, 2));
+			rectangles.rectangles.add(new Rectangle(1, 3));
+			rectangles.rectangles.add(new Rectangle(1, 4));
+			
+			System.out.println(evaluator.evaluate(rectangles, URIs.createURI("java:areaSum"), Optional.empty()).asOpenMath());
+			System.out.println(evaluator.evaluate(rectangles, URIs.createURI("java:sumOk"), Optional.empty()).asOpenMath());
 		} else {
 			System.err.println(ErrorUtils.printParseErrors(result));
 			fail("Invalid rules format.");
