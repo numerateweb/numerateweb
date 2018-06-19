@@ -2,6 +2,7 @@ package org.numerateweb.math.reasoner;
 
 import static org.numerateweb.math.model.OMObject.OMS;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -75,9 +76,33 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 	}
 
 	public ICache<OMObject, E> parsedExpressionCache;
-	private ThreadLocal<Set<Pair<Object, IReference>>> path = new ThreadLocal<Set<Pair<Object, IReference>>>() {
-		protected Set<Pair<Object, IReference>> initialValue() {
-			return new HashSet<>();
+
+	static class Path<T> {
+		final ArrayDeque<T> pathElements = new ArrayDeque<>();
+		final Set<T> elementSet = new HashSet<>();
+
+		void push(T element) {
+			pathElements.add(element);
+			elementSet.add(element);
+		}
+
+		void pop() {
+			T last = pathElements.removeLast();
+			elementSet.remove(last);
+		}
+
+		boolean contains(T element) {
+			return elementSet.contains(element);
+		}
+
+		T peekLast() {
+			return pathElements.peekLast();
+		}
+	}
+
+	private ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
+		protected Path<Pair<Object, IReference>> initialValue() {
+			return new Path<>();
 		};
 	};
 
@@ -128,12 +153,17 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 			if (omobj != null) {
 				result = evaluateExpression(subject, property, omobj);
 			} else {
-				// use already existing value
+				// use value from the model
+				Pair<Object, IReference> predecessor = path.get().peekLast();
+				if (predecessor != null) {
+					// there exists a dependency from the last expression to this one
+					recordDependency(predecessor, key);
+				}
 				result = getPropertyValue(subject, property);
 			}
 			valueCache.put(key, result);
 		}
-		
+
 		if (result instanceof Collection<?>) {
 			return new ResultIterator(((Collection<?>) result).iterator());
 		} else if (result instanceof Iterator<?>) {
@@ -143,26 +173,44 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 		}
 	}
 
-	public E evaluateExpression(Object subject, IReference property, OMObject omobj) {
-		if (omobj == null) {
+	public E evaluateExpression(Object subject, IReference property, OMObject expression) {
+		if (expression == null) {
 			return null;
 		}
 
 		Pair<Object, IReference> key = new Pair<>(subject, property);
 		// TODO is this correct? How to detect cycles?
-		if (path.get().contains(key)) {
+		Path<Pair<Object, IReference>> computationPath = path.get();
+		if (computationPath.contains(key)) {
 			return errorToExpression("Detected cycle in evaluation");
 		} else {
-			E parsedExpression = parse(subject, omobj);
+			E parsedExpression = parse(subject, expression);
 			if (parsedExpression == null) {
 				return null;
 			}
 
-			path.get().add(key);
+			computationPath.push(key);
+			Pair<Object, IReference> last = computationPath.peekLast();
+			if (last != null) {
+				// there exists a dependency from the last expression to this one
+				recordDependency(last, key);
+			}
 			E result = eval(subject, parsedExpression);
-			path.get().remove(key);
+			computationPath.pop();
 			return result;
 		}
+	}
+
+	/**
+	 * Can be used to build a dependency graph between properties of different
+	 * objects.
+	 * 
+	 * @param from
+	 *            The object property whose value depends on another value.
+	 * @param to
+	 *            The object property on which <code>from</code> depends.
+	 */
+	protected void recordDependency(Pair<Object, IReference> from, Pair<Object, IReference> to) {
 	}
 
 	public OMObject getConstraintExpression(Object subject, IReference property) {

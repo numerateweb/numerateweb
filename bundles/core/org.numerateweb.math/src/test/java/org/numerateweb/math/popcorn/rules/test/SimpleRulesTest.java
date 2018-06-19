@@ -18,8 +18,6 @@ import org.numerateweb.math.reasoner.CacheManager;
 import org.numerateweb.math.reasoner.GuavaCacheFactory;
 import org.numerateweb.math.reasoner.IModelAccess;
 import org.numerateweb.math.reasoner.PojoModelAccess;
-import org.numerateweb.math.reasoner.RdfModelAccess;
-import org.numerateweb.math.reasoner.Reasoner;
 import org.parboiled.Parboiled;
 import org.parboiled.errors.ErrorUtils;
 import org.parboiled.parserunners.ReportingParseRunner;
