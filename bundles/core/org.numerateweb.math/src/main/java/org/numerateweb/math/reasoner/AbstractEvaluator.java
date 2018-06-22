@@ -75,7 +75,7 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 		}
 	}
 
-	public ICache<OMObject, E> parsedExpressionCache;
+	protected final ICache<OMObject, E> parsedExpressionCache;
 
 	static class Path<T> {
 		final ArrayDeque<T> pathElements = new ArrayDeque<>();
@@ -100,13 +100,13 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 		}
 	}
 
-	private ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
+	private final ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
 		protected Path<Pair<Object, IReference>> initialValue() {
 			return new Path<>();
 		};
 	};
 
-	public ICache<Pair<Object, IReference>, E> valueCache;
+	protected final ICache<Pair<Object, IReference>, E> valueCache;
 
 	protected final IModelAccess modelAccess;
 
@@ -174,10 +174,6 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 	}
 
 	public E evaluateExpression(Object subject, IReference property, OMObject expression) {
-		if (expression == null) {
-			return null;
-		}
-
 		Pair<Object, IReference> key = new Pair<>(subject, property);
 		// TODO is this correct? How to detect cycles?
 		Path<Pair<Object, IReference>> computationPath = path.get();
