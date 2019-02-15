@@ -82,8 +82,7 @@ public class PojoModelAccess implements IModelAccess {
 				OMObject expression = spec.constraints.get(propertyName);
 				if (expression != null) {
 					if (clazz != subject.getClass()) {
-						// this is a constraint on a super-class, add it to the
-						// cache
+						// constraint on a super-class, add it to the cache
 						addConstraint(subject.getClass().getSimpleName(), propertyName, expression);
 					}
 					return ResultSpec.create(Cardinality.SINGLE, expression);
@@ -124,6 +123,30 @@ public class PojoModelAccess implements IModelAccess {
 		return getter;
 	}
 
+	protected CheckedBiFunction<Object, Object, Object> findSetter(Class<?> clazz, String propertyName) {
+		CheckedBiFunction<Object, Object, Object> setter;
+
+		Method m = getMethod(clazz, SET_PREFIX + capitalize(propertyName));
+		if (m != null) {
+			if (!m.isAccessible()) {
+				m.setAccessible(true);
+			}
+			setter = (s, arg) -> { return m.invoke(s, arg); };
+		} else {
+			Field f = getField(clazz, propertyName);
+			if (f != null) {
+				if (!f.isAccessible()) {
+					f.setAccessible(true);
+				}
+				setter = (s, arg) -> { f.set(s, arg); return null; };
+			} else {
+				setter = null;
+			}
+		}
+
+		return setter;
+	}
+
 	@Override
 	public IExtendedIterator<?> getPropertyValues(Object subject, IReference property,
 			Optional<IReference> restriction) {
@@ -142,7 +165,18 @@ public class PojoModelAccess implements IModelAccess {
 	}
 
 	public void setPropertyValue(Object subject, IReference property, Object value) {
-
+		// TODO cache getter
+		String propertyName = property.getURI().localPart();
+		// TODO match method signature against the given value type
+		CheckedBiFunction<Object, Object, Object> setter = findSetter(subject.getClass(), propertyName);
+		if (setter != null) {
+			try {
+				setter.apply(subject, value);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

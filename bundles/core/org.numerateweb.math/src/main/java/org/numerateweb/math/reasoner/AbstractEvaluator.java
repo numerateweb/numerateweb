@@ -147,6 +147,12 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 		Pair<Object, IReference> key = new Pair<>(subject, property);
 		CacheResult<E> cacheResult = valueCache.get(key);
 		if (cacheResult != null) {
+			Path<Pair<Object, IReference>> computationPath = path.get();
+			Pair<Object, IReference> last = computationPath.peekLast();
+			if (last != null) {
+				// there exists a dependency from the last expression to this one
+				recordDependency(last, key);
+			}
 			result = cacheResult.value;
 		} else {
 			OMObject omobj = getConstraintExpression(subject, property);
@@ -185,12 +191,12 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 				return null;
 			}
 
-			computationPath.push(key);
 			Pair<Object, IReference> last = computationPath.peekLast();
 			if (last != null) {
 				// there exists a dependency from the last expression to this one
 				recordDependency(last, key);
 			}
+			computationPath.push(key);
 			E result = eval(subject, parsedExpression);
 			computationPath.pop();
 			return result;

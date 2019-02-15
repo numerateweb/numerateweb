@@ -1,5 +1,6 @@
 package org.numerateweb.math.reasoner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -92,7 +93,9 @@ public class DependencyGraph<T> {
 			node.clearSuccessors();
 
 			// refresh all predecessor nodes
-			node.predecessors.forEach(pred -> {
+			// use copy to avoid ConcurrentModificationException (caused in clearSuccessors)
+			// TODO: check performance
+			new ArrayList<>(node.predecessors).forEach(pred -> {
 				invalidate(pred, callback, seen);
 			});
 		}

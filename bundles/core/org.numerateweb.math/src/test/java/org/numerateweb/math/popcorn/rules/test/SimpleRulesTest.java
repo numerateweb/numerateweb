@@ -11,12 +11,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.numerateweb.math.eval.SimpleEvaluator;
+import org.numerateweb.math.eval.PojoEvaluator;
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.popcorn.rules.MathRulesParser;
 import org.numerateweb.math.reasoner.CacheManager;
 import org.numerateweb.math.reasoner.GuavaCacheFactory;
-import org.numerateweb.math.reasoner.IModelAccess;
 import org.numerateweb.math.reasoner.PojoModelAccess;
 import org.parboiled.Parboiled;
 import org.parboiled.errors.ErrorUtils;
@@ -25,6 +24,7 @@ import org.parboiled.support.ParsingResult;
 
 import com.github.parboiled1.grappa.stack.DefaultValueStack;
 
+import net.enilink.komma.core.URI;
 import net.enilink.komma.core.URIs;
 
 /**
@@ -32,6 +32,7 @@ import net.enilink.komma.core.URIs;
  */
 public class SimpleRulesTest {
 	final MathRulesParser parser = Parboiled.createParser(MathRulesParser.class);
+	final URI prefix = URIs.createURI("http://example.org/");
 
 	static class Rectangle {
 		double a, b;
@@ -71,21 +72,29 @@ public class SimpleRulesTest {
 			List<OMObject> constraints = Arrays.stream(constraintSet.getArgs(), 1, constraintSet.getArgs().length)
 					.map(r -> (OMObject) r).collect(Collectors.toList());
 
-			IModelAccess modelAccess = new PojoModelAccess(constraints);
+			PojoModelAccess modelAccess = new PojoModelAccess(constraints);
 			CacheManager cacheManager = new CacheManager(new GuavaCacheFactory());
-			SimpleEvaluator evaluator = new SimpleEvaluator(modelAccess, cacheManager);
+			PojoEvaluator evaluator = new PojoEvaluator(modelAccess, cacheManager);
 
 			Rectangle rect = new Rectangle(2, 4);
 
-			System.out.println(evaluator.evaluate(rect, URIs.createURI("java:area"), Optional.empty()).asOpenMath());
+			System.out.println(evaluator.evaluate(rect, prefix.appendLocalPart("area"), Optional.empty()).asOpenMath());
 			
 			Rectangles rectangles = new Rectangles();
 			rectangles.rectangles.add(new Rectangle(1, 2));
 			rectangles.rectangles.add(new Rectangle(1, 3));
 			rectangles.rectangles.add(new Rectangle(1, 4));
 			
-			System.out.println(evaluator.evaluate(rectangles, URIs.createURI("java:areaSum"), Optional.empty()).asOpenMath());
-			System.out.println(evaluator.evaluate(rectangles, URIs.createURI("java:sumOk"), Optional.empty()).asOpenMath());
+			System.out.println("sum = " + evaluator.evaluate(rectangles, prefix.appendLocalPart("areaSum"), Optional.empty()).asOpenMath());
+			System.out.println("sum==9 ? " + evaluator.evaluate(rectangles, prefix.appendLocalPart("sumIs9"), Optional.empty()).asOpenMath());
+
+			Rectangle r0 = rectangles.rectangles.get(0);
+			System.out.println("r[0].b = " + modelAccess.getPropertyValues(r0, prefix.appendLocalPart("b"), null).toList());
+			r0.b = 3;
+			evaluator.invalidate(r0, URIs.createURI("http://example.org/b"), true);
+			System.out.println("r[0].b = " + modelAccess.getPropertyValues(r0, prefix.appendLocalPart("b"), null).toList());
+			System.out.println("sum = " + evaluator.evaluate(rectangles, prefix.appendLocalPart("areaSum"), Optional.empty()).asOpenMath());
+			System.out.println("sum==9 ? " + evaluator.evaluate(rectangles, prefix.appendLocalPart("sumIs9"), Optional.empty()).asOpenMath());
 		} else {
 			System.err.println(ErrorUtils.printParseErrors(result));
 			fail("Invalid rules format.");
