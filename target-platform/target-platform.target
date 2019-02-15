@@ -357,8 +357,6 @@
 <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse.source"/>
 <plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
 <plugin id="org.eclipse.equinox.p2.touchpoint.natives.source"/>
-<plugin id="org.eclipse.equinox.p2.transport.ecf"/>
-<plugin id="org.eclipse.equinox.p2.transport.ecf.source"/>
 <plugin id="org.eclipse.equinox.p2.ui"/>
 <plugin id="org.eclipse.equinox.p2.ui.importexport"/>
 <plugin id="org.eclipse.equinox.p2.ui.importexport.source"/>
