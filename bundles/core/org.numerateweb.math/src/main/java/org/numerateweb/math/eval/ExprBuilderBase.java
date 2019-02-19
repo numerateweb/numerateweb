@@ -17,6 +17,8 @@ import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.EvalWithRestriction;
 import org.numerateweb.math.eval.expr.Expr;
 import org.numerateweb.math.eval.expr.FunctionExpr;
+import org.numerateweb.math.eval.expr.IfElseExpr;
+import org.numerateweb.math.eval.expr.MapOperatorExpr;
 import org.numerateweb.math.eval.expr.ResourceSetExpr;
 import org.numerateweb.math.eval.expr.SetOperatorExpr;
 import org.numerateweb.math.eval.expr.SymbolExpr;
@@ -178,6 +180,21 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 				return new SetOperatorExpr((a, b) -> {
 					return values.multiply(a, b);
 				}, 1, args);
+			}
+		});
+
+		symbolConverters.put(CDBASE + "/list1#map", new Converter() {
+			@Override
+			public Expr convert(List<Expr> args) {
+				return new MapOperatorExpr(args);
+			}
+
+		});
+
+		symbolConverters.put(CDBASE + "/prog1#if", new Converter() {
+			@Override
+			public Expr convert(List<Expr> args) {
+				return new IfElseExpr(args);
 			}
 		});
 	}

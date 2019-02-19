@@ -140,8 +140,8 @@ public class ComplexRulesTest {
 			// modify prism
 			rect.a = 1.0;
 			prism.h = 2.0;
-			evaluator.invalidate(rect, URIs.createURI("http://example.org/a"), true);
-			evaluator.invalidate(prism, URIs.createURI("http://example.org/h"), true);
+			evaluator.invalidate(rect, prefix.appendLocalPart("a"), true);
+			evaluator.invalidate(prism, prefix.appendLocalPart("h"), true);
 
 			assertEquals("A(rect)", rect.a * rect.b, rect.area, 10e-5);
 			assertEquals("P(rect)", 2 * rect.a + 2 * rect.b, rect.perimeter, 10e-5);
@@ -151,8 +151,8 @@ public class ComplexRulesTest {
 			// modify cylinder
 			circ.r = 1.0;
 			cyl.h = Math.PI;
-			evaluator.invalidate(circ, URIs.createURI("http://example.org/r"), true);
-			evaluator.invalidate(cyl, URIs.createURI("http://example.org/h"), true);
+			evaluator.invalidate(circ, prefix.appendLocalPart("r"), true);
+			evaluator.invalidate(cyl, prefix.appendLocalPart("h"), true);
 
 			assertEquals("A(circle)", Math.PI * circ.r * circ.r, circ.area, 10e-5);
 			assertEquals("P(circle)", 2 * Math.PI * circ.r, circ.perimeter, 10e-5);

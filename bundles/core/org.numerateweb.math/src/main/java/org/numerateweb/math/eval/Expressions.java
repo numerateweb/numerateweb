@@ -44,9 +44,13 @@ public class Expressions {
 			return valueToStream(args).collect(Collectors.toSet());
 		});
 		functions.put(CDBASE + "/interval1#interval", binaryObj((a, b) -> {
-			return IntStream.rangeClosed(((Number) a).intValue(), ((Number) b).intValue()).mapToObj(i -> {
-				return i;
-			});
+			return IntStream.rangeClosed(((Number) a).intValue(), ((Number) b).intValue()).mapToObj(i -> i)
+					.collect(Collectors.toList());
+		}));
+		functions.put(CDBASE + "/list3#entry", binaryObj((list, i) -> {
+			// WARNING: 1-based index! "i is in the interval [1..n]"
+			// TODO does not support negative i (would count from end)
+			return valueToStream(list).skip((int) values.longValue(i) - 1).findFirst().get();
 		}));
 
 		functions.put(CDBASE + "/prog1#block", reduce((a, b) -> b));
@@ -92,9 +96,11 @@ public class Expressions {
 		functions.put(CDBASE + "/relation1#eq", binaryObj((a, b) -> values.compareWithConversion(a, b) == 0));
 		functions.put(CDBASE + "/relation1#lt", binaryObj((a, b) -> values.compareWithConversion(a, b) < 0));
 		functions.put(CDBASE + "/relation1#leq", binaryObj((a, b) -> values.compareWithConversion(a, b) <= 0));
-		functions.put(CDBASE + "/relation1#gt", binaryObj((a, b) -> values.compareWithConversion(a, b) >= 0));
+		functions.put(CDBASE + "/relation1#gt", binaryObj((a, b) -> values.compareWithConversion(a, b) > 0));
 		functions.put(CDBASE + "/relation1#geq", binaryObj((a, b) -> values.compareWithConversion(a, b) >= 0));
 		functions.put(CDBASE + "/relation1#neq", binaryObj((a, b) -> values.compareWithConversion(a, b) != 0));
+
+		functions.put(CDBASE + "/logic1#not", unaryObj(arg -> !values.booleanValue(arg)));
 
 		functions.put(CDBASE + "/rounding1#round", unaryDouble(Expressions::round));
 		functions.put(CDBASE + "/rounding1#ceiling", unaryDouble(Math::ceil));
@@ -102,6 +108,10 @@ public class Expressions {
 		functions.put(CDBASE + "/rounding1#trunc", unaryDouble(Expressions::truncate));
 
 		constants.put(CDBASE + "/nums1#pi", new ConstantExpr(Math.PI));
+		constants.put(CDBASE + "/nums1#e", new ConstantExpr(Math.E));
+		constants.put(CDBASE + "/nums1#NaN", new ConstantExpr(Double.NaN));
+		// not actually part of the nums1 CD, but NaN is useless without this check
+		functions.put(CDBASE + "/nums1#isNaN", unaryObj(arg -> Double.isNaN(values.doubleValue(arg))));
 	}
 
 	static Object divide(Object a, Object b) {

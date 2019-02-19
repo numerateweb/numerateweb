@@ -86,15 +86,15 @@ public class SimpleRulesTest {
 			rectangles.rectangles.add(new Rectangle(1, 4));
 			
 			System.out.println("sum = " + evaluator.evaluate(rectangles, prefix.appendLocalPart("areaSum"), Optional.empty()).asOpenMath());
-			System.out.println("sum==9 ? " + evaluator.evaluate(rectangles, prefix.appendLocalPart("sumIs9"), Optional.empty()).asOpenMath());
+			System.out.println("sum == 9 ? " + evaluator.evaluate(rectangles, prefix.appendLocalPart("sumIs9"), Optional.empty()).asOpenMath());
 
 			Rectangle r0 = rectangles.rectangles.get(0);
 			System.out.println("r[0].b = " + modelAccess.getPropertyValues(r0, prefix.appendLocalPart("b"), null).toList());
 			r0.b = 3;
-			evaluator.invalidate(r0, URIs.createURI("http://example.org/b"), true);
+			evaluator.invalidate(r0, prefix.appendLocalPart("b"), true);
 			System.out.println("r[0].b = " + modelAccess.getPropertyValues(r0, prefix.appendLocalPart("b"), null).toList());
 			System.out.println("sum = " + evaluator.evaluate(rectangles, prefix.appendLocalPart("areaSum"), Optional.empty()).asOpenMath());
-			System.out.println("sum==9 ? " + evaluator.evaluate(rectangles, prefix.appendLocalPart("sumIs9"), Optional.empty()).asOpenMath());
+			System.out.println("sum == 9 ? " + evaluator.evaluate(rectangles, prefix.appendLocalPart("sumIs9"), Optional.empty()).asOpenMath());
 		} else {
 			System.err.println(ErrorUtils.printParseErrors(result));
 			fail("Invalid rules format.");

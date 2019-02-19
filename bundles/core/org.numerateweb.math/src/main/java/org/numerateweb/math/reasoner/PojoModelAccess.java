@@ -131,14 +131,31 @@ public class PojoModelAccess implements IModelAccess {
 			if (!m.isAccessible()) {
 				m.setAccessible(true);
 			}
-			setter = (s, arg) -> { return m.invoke(s, arg); };
+			setter = (s, arg) -> {
+				return m.invoke(s, arg);
+			};
 		} else {
 			Field f = getField(clazz, propertyName);
 			if (f != null) {
 				if (!f.isAccessible()) {
 					f.setAccessible(true);
 				}
-				setter = (s, arg) -> { f.set(s, arg); return null; };
+				setter = (s, arg) -> {
+					if (!(arg instanceof Number)) {
+						f.set(s, arg);
+					} else if (f.getType().equals(Integer.TYPE)) {
+						f.set(s, ((Number) arg).intValue());
+					} else if (f.getType().equals(Long.TYPE)) {
+						f.set(s, ((Number) arg).longValue());
+					} else if (f.getType().equals(Float.TYPE)) {
+						f.set(s, ((Number) arg).floatValue());
+					} else if (f.getType().equals(Double.TYPE)) {
+						f.set(s, ((Number) arg).doubleValue());
+					} else {
+						f.set(s, arg);
+					}
+					return null;
+				};
 			} else {
 				setter = null;
 			}

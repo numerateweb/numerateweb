@@ -7,8 +7,8 @@ Constraints:
 
 Class: Circle
 Constraints:
-:area := PI * @r * @r,
-:perimeter := 2.0 * PI * @r
+:area := pi * @r ^ 2,
+:perimeter := 2.0 * pi * @r
 
 Class: Extrusion
 Constraints:

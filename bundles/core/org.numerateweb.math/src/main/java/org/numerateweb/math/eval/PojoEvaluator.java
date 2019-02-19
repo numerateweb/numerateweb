@@ -1,11 +1,11 @@
 package org.numerateweb.math.eval;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.reasoner.CacheManager;
 import org.numerateweb.math.reasoner.DependencyGraph;
 import org.numerateweb.math.reasoner.PojoModelAccess;
@@ -48,29 +48,16 @@ public class PojoEvaluator extends SimpleEvaluator {
 			return result;
 		}
 		// update field value with expression result
-		PojoModelAccess pojoModel = (PojoModelAccess) modelAccess;
-		OMObject om = result.asOpenMath();
-		logger.trace("setting {}::{} to value={}", subject, property, om);
-		switch (om.getType()) {
-		case OMI:
-			pojoModel.setPropertyValue(subject, property, ((BigInteger) om.getArgs()[0]).longValue());
-			break;
-		case OMF:
-			pojoModel.setPropertyValue(subject, property, (Double) om.getArgs()[0]);
-			break;
-		case OMS:
-			if (OMObject.LOGIC1_TRUE.equals(om)) {
-				pojoModel.setPropertyValue(subject, property, true);
-			} else if (OMObject.LOGIC1_FALSE.equals(om)) {
-				pojoModel.setPropertyValue(subject, property, false);
-			} else {
-				logger.warn("FIXME: value type={} only supported for logic1:(true|false), is=", om.getType(), om);
-			}
-			break;
-		default:
-			// support for other types not yet implemented
-			logger.warn("FIXME: value type={} not yet supported", om.getType());
+		try {
+			List<Object> list = result.toList();
+			Object r = (list.size() > 1) ? list : list.get(0);
+			logger.trace("setting {}::{} to value={}", subject, property, r);
+			((PojoModelAccess) modelAccess).setPropertyValue(subject, property, r);
+		} catch (NoSuchElementException nse) {
+		} catch (IllegalArgumentException iae) {
+			logger.error(iae.getMessage());
 		}
+
 		// need to evaluate again, result iterator has been consumed
 		return super.evaluate(subject, property, restriction);
 	}
