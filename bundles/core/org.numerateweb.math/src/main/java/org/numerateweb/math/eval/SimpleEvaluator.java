@@ -4,6 +4,7 @@ import static org.numerateweb.math.model.OMObject.OME;
 import static org.numerateweb.math.model.OMObject.OMS;
 import static org.numerateweb.math.model.OMObject.OMSTR;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.numerateweb.math.eval.expr.Expr;
@@ -55,7 +56,7 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 			return (OMObject) expr;
 		} else if (expr instanceof Boolean) {
 			return ((Boolean) expr).booleanValue() ? OMObject.LOGIC1_TRUE : OMObject.LOGIC1_FALSE;
-		} else if (expr instanceof Double || expr instanceof Float) {
+		} else if (expr instanceof Double || expr instanceof Float || expr instanceof BigDecimal) {
 			return OMObject.OMF(((Number) expr).doubleValue());
 		} else if (expr instanceof BigInteger) {
 			return OMObject.OMI((BigInteger) expr);

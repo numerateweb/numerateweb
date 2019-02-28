@@ -51,7 +51,7 @@ public class PojoEvaluator extends SimpleEvaluator {
 		try {
 			List<Object> list = result.toList();
 			Object r = (list.size() > 1) ? list : list.get(0);
-			logger.trace("setting {}::{} to value={}", subject, property, r);
+			logger.trace("setting ({},{}) to value={}", subject, property, r);
 			((PojoModelAccess) modelAccess).setPropertyValue(subject, property, r);
 		} catch (NoSuchElementException nse) {
 		} catch (IllegalArgumentException iae) {
@@ -79,7 +79,7 @@ public class PojoEvaluator extends SimpleEvaluator {
 		if (reevaluate) {
 			for (Pair<Object, IReference> pair : invalidatedPairs) {
 				logger.trace("re-evaluating {}", pair);
-				evaluate(pair.getFirst(), pair.getSecond(), Optional.empty()).asOpenMath();
+				evaluate(pair.getFirst(), pair.getSecond(), Optional.empty());
 			}
 		}
 	}

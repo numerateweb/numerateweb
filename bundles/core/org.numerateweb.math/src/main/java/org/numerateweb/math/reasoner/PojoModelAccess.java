@@ -4,6 +4,7 @@ import static java.util.Locale.ENGLISH;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.Optional;
 
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObject.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterators;
 
@@ -33,6 +36,8 @@ public class PojoModelAccess implements IModelAccess {
 	interface CheckedBiFunction<T, U, R> {
 		R apply(T t, U u) throws Exception;
 	}
+
+	protected final static Logger logger = LoggerFactory.getLogger(PojoModelAccess.class);
 
 	private static final String GET_PREFIX = "get";
 	private static final String SET_PREFIX = "set";
@@ -132,7 +137,20 @@ public class PojoModelAccess implements IModelAccess {
 				m.setAccessible(true);
 			}
 			setter = (s, arg) -> {
-				return m.invoke(s, arg);
+				logger.trace("invoking {}.{}({})", s, m.getName(), arg);
+				if (!(arg instanceof Number)) {
+					return m.invoke(s, arg);
+				} else if (m.getParameterTypes()[0].equals(Integer.TYPE)) {
+					return m.invoke(s, ((Number) arg).intValue());
+				} else if (m.getParameterTypes()[0].equals(Long.TYPE)) {
+					return m.invoke(s, ((Number) arg).longValue());
+				} else if (m.getParameterTypes()[0].equals(Float.TYPE)) {
+					return m.invoke(s, ((Number) arg).floatValue());
+				} else if (m.getParameterTypes()[0].equals(Double.TYPE)) {
+					return m.invoke(s, ((Number) arg).doubleValue());
+				} else {
+					return m.invoke(s, arg);
+				}
 			};
 		} else {
 			Field f = getField(clazz, propertyName);
@@ -141,6 +159,7 @@ public class PojoModelAccess implements IModelAccess {
 					f.setAccessible(true);
 				}
 				setter = (s, arg) -> {
+					logger.trace("setting {}.{} = {}", s, f.getName(), arg);
 					if (!(arg instanceof Number)) {
 						f.set(s, arg);
 					} else if (f.getType().equals(Integer.TYPE)) {
@@ -190,8 +209,7 @@ public class PojoModelAccess implements IModelAccess {
 			try {
 				setter.apply(subject, value);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("unable to apply new value={} to ({}, {}): {}", value, subject, property, e);
 			}
 		}
 	}
@@ -221,6 +239,13 @@ public class PojoModelAccess implements IModelAccess {
 		while (clazz != null && method == null) {
 			try {
 				method = clazz.getDeclaredMethod(name);
+			} catch (NoSuchMethodException nsme) {
+				// setters are only found if given the correct parameter types
+				// to second guess on invocation (arg type), check for just the method name
+				// TODO match method signature against the given value type
+				Optional<Method> opt = Arrays.asList(clazz.getDeclaredMethods()).stream()
+						.filter(m -> m.getName().equals(name)).findFirst();
+				method = opt.orElseGet(() -> null);
 			} catch (Exception e) {
 			}
 			clazz = clazz.getSuperclass();

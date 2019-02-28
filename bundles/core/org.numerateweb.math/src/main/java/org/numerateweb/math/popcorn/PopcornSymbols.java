@@ -71,6 +71,9 @@ public class PopcornSymbols {
 		symbolMap.put("while", symbol("prog1", "while"));
 
 		// shorthand symbols
+		symbolMap.put("arccos", symbol("transc1", "arccos"));
+		symbolMap.put("arcsin", symbol("transc1", "arcsin"));
+		symbolMap.put("arctan", symbol("transc1", "arctan"));
 		symbolMap.put("cos", symbol("transc1", "cos"));
 		symbolMap.put("cosh", symbol("transc1", "cosh"));
 		symbolMap.put("cot", symbol("transc1", "cot"));

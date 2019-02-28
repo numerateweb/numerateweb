@@ -87,6 +87,10 @@ public class Expressions {
 		functions.put(CDBASE + "/transc1#cos", unaryDouble(Math::cos));
 		functions.put(CDBASE + "/transc1#tan", unaryDouble(Math::tan));
 
+		functions.put(CDBASE + "/transc1#arcsin", unaryDouble(Math::asin));
+		functions.put(CDBASE + "/transc1#arccos", unaryDouble(Math::acos));
+		functions.put(CDBASE + "/transc1#arctan", unaryDouble(Math::atan));
+
 		functions.put(CDBASE + "/arith1#abs", unaryObj(Expressions::abs));
 		functions.put(CDBASE + "/arith1#plus", reduce(values::add));
 		functions.put(CDBASE + "/arith1#times", reduce(values::multiply));
