@@ -229,23 +229,13 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 
 				Function<Object, Object> function = Expressions.functions.get(symbolUri);
 				if (function != null) {
-					Expr result = new FunctionExpr(function, transform(objects));
+					Expr result = new FunctionExpr(function, objects);
 					return parent.build(result);
 				}
 
 				throw new IllegalArgumentException("Unsupported symbol " + head);
 			}
 		};
-	}
-
-	static List<Expr> transform(List<Expr> args) {
-		for (int i = 0; i < args.size(); i++) {
-			Expr replacement = Expressions.constants.get(args.get(i).toString());
-			if (replacement != null) {
-				args.set(i, replacement);
-			}
-		}
-		return args;
 	}
 
 	@Override
@@ -276,6 +266,10 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 
 	@Override
 	public T s(URI symbol) {
+		Expr constantExpr = Expressions.constants.get(symbol.toString());
+		if (constantExpr != null) {
+			return build(constantExpr);
+		}
 		return build(new SymbolExpr(symbol));
 	}
 

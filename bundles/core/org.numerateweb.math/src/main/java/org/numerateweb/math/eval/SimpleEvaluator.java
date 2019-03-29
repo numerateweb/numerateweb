@@ -36,7 +36,7 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 				});
 			});
 		} catch (Exception e) {
-			return OME(OMS("nw:error"), OMSTR(e.getMessage()));
+			return OME(OMS("nw:error"), OMSTR(e.getClass().getName() + (e.getMessage() != null ? ": " + e.getMessage() : "")));
 		}
 	}
 

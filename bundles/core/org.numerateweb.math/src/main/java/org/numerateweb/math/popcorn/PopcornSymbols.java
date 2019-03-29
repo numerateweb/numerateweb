@@ -65,11 +65,6 @@ public class PopcornSymbols {
 		symbolMap.put("|", symbol("complex1", "complex_cartesian"));
 		symbolMap.put("//", symbol("nums1", "rational"));
 
-		// loops and conditions
-		symbolMap.put("if", symbol("prog1", "if"));
-		symbolMap.put("for", symbol("prog1", "for"));
-		symbolMap.put("while", symbol("prog1", "while"));
-
 		// shorthand symbols
 		symbolMap.put("arccos", symbol("transc1", "arccos"));
 		symbolMap.put("arcsin", symbol("transc1", "arcsin"));
@@ -105,6 +100,9 @@ public class PopcornSymbols {
 		symbolMap.put("false", symbol("logic1", "false"));
 		symbolMap.put("binomial", symbol("combinat1", "binomial"));
 		symbolMap.put("factorial", symbol("integer1", "factorial"));
+
+		symbolMap.put("map", symbol("list1", "map"));
+		symbolMap.put("list_selector", symbol("list2", "list_selector"));
 
 		// rounding functions
 		symbolMap.put("ceiling", symbol("rounding1", "ceiling"));

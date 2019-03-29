@@ -8,6 +8,7 @@ import static org.numerateweb.math.eval.Helpers.unaryObj;
 import static org.numerateweb.math.eval.Helpers.valueToSet;
 import static org.numerateweb.math.eval.Helpers.valueToStream;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -38,19 +39,24 @@ public class Expressions {
 
 	static {
 		functions.put(CDBASE + "/list1#list", args -> {
-			return args;
+			return valueToStream(args).collect(Collectors.toList());
 		});
 		functions.put(CDBASE + "/set1#set", args -> {
 			return valueToStream(args).collect(Collectors.toSet());
 		});
 		functions.put(CDBASE + "/interval1#interval", binaryObj((a, b) -> {
-			return IntStream.rangeClosed(((Number) a).intValue(), ((Number) b).intValue()).mapToObj(i -> i)
-					.collect(Collectors.toList());
+			return IntStream.rangeClosed(((Number) a).intValue(), ((Number) b).intValue()) //
+					.mapToObj(i -> i).collect(Collectors.toList());
+		}));
+
+		functions.put(CDBASE + "/list2#list_selector", binaryObj((i, list) -> {
+			if ((int) values.longValue(i) <= 0) throw new IllegalArgumentException("not a positive index: " + i);
+			return valueToStream(list).skip((int) values.longValue(i) - 1).findFirst().get();
 		}));
 		functions.put(CDBASE + "/list3#entry", binaryObj((list, i) -> {
-			// WARNING: 1-based index! "i is in the interval [1..n]"
-			// TODO does not support negative i (would count from end)
-			return valueToStream(list).skip((int) values.longValue(i) - 1).findFirst().get();
+			// for positive index, same as list2#list_selector
+			// FIXME: negative index (count from end) not supported
+			return functions.get(CDBASE + "/list2#list_selector").apply(new Object[]{ i, list });
 		}));
 
 		functions.put(CDBASE + "/prog1#block", reduce((a, b) -> b));
@@ -114,6 +120,8 @@ public class Expressions {
 		constants.put(CDBASE + "/nums1#pi", new ConstantExpr(Math.PI));
 		constants.put(CDBASE + "/nums1#e", new ConstantExpr(Math.E));
 		constants.put(CDBASE + "/nums1#NaN", new ConstantExpr(Double.NaN));
+		constants.put(CDBASE + "/list2#nil", new ConstantExpr(Collections.emptyList()));
+
 		// not actually part of the nums1 CD, but NaN is useless without this check
 		functions.put(CDBASE + "/nums1#isNaN", unaryObj(arg -> Double.isNaN(values.doubleValue(arg))));
 	}
