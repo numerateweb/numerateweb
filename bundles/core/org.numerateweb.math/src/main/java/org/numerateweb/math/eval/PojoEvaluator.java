@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.reasoner.CacheManager;
 import org.numerateweb.math.reasoner.DependencyGraph;
 import org.numerateweb.math.reasoner.PojoModelAccess;
@@ -47,12 +48,16 @@ public class PojoEvaluator extends SimpleEvaluator {
 			// WARNING: do NOT short-circuit, see side effect above!
 			return result;
 		}
-		// update field value with expression result
+		// update field value with expression result(s)
 		try {
-			List<Object> list = result.toList();
-			Object r = (list.size() > 1) ? list : list.get(0);
-			logger.trace("setting ({},{}) to value={}", subject, property, r);
-			((PojoModelAccess) modelAccess).setPropertyValue(subject, property, r);
+			List<Object> results = result.toList();
+			Object singleResult = (results.size() == 1) ? results.get(0) : null;
+			if (singleResult instanceof Exception || (singleResult instanceof OMObject && ((OMObject) singleResult).getType() == OMObject.Type.OME)) {
+				logger.warn("evaluation of ({},{}) failed: {}", subject, property, singleResult);
+			} else {
+				logger.warn("setting ({},{}) to value={}", subject, property, results);
+				((PojoModelAccess) modelAccess).setPropertyValue(subject, property, results);
+			}
 		} catch (NoSuchElementException nse) {
 		} catch (IllegalArgumentException iae) {
 			logger.error(iae.getMessage());

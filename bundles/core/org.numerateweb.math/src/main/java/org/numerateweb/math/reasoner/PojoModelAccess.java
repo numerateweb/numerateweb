@@ -5,6 +5,7 @@ import static java.util.Locale.ENGLISH;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.google.common.collect.Iterators;
 import net.enilink.commons.iterator.IExtendedIterator;
 import net.enilink.commons.iterator.NiceIterator;
 import net.enilink.commons.iterator.WrappedIterator;
+import net.enilink.commons.util.ValueUtils;
 import net.enilink.komma.core.IReference;
 import net.enilink.komma.core.URI;
 
@@ -130,49 +132,28 @@ public class PojoModelAccess implements IModelAccess {
 
 	protected CheckedBiFunction<Object, Object, Object> findSetter(Class<?> clazz, String propertyName) {
 		CheckedBiFunction<Object, Object, Object> setter;
-
-		Method m = getMethod(clazz, SET_PREFIX + capitalize(propertyName));
+		final Method m = getMethod(clazz, SET_PREFIX + capitalize(propertyName));
 		if (m != null) {
 			if (!m.isAccessible()) {
 				m.setAccessible(true);
 			}
+			final boolean unpack = !Collection.class.isAssignableFrom(m.getParameterTypes()[0]);
 			setter = (s, arg) -> {
 				logger.trace("invoking {}.{}({})", s, m.getName(), arg);
-				if (!(arg instanceof Number)) {
-					return m.invoke(s, arg);
-				} else if (m.getParameterTypes()[0].equals(Integer.TYPE)) {
-					return m.invoke(s, ((Number) arg).intValue());
-				} else if (m.getParameterTypes()[0].equals(Long.TYPE)) {
-					return m.invoke(s, ((Number) arg).longValue());
-				} else if (m.getParameterTypes()[0].equals(Float.TYPE)) {
-					return m.invoke(s, ((Number) arg).floatValue());
-				} else if (m.getParameterTypes()[0].equals(Double.TYPE)) {
-					return m.invoke(s, ((Number) arg).doubleValue());
-				} else {
-					return m.invoke(s, arg);
-				}
+				return m.invoke(s, ValueUtils.getInstance().convertValue(m.getParameterTypes()[0],
+						unpack ? ((Collection<?>) arg).toArray()[0] : arg, null));
 			};
 		} else {
-			Field f = getField(clazz, propertyName);
+			final Field f = getField(clazz, propertyName);
 			if (f != null) {
 				if (!f.isAccessible()) {
 					f.setAccessible(true);
 				}
+				final boolean unpack = !Collection.class.isAssignableFrom(f.getType());
 				setter = (s, arg) -> {
 					logger.trace("setting {}.{} = {}", s, f.getName(), arg);
-					if (!(arg instanceof Number)) {
-						f.set(s, arg);
-					} else if (f.getType().equals(Integer.TYPE)) {
-						f.set(s, ((Number) arg).intValue());
-					} else if (f.getType().equals(Long.TYPE)) {
-						f.set(s, ((Number) arg).longValue());
-					} else if (f.getType().equals(Float.TYPE)) {
-						f.set(s, ((Number) arg).floatValue());
-					} else if (f.getType().equals(Double.TYPE)) {
-						f.set(s, ((Number) arg).doubleValue());
-					} else {
-						f.set(s, arg);
-					}
+					f.set(s, ValueUtils.getInstance().convertValue(f.getType(),
+							unpack ? ((Collection<?>) arg).toArray()[0] : arg, null));
 					return null;
 				};
 			} else {
