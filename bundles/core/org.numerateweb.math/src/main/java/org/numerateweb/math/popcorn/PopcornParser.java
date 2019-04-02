@@ -219,11 +219,11 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule AddExpr() {
-		return sequence(MultExpr(), optional(firstOf(BinaryOp('-', MultExpr()), NAryOp('+', MultExpr()))));
+		return sequence(MultExpr(), zeroOrMore(firstOf(BinaryOp('-', MultExpr()), NAryOp('+', MultExpr()))));
 	}
 
 	public Rule MultExpr() {
-		return sequence(PowerExpr(), optional(firstOf(BinaryOp('/', PowerExpr()), NAryOp('*', PowerExpr()))));
+		return sequence(PowerExpr(), zeroOrMore(firstOf(BinaryOp('/', PowerExpr()), NAryOp('*', PowerExpr()))));
 	}
 
 	public Rule PowerExpr() {
