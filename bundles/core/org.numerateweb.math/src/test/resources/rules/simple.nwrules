@@ -7,4 +7,12 @@ Constraints:
 Class: Rectangles
 Constraints:
 :areaSum := sum(@@rectangles, $r -> @area($r)),
-:sumIs9 := @areaSum = 9.0
+:sumIs9  := @areaSum = 9.0
+
+Class: NAry
+Constraints:
+:add      := @a + @b + @c,
+:multiply := @a * @b * @c,
+:divide   := @a / @b / @c,
+:subtract := @a - @b - @c,
+:power    := @a ^ @b ^ @c

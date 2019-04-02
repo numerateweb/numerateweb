@@ -190,7 +190,7 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule BlockExpr() {
-		return sequence(AssignExpr(), optional(OpList(';', AssignExpr())));
+		return sequence(AssignExpr(), optional(NAryOp(';', AssignExpr())));
 	}
 
 	public Rule AssignExpr() {
@@ -202,11 +202,11 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule OrExpr() {
-		return sequence(AndExpr(), optional(OpList("or", AndExpr())));
+		return sequence(AndExpr(), optional(NAryOp("or", AndExpr())));
 	}
 
 	public Rule AndExpr() {
-		return sequence(RelExpr(), optional(OpList("and", RelExpr())));
+		return sequence(RelExpr(), optional(NAryOp("and", RelExpr())));
 	}
 
 	public Rule RelExpr() {
@@ -219,35 +219,47 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule AddExpr() {
-		return sequence(MultExpr(), zeroOrMore(firstOf(OpList('-', MultExpr()), OpList('+', MultExpr()))));
+		return sequence(MultExpr(), optional(firstOf(BinaryOp('-', MultExpr()), NAryOp('+', MultExpr()))));
 	}
 
 	public Rule MultExpr() {
-		return sequence(PowerExpr(), zeroOrMore(firstOf(OpList('/', PowerExpr()), OpList('*', PowerExpr()))));
+		return sequence(PowerExpr(), optional(firstOf(BinaryOp('/', PowerExpr()), NAryOp('*', PowerExpr()))));
 	}
 
 	public Rule PowerExpr() {
-		return sequence(ComplexExpr(), optional('^', startList(), ComplexExpr(), push(OMA(popList(objClass)))));
+		return sequence(ComplexExpr(), optional(BinaryOp('^', ComplexExpr())));
 	}
 
 	public Rule ComplexExpr() {
-		return sequence(RationalExpr(), optional('|', startList(), RationalExpr(), push(OMA(popList(objClass)))));
+		return sequence(RationalExpr(), optional(BinaryOp('|', RationalExpr())));
 	}
 
 	public Rule RationalExpr() {
-		return sequence(NegExpr(), optional("//", startList(), NegExpr(), push(OMA(popList(objClass)))));
+		return sequence(NegExpr(), optional(BinaryOp("//", NegExpr())));
 	}
 
 	/**
-	 * Rule that captures an repeated application of the same operator
+	 * Rule that captures an n-ary application of an operator
 	 * <code>op</code>.
 	 * <p>
 	 * A <code>op</code> B <code>op</code> C <code>op</code> ...
 	 * </p>
 	 */
 	@DontLabel
-	public Rule OpList(Object operator, Object operand) {
+	public Rule NAryOp(Object operator, Object operand) {
 		return sequence(operator, startList(), operand, zeroOrMore(operator, operand), push(OMA(popList(objClass))));
+	}
+
+	/**
+	 * Rule that captures a sequence of binary applications of a left-associative
+	 * operator <code>op</code>.
+	 * <p>
+	 * [( ] [( ]A <code>op</code> B[ )] <code>op</code> C[ )] <code>op</code> ...
+	 * </p>
+	 */
+	@DontLabel
+	public Rule BinaryOp(Object operator, Object operand) {
+		return oneOrMore(operator, pushSymbol(match()), operand, push(OMA((OMObject) pop(1), (OMObject) pop(1), (OMObject) pop())));
 	}
 
 	public Rule NegExpr() {
