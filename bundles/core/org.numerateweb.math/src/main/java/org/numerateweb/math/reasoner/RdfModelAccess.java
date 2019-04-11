@@ -2,6 +2,7 @@ package org.numerateweb.math.reasoner;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.numerateweb.math.model.OMObject;
@@ -18,12 +19,15 @@ import net.enilink.commons.iterator.IExtendedIterator;
 import net.enilink.commons.util.Pair;
 import net.enilink.komma.core.Bindings;
 import net.enilink.komma.core.IBindings;
+import net.enilink.komma.core.IEntity;
 import net.enilink.komma.core.IEntityManager;
 import net.enilink.komma.core.IQuery;
 import net.enilink.komma.core.IReference;
+import net.enilink.komma.core.URI;
 import net.enilink.komma.em.concepts.IClass;
 import net.enilink.komma.em.concepts.IResource;
 import net.enilink.komma.em.util.ISparqlConstants;
+import net.enilink.vocab.rdfs.RDFS;
 
 public class RdfModelAccess implements IModelAccess {
 	protected static class ConstraintSpec {
@@ -124,6 +128,15 @@ public class RdfModelAccess implements IModelAccess {
 	public IExtendedIterator<?> getInstances(IReference clazz) {
 		return manager.find(clazz, IClass.class).getInstancesAsReferences();
 	}
+
+	@Override
+	public IReference createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+		// TODO: test this initial implementation
+		IEntity entity = manager.createNamed(uri, clazz, RDFS.TYPE_RESOURCE);
+		args.forEach((key, value) -> ((IResource) entity).addProperty(key, value));
+		return entity.getReference();
+	}
+
 	public OMObject getOMObject(Constraint constraint) {
 		Namespaces namespaces = new Namespaces(manager);
 		return new NWMathParser(namespaces).parse(constraint.getExpression(), new OMObjectBuilder());

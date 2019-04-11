@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +25,7 @@ import net.enilink.commons.iterator.NiceIterator;
 import net.enilink.commons.iterator.WrappedIterator;
 import net.enilink.commons.util.Pair;
 import net.enilink.komma.core.IReference;
+import net.enilink.komma.core.URI;
 import net.enilink.komma.model.ModelUtil;
 
 public abstract class AbstractEvaluator<E> implements IEvaluator {
@@ -298,5 +300,10 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 	@Override
 	public IExtendedIterator<?> getInstances(IReference clazz) {
 		return modelAccess.getInstances(clazz);
+	}
+
+	@Override
+	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+		return modelAccess.createInstance(uri, clazz, args);
 	}
 }

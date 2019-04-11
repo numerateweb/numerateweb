@@ -1,11 +1,13 @@
 package org.numerateweb.math.eval;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.numerateweb.math.model.OMObject;
 
 import net.enilink.commons.iterator.IExtendedIterator;
 import net.enilink.komma.core.IReference;
+import net.enilink.komma.core.URI;
 
 /**
  * Evaluator interface for mathematical expressions.
@@ -37,4 +39,19 @@ public interface IEvaluator {
 	 * @return Instances of the given type
 	 */
 	IExtendedIterator<?> getInstances(IReference clazz);
+
+	/**
+	 * Return a new instance of with the given <code>uri</code> and type
+	 * <code>clazz</code>, use the supplied args to construct/initialize the
+	 * instance.
+	 * 
+	 * @param uri
+	 *            The uri for the instance that should be created
+	 * @param clazz
+	 *            The class of the instance that should be created
+	 * @param arg
+	 *            A map of intialization property URIs and values
+	 * @return The requested instance.
+	 */
+	Object createInstance(URI uri, IReference clazz, Map<URI, Object> args);
 }

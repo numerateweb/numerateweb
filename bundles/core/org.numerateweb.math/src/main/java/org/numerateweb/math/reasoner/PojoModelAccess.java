@@ -103,7 +103,12 @@ public class PojoModelAccess implements IModelAccess {
 	@Override
 	public IExtendedIterator<?> getInstances(IReference clazz) {
 		// TODO currently not supported, used for rdf.resourceset in OpenMath
-		return NiceIterator.emptyIterator();
+		throw new UnsupportedOperationException("not implemented");
+	}
+
+	@Override
+	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+		throw new UnsupportedOperationException("not implemented");
 	}
 
 	protected CheckedFunction<Object, Object> findGetter(Class<?> clazz, String propertyName) {

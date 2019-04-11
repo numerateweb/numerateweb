@@ -12,8 +12,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.numerateweb.math.eval.expr.AttributedExpr;
 import org.numerateweb.math.eval.expr.BindingExpr;
 import org.numerateweb.math.eval.expr.ConstantExpr;
+import org.numerateweb.math.eval.expr.ConstructExpr;
 import org.numerateweb.math.eval.expr.EvalWithRestriction;
 import org.numerateweb.math.eval.expr.Expr;
 import org.numerateweb.math.eval.expr.FunctionExpr;
@@ -197,6 +199,20 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 				return new IfElseExpr(args);
 			}
 		});
+
+		symbolConverters.put(CDBASE + "/ctor1#generate", new Converter() {
+			@Override
+			public Expr convert(List<Expr> args) {
+				return new ConstructExpr(args);
+			}
+		});
+
+		symbolConverters.put(CDBASE + "/ctor1#new", new Converter() {
+			@Override
+			public Expr convert(List<Expr> args) {
+				return new ConstructExpr(args);
+			}
+		});
 	}
 
 	abstract protected T build(Expr expr);
@@ -338,10 +354,27 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 	@Override
 	public Builder<Builder<T>> attr(URI symbol) {
 		final ExprBuilderBase<T> parent = this;
+		final Map<URI, Expr> attributes = new HashMap<>();
 		return new ExprBuilderBase<Builder<T>>() {
+			Builder<Builder<T>> self = this;
+			URI currentSymbol = symbol;
+
 			@Override
 			protected Builder<T> build(Expr expr) {
-				return parent;
+				attributes.put(currentSymbol, expr);
+
+				return new ExprBuilderBase<T>() {
+					@Override
+					public Builder<Builder<T>> attr(URI symbol) {
+						currentSymbol = symbol;
+						return self;
+					}
+
+					@Override
+					protected T build(Expr target) {
+						return parent.build(new AttributedExpr(target, attributes));
+					}
+				};
 			}
 		};
 	}
