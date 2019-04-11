@@ -72,20 +72,27 @@ public class PojoEvaluator extends SimpleEvaluator {
 	}
 
 	public void invalidate(Object subject, IReference property, boolean reevaluate) {
-		Collection<Pair<Object, IReference>> invalidatedPairs = new ArrayList<>();
-		dependencyGraph.invalidate(new Pair<>(subject, property), (obj) -> {
+		Collection<Pair<Object, IReference>> invalidatedRoots = new ArrayList<>();
+		dependencyGraph.invalidate(new Pair<>(subject, property), (obj, isRoot) -> {
 			@SuppressWarnings("unchecked")
 			Pair<Object, IReference> pair = (Pair<Object, IReference>) obj;
 			logger.trace("CB: invalidating {}", pair);
 			valueCache.remove(pair);
-			invalidatedPairs.add(pair);
+			if (isRoot) {
+				invalidatedRoots.add(pair);
+			}
 			return null;
 		});
 		if (reevaluate) {
-			for (Pair<Object, IReference> pair : invalidatedPairs) {
+			for (Pair<Object, IReference> pair : invalidatedRoots) {
 				logger.trace("re-evaluating {}", pair);
-				evaluate(pair.getFirst(), pair.getSecond(), Optional.empty());
+				try {
+					evaluate(pair.getFirst(), pair.getSecond(), Optional.empty());
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
 			}
 		}
+		invalidatedRoots.clear();
 	}
 }

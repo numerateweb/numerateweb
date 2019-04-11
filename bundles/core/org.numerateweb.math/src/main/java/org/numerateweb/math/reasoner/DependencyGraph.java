@@ -1,11 +1,10 @@
 package org.numerateweb.math.reasoner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import com.google.common.base.Objects;
 
@@ -77,25 +76,25 @@ public class DependencyGraph<T> {
 		return ensureNode(from).addSuccessor(ensureNode(to));
 	}
 
-	public void invalidate(T value, Function<T, Void> callback) {
+	public void invalidate(T value, BiFunction<T, Boolean, Void> callback) {
 		Node<T> node = node(value);
 		if (node != null) {
-			invalidate(node, callback, new HashSet<>());
+			Set<Node<T>> seen = new HashSet<>();
+			invalidate(node, callback, seen);
+			// refresh all outgoing dependencies of processed nodes
+			for (Node<T> s : seen) {
+				s.clearSuccessors();
+			}
 		}
 	}
 
-	protected void invalidate(Node<T> node, Function<T, Void> callback, Set<Node<T>> seen) {
+	protected void invalidate(final Node<T> node, BiFunction<T, Boolean, Void> callback, Set<Node<T>> seen) {
 		if (seen.add(node)) {
 			// notify listener that node is invalidated
-			callback.apply(node.value);
-
-			// refresh all outgoing dependencies
-			node.clearSuccessors();
+			callback.apply(node.value, node.predecessors.isEmpty());
 
 			// refresh all predecessor nodes
-			// use copy to avoid ConcurrentModificationException (caused in clearSuccessors)
-			// TODO: check performance
-			new ArrayList<>(node.predecessors).forEach(pred -> {
+			node.predecessors.forEach(pred -> {
 				invalidate(pred, callback, seen);
 			});
 		}
