@@ -11,6 +11,7 @@ import static org.numerateweb.math.eval.Helpers.valueToStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.Function;
@@ -103,7 +104,12 @@ public class Expressions {
 		functions.put(CDBASE + "/arith1#power", binaryDouble(Math::pow));
 		functions.put(CDBASE + "/arith1#divide", binaryObj(values::divide));
 
-		functions.put(CDBASE + "/relation1#eq", binaryObj((a, b) -> values.compareWithConversion(a, b) == 0));
+		functions.put(CDBASE + "/relation1#eq", binaryObj((a, b) -> {
+			if (Objects.equals(a, b)) {
+				return true;
+			}
+			return values.compareWithConversion(a, b) == 0;
+		}));
 		functions.put(CDBASE + "/relation1#lt", binaryObj((a, b) -> values.compareWithConversion(a, b) < 0));
 		functions.put(CDBASE + "/relation1#leq", binaryObj((a, b) -> values.compareWithConversion(a, b) <= 0));
 		functions.put(CDBASE + "/relation1#gt", binaryObj((a, b) -> values.compareWithConversion(a, b) > 0));

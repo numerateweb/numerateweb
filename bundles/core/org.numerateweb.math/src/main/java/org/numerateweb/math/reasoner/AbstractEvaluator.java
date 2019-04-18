@@ -34,6 +34,11 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 			super(base, true);
 		}
 
+		@Override
+		public boolean isSingle() {
+			return false;
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public OMObject asOpenMath() {
@@ -68,6 +73,11 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 			Object result = value;
 			value = null;
 			return result;
+		}
+
+		@Override
+		public boolean isSingle() {
+			return true;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -171,13 +181,16 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 			}
 			valueCache.put(key, result);
 		}
+		return result(result);
+	}
 
-		if (result instanceof Collection<?>) {
-			return new ResultIterator(((Collection<?>) result).iterator());
-		} else if (result instanceof Iterator<?>) {
-			return new ResultIterator((Iterator<?>) result);
+	protected Result result(E resultExpression) {
+		if (resultExpression instanceof Collection<?>) {
+			return new ResultIterator(((Collection<?>) resultExpression).iterator());
+		} else if (resultExpression instanceof Iterator<?>) {
+			return new ResultIterator((Iterator<?>) resultExpression);
 		} else {
-			return new SingleResult(result);
+			return new SingleResult(resultExpression);
 		}
 	}
 

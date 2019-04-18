@@ -30,8 +30,9 @@ public class IfElseExpr implements Expr {
 		Object cond = null;
 		try {
 			cond = args[0].eval();
-		} catch (Throwable t) {
-			throw new IllegalArgumentException("Evaluation of IF condition failed", t);
+		} catch (Exception e) {
+			System.err.println("Evaluation of IF condition failed: " + e.getMessage());
+			cond = false;
 		}
 		if (Boolean.TRUE.equals(cond) || OMObject.LOGIC1_TRUE.equals(cond)) {
 			return args[1].eval();

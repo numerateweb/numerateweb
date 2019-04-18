@@ -51,20 +51,18 @@ public class PojoEvaluator extends SimpleEvaluator {
 		// update field value with expression result(s)
 		try {
 			List<Object> results = result.toList();
-			Object singleResult = (results.size() == 1) ? results.get(0) : null;
+			Object singleResult = (result.isSingle()) ? results.get(0) : null;
 			if (singleResult instanceof Exception || (singleResult instanceof OMObject && ((OMObject) singleResult).getType() == OMObject.Type.OME)) {
-				logger.warn("evaluation of ({},{}) failed: {}", subject, property, singleResult);
+				logger.warn("evaluation of ({}, {}) failed: {}", subject, property, singleResult);
+				return result(singleResult);
 			} else {
-				logger.warn("setting ({},{}) to value={}", subject, property, results);
+				logger.trace("setting ({}, {}) to value={}", subject, property, results);
 				((PojoModelAccess) modelAccess).setPropertyValue(subject, property, results);
+				return result(result.isSingle() ? singleResult : results);
 			}
 		} catch (NoSuchElementException nse) {
-		} catch (IllegalArgumentException iae) {
-			logger.error(iae.getMessage());
+			return result(null);
 		}
-
-		// need to evaluate again, result iterator has been consumed
-		return super.evaluate(subject, property, restriction);
 	}
 
 	public void invalidate(Object subject, IReference property) {

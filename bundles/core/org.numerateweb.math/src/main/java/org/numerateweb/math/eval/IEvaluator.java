@@ -14,6 +14,8 @@ import net.enilink.komma.core.URI;
  */
 public interface IEvaluator {
 	interface Result extends IExtendedIterator<Object> {
+		boolean isSingle();
+
 		OMObject asOpenMath();
 	}
 

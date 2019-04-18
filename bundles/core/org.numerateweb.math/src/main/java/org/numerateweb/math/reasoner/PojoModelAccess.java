@@ -177,12 +177,15 @@ public class PojoModelAccess implements IModelAccess {
 		CheckedFunction<Object, Object> getter = findGetter(subject.getClass(), propertyName);
 		if (getter != null) {
 			try {
-				return WrappedIterator.create(Iterators.singletonIterator(getter.apply(subject)));
+				Object result = getter.apply(subject);
+				if (null != result) {
+					return WrappedIterator.create(Iterators.singletonIterator(result));
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn("model access failed for {}.{}: {}", subject, property, e.getMessage());
 			}
 		}
+		// FIXME: always return something (NaN?) for non-existent values?!
 		return NiceIterator.emptyIterator();
 	}
 
