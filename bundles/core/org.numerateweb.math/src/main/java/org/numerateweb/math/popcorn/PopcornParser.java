@@ -215,7 +215,7 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule IntervalExpr() {
-		return sequence(AddExpr(), optional("..", startList(), AddExpr(), push(OMA(popList(objClass)))));
+		return sequence(AddExpr(), optional(firstOf("until", ".."), startList(), AddExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule AddExpr() {

@@ -57,6 +57,7 @@ public class PopcornSymbols {
 		//symbolMap.put("<>", symbol("relation1", "neq"));
 		symbolMap.put("!=", symbol("relation1", "neq"));
 		symbolMap.put("..", symbol("interval1", "interval"));
+		symbolMap.put("until", symbol("interval1", "interval_oo"));
 		symbolMap.put("+", symbol("arith1", "plus"));
 		symbolMap.put("-", symbol("arith1", "minus"));
 		symbolMap.put("*", symbol("arith1", "times"));

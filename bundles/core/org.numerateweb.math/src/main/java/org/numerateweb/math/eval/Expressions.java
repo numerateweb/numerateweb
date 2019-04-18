@@ -49,6 +49,10 @@ public class Expressions {
 			return IntStream.rangeClosed(((Number) a).intValue(), ((Number) b).intValue()) //
 					.mapToObj(i -> i).collect(Collectors.toList());
 		}));
+		functions.put(CDBASE + "/interval1#interval_oo", binaryObj((a, b) -> {
+			return IntStream.range(((Number) a).intValue(), ((Number) b).intValue()) //
+					.mapToObj(i -> i).collect(Collectors.toList());
+		}));
 
 		functions.put(CDBASE + "/list2#list_selector", binaryObj((i, list) -> {
 			if ((int) values.longValue(i) <= 0) throw new IllegalArgumentException("not a positive index: " + i);
