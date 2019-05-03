@@ -2,9 +2,12 @@ package org.numerateweb.math.eval;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.reasoner.CacheManager;
@@ -21,10 +24,15 @@ public class PojoEvaluator extends SimpleEvaluator {
 	protected final static Logger logger = LoggerFactory.getLogger(PojoEvaluator.class);
 
 	protected DependencyGraph<Object> dependencyGraph;
+	protected Map<Class<?>, Function<Object, Collection<String>>> ignoreLookup = new HashMap<>();
 
 	public PojoEvaluator(PojoModelAccess modelAccess, CacheManager cacheManager) {
 		super(modelAccess, cacheManager);
 		dependencyGraph = new DependencyGraph<>();
+	}
+
+	public void registerIgnoreLookup(Class<?> clazz, Function<Object, Collection<String>> getter) {
+		ignoreLookup.put(clazz, getter);
 	}
 
 	@Override
@@ -37,6 +45,16 @@ public class PojoEvaluator extends SimpleEvaluator {
 	public Result evaluate(Object subject, IReference property, Optional<IReference> restriction) {
 		// check if already in cache
 		boolean cached = (null != valueCache.get(new Pair<Object, IReference>(subject, property)));
+		// check if the property should be calculated for this subject
+		if (ignoreLookup.containsKey(subject.getClass())
+				&& ignoreLookup.get(subject.getClass()).apply(subject).contains(property.getURI().localPart())) {
+			if (cached) {
+				// remove from cache, re-evaluate
+				invalidate(subject, property, true);
+			}
+			// return the plain property value
+			return result(getPropertyValue(subject, property));
+		}
 		// WARNING: side effect, adds dependencies
 		Result result = super.evaluate(subject, property, restriction);
 		if (getConstraintExpression(subject, property) == null) {
