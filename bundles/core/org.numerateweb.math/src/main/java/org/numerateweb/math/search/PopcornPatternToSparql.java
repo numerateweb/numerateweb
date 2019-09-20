@@ -231,6 +231,12 @@ public class PopcornPatternToSparql {
 					// skip list type and list closing
 					continue;
 				}
+				if (NWMATH.PROPERTY_NAME.equals(p)
+						&& o.toString().startsWith("\"_\"")) {
+					// skip special variable with name "_" since it is
+					// interpreted as wildcard
+					continue;
+				}
 				result.newLine().append(s).append(" ").append(p).append(" ");
 				if (NWMATH.PROPERTY_ARGUMENTS.equals(p)) {
 					// special handling for matching all arguments with .!, .&
