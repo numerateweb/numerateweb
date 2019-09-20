@@ -32,7 +32,7 @@ import org.numerateweb.math.model.OMObject.Type;
 import org.numerateweb.math.model.OMObjectParser;
 import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.om.rdf.OMRdfSymbols;
-import org.numerateweb.math.search.MATCH;
+import org.numerateweb.math.search.PATTERNS;
 import org.parboiled.Parboiled;
 import org.parboiled.Rule;
 import org.parboiled.annotations.DontLabel;
@@ -493,13 +493,13 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule Pattern() {
-		return firstOf(sequence(".!", pushSymbol(MATCH.NOT)), sequence(".|", pushSymbol(MATCH.ANY)),
-				sequence(".&", pushSymbol(MATCH.ALL)), sequence(".^", pushSymbol(MATCH.ROOT)),
-				sequence("...", pushSymbol(MATCH.SELF_OR_DESCENDANT)), sequence("..+", pushSymbol(MATCH.DESCENDANT)), //
+		return firstOf(sequence(".!", pushSymbol(PATTERNS.NONE_OF)), sequence(".|", pushSymbol(PATTERNS.ANY_OF)),
+				sequence(".&", pushSymbol(PATTERNS.ALL_OF)), sequence(".^", pushSymbol(PATTERNS.ROOT)),
+				sequence("...", pushSymbol(PATTERNS.SELF_OR_DESCENDANT)), sequence("..+", pushSymbol(PATTERNS.DESCENDANT)), //
 				Wildcard());
 	}
 
 	public Rule Wildcard() {
-		return sequence(ch('?'), firstOf(ID(), sequence(WS(), push(""))), pushSymbol(MATCH.variable((String) pop())));
+		return sequence(ch('?'), pushSymbol(PATTERNS.ANY));
 	}
 }

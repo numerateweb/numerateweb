@@ -38,6 +38,12 @@ import net.liftweb.http.DispatchSnippet
 import net.liftweb.http.S
 import net.liftweb.util.ClearNodes
 import net.liftweb.util.Helpers
+import org.numerateweb.math.xml.OMXmlBuilder
+import javax.xml.transform.OutputKeys
+import java.io.StringWriter
+import javax.xml.transform.stream.StreamResult
+import scala.xml.Utility
+import scala.xml.Unparsed
 
 object Transformers {
   val basePath = "xsl/"
@@ -57,9 +63,26 @@ object Transformers {
     factory
   }
 
+  lazy val prettyPrintTransformer = {
+    val factory = TransformerFactory.newInstance
+    factory.setAttribute("indent-number", 4);
+    val transformer = factory.newTransformer
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+    transformer
+  }
+
   lazy val omToMathMLTemplates = {
     val xsl = getClass.getClassLoader.getResource(basePath + "om2pmml.xsl")
     factory.newTemplates(new StreamSource(xsl.openStream))
+  }
+
+  def prettyPrint(node: org.w3c.dom.Node): String = {
+    val input = new DOMSource(node)
+    val stringWriter = new StringWriter()
+    val output = new StreamResult(stringWriter)
+    prettyPrintTransformer.transform(input, output)
+    output.getWriter.toString
   }
 
   def asXml(dom: org.w3c.dom.Node): Node = {
@@ -108,6 +131,20 @@ class Math extends DispatchSnippet {
             })
             val mathML = Transformers.omToMathML(omXml)
             <math display={ S.attr("display") openOr "block" } indentalign={ S.attr("align") openOr "left" }>{ prefix ++ Transformers.asXml(mathML.getNode).child }</math>
+          } getOrElse Nil
+        }
+        case "xml" => (n: NodeSeq) => {
+          val target = c.subject match {
+            case constraint: Constraint => {
+              Full(constraint.getExpression)
+            }
+            case o: Object => Full(o)
+            case _ => Empty
+          }
+          target.map { t =>
+            val ns = Globals.contextModel.vend.map(m => new Namespaces(m.getManager)) getOrElse null
+            val omXml = new NWMathParser(ns).parse(t, new OMXmlBuilder(Transformers.documentBuilder))
+            Unparsed(Utility.escape(Transformers.prettyPrint(omXml)))
           } getOrElse Nil
         }
         case "popcorn" => (n: NodeSeq) => {

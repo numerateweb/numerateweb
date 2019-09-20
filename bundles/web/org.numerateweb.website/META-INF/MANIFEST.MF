@@ -4,7 +4,8 @@ Bundle-Name: numerateweb.org Website
 Bundle-SymbolicName: org.numerateweb.website
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.scala-lang.scala-library,
- net.enilink.lift
+ net.enilink.lift,
+ org.numerateweb.lift
 Lift-Module: org.numerateweb.website.LiftModule 
 Lift-Packages: 
 Bundle-ClassPath: .

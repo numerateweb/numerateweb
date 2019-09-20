@@ -35,7 +35,7 @@
 	<CDBase>http://www.openmath.org/cd</CDBase>
 	<CDURL>http://www.openmath.org/cd/match.ocd</CDURL>
 	<!-- CDReviewDate>not yet reviewed</CDReviewDate -->
-	<CDDate>2014-11-24</CDDate>
+	<CDDate>2019-09-10</CDDate>
 	<CDVersion>1</CDVersion>
 	<CDRevision>0</CDRevision>
 	<CDStatus>experimental</CDStatus>
@@ -45,7 +45,7 @@
 	</Description>
 
 	<CDDefinition>
-		<Name>all</Name>
+		<Name>all_of</Name>
 		<Role>application</Role>
 		<Description>
 			This symbol represents a pattern constructor for matching
@@ -71,9 +71,31 @@
 			</OMOBJ>
 		</Example>
 	</CDDefinition>
-
+	
 	<CDDefinition>
 		<Name>any</Name>
+		<Role>application</Role>
+		<Description>
+			This symbol represents a wild card for matching any expression.
+		</Description>
+
+		<Example>
+			An example for matching a sum application itself or any expression that
+			contains a sum application.
+			<OMOBJ xmlns="http://www.openmath.org/OpenMath" version="2.0"
+				cdbase="http://www.openmath.org/cd">
+				<OMA>
+					<OMS cd="match" name="self_or_descendant" />
+					<OMA>
+						<OMS cd="arith1" name="sum" />
+					</OMA>
+				</OMA>
+			</OMOBJ>
+		</Example>
+	</CDDefinition>
+
+	<CDDefinition>
+		<Name>any_of</Name>
 		<Role>application</Role>
 		<Description>
 			This symbol represents a pattern constructor for matching
@@ -99,23 +121,24 @@
 	</CDDefinition>
 
 	<CDDefinition>
-		<Name>not</Name>
+		<Name>none_of</Name>
 		<Role>application</Role>
 		<Description>
 			This symbol represents a pattern constructor for matching
-			the complement of its argument.
+			the complement of its arguments.
 		</Description>
 
 		<Example>
 			An example for matching any sine function unless it is applied to the
-			variable &quot;x&quot;.
+			variables &quot;x&quot; or &quot;z&quot;.
 			<OMOBJ xmlns="http://www.openmath.org/OpenMath" version="2.0"
 				cdbase="http://www.openmath.org/cd">
 				<OMA>
 					<OMS cd="transc1" name="sin" />
 					<OMA>
-						<OMS cd="match" name="not" />
+						<OMS cd="match" name="none_of" />
 						<OMV>x</OMV>
+						<OMV>z</OMV>
 					</OMA>
 				</OMA>
 			</OMOBJ>
@@ -154,14 +177,39 @@
 		</Description>
 
 		<Example>
-			An example for matching any sine function application that is the
-			root of an expression.
+			An example for matching sum applications that contain the Pochhammer symbol.
 			<OMOBJ xmlns="http://www.openmath.org/OpenMath" version="2.0"
 				cdbase="http://www.openmath.org/cd">
 				<OMA>
-					<OMS cd="match" name="root" />
+					<OMS cd="arith1" name="sum" />
 					<OMA>
-						<OMS cd="transc1" name="sin" />
+						<OMS cd="match" name="descendant" />
+						<OMA>
+							<OMS cd="hypergeo0" name="pochhammer" />
+						</OMA>
+					</OMA>
+				</OMA>
+			</OMOBJ>
+		</Example>
+	</CDDefinition>
+	
+	<CDDefinition>
+		<Name>self_or_descendant</Name>
+		<Role>application</Role>
+		<Description>
+			This symbol represents a pattern constructor for matching the current 
+			element itself or any of its descendants.
+		</Description>
+
+		<Example>
+			An example for matching a sum application itself or any expression that
+			contains a sum application.
+			<OMOBJ xmlns="http://www.openmath.org/OpenMath" version="2.0"
+				cdbase="http://www.openmath.org/cd">
+				<OMA>
+					<OMS cd="match" name="self_or_descendant" />
+					<OMA>
+						<OMS cd="arith1" name="sum" />
 					</OMA>
 				</OMA>
 			</OMOBJ>

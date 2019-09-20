@@ -15,7 +15,7 @@
 						if (lib) {
 							var params = enilink.params();
 							delete params["offset"];
-							params["library"] = lib;
+							params["library"] = lib.value.toString();
 							window.location.search = "?"
 									+ enilink.encodeParams(params);
 						}

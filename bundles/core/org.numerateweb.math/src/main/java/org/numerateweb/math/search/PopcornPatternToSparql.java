@@ -32,8 +32,8 @@ import org.parboiled.support.ParsingResult;
 public class PopcornPatternToSparql {
 	protected static class Result {
 		INamespaces ns;
-		int nextNode = 0;
 		int nextVar = 0;
+		int nextNode = 0;
 		StringBuilder sb = new StringBuilder();
 		StringBuilder indent = new StringBuilder();
 		Map<String, String> bnodes = new HashMap<>();
@@ -60,16 +60,16 @@ public class PopcornPatternToSparql {
 			return this;
 		}
 
+		String newVar() {
+			return "?var" + nextVar++;
+		}
+
 		String encode(IReference ref) {
 			URI uri = ref.getURI();
 			if (uri != null) {
-				// handle variables
-				if (uri != null && uri.scheme() == "match"
-						&& uri.opaquePart().startsWith("var:")) {
-					String varName = uri.opaquePart().substring(
-							uri.opaquePart().indexOf(':') + 1);
-					return varName.isEmpty() ? "?var" + nextVar++ : "?"
-							+ varName;
+				// support for wild cards
+				if (PATTERNS.ANY.equals(uri)) {
+					return newVar();
 				}
 
 				URI uriNS = uri.namespace();
@@ -112,14 +112,15 @@ public class PopcornPatternToSparql {
 
 	INamespaces ns;
 
+
 	static final String anyChildPath = "(math:arguments|math:symbol|math:operator|math:target|math:variables|"
 			+ "math:binder|math:body|math:attributeKey|math:attributeValue|rdf:first|rdf:rest)";
 
 	static final String listItemPath = "rdf:first|(rdf:rest+/rdf:first)";
 
-	final Set<URI> MATCH_OPS = new HashSet<>(Arrays.asList(MATCH.ROOT,
-			MATCH.DESCENDANT, MATCH.SELF_OR_DESCENDANT, MATCH.ALL, MATCH.ANY,
-			MATCH.NOT));
+	final Set<URI> MATCH_OPS = new HashSet<>(Arrays.asList(PATTERNS.ROOT,
+			PATTERNS.DESCENDANT, PATTERNS.SELF_OR_DESCENDANT, PATTERNS.ALL_OF, PATTERNS.ANY_OF,
+			PATTERNS.NONE_OF));
 
 	public PopcornPatternToSparql(final INamespaces ns) {
 		this.ns = new INamespaces() {
@@ -151,17 +152,17 @@ public class PopcornPatternToSparql {
 		if (seen.add(opApplication)) {
 			boolean isUnion = true;
 			boolean isNot = false;
-			if (MATCH.ROOT.equals(op)) {
+			if (PATTERNS.ROOT.equals(op)) {
 				// isUnion = true;
-			} else if (MATCH.DESCENDANT.equals(op)) {
+			} else if (PATTERNS.DESCENDANT.equals(op)) {
 				propertyPath = anyChildPath + "+";
-			} else if (MATCH.SELF_OR_DESCENDANT.equals(op)) {
+			} else if (PATTERNS.SELF_OR_DESCENDANT.equals(op)) {
 				propertyPath = anyChildPath + "*";
-			} else if (MATCH.ANY.equals(op)) {
+			} else if (PATTERNS.ANY_OF.equals(op)) {
 				// isUnion = true;
-			} else if (MATCH.ALL.equals(op)) {
+			} else if (PATTERNS.ALL_OF.equals(op)) {
 				isUnion = false;
-			} else if (MATCH.NOT.equals(op)) {
+			} else if (PATTERNS.NONE_OF.equals(op)) {
 				isNot = true;
 			}
 			IReference list = graph.filter(opApplication,
@@ -182,7 +183,7 @@ public class PopcornPatternToSparql {
 						result.newLine().append("FILTER NOT EXISTS {").indent();
 						closeParens++;
 					}
-					if (isUnion) {
+					if (isUnion || isNot) {
 						if (count > 0) {
 							result.dedent().newLine().append("} UNION {")
 									.indent();
@@ -200,7 +201,7 @@ public class PopcornPatternToSparql {
 				closeParens--;
 				result.dedent().newLine().append("}");
 			}
-			if (MATCH.ROOT.equals(op)) {
+			if (PATTERNS.ROOT.equals(op)) {
 				result.newLine().append("FILTER NOT EXISTS {").indent();
 				result.newLine().append("[]").append(" ").append(anyChildPath)
 						.append(" ").append(target).append(" . ");
@@ -228,12 +229,6 @@ public class PopcornPatternToSparql {
 						|| RDF.PROPERTY_TYPE.equals(p)
 						&& RDF.TYPE_LIST.equals(o)) {
 					// skip list type and list closing
-					continue;
-				}
-				if (NWMATH.PROPERTY_NAME.equals(p)
-						&& o.toString().equals("\"_\"")) {
-					// skip special variable with name "_" since it is
-					// interpreted as wildcard
 					continue;
 				}
 				result.newLine().append(s).append(" ").append(p).append(" ");
