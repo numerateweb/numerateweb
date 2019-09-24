@@ -80,9 +80,7 @@ public class PopcornPatternToSparql {
 					}
 					return prefix + ":" + uri.localPart();
 				} else {
-					return "<"
-							+ uri.toString().replace("\\", "\\\\")
-									.replace(">", "\\>") + ">";
+					return "<" + uri.toString().replace("\\", "\\\\").replace(">", "\\>") + ">";
 				}
 			}
 			String refStr = ref.toString();
@@ -112,15 +110,13 @@ public class PopcornPatternToSparql {
 
 	INamespaces ns;
 
-
 	static final String anyChildPath = "(math:arguments|math:symbol|math:operator|math:target|math:variables|"
 			+ "math:binder|math:body|math:attributeKey|math:attributeValue|rdf:first|rdf:rest)";
 
 	static final String listItemPath = "rdf:first|(rdf:rest+/rdf:first)";
 
-	final Set<URI> MATCH_OPS = new HashSet<>(Arrays.asList(PATTERNS.ROOT,
-			PATTERNS.DESCENDANT, PATTERNS.SELF_OR_DESCENDANT, PATTERNS.ALL_OF, PATTERNS.ANY_OF,
-			PATTERNS.NONE_OF));
+	final Set<URI> MATCH_OPS = new HashSet<>(Arrays.asList(PATTERNS.ROOT, PATTERNS.DESCENDANT,
+			PATTERNS.SELF_OR_DESCENDANT, PATTERNS.ALL_OF, PATTERNS.ANY_OF, PATTERNS.NONE_OF));
 
 	public PopcornPatternToSparql(final INamespaces ns) {
 		this.ns = new INamespaces() {
@@ -146,35 +142,33 @@ public class PopcornPatternToSparql {
 		};
 	}
 
-	protected void expandMatchOp(IReference target, IReference opApplication,
-			IReference op, IGraph graph, Result result, Set<IReference> seen,
-			String propertyPath) {
+	protected void expandMatchOp(IReference target, IReference opApplication, IReference op, IGraph graph,
+			Result result, Set<IReference> seen) {
 		if (seen.add(opApplication)) {
-			boolean isUnion = true;
+			String propertyPath = null;
+			boolean isUnion = false;
 			boolean isNot = false;
 			if (PATTERNS.ROOT.equals(op)) {
-				// isUnion = true;
+				isUnion = true;
 			} else if (PATTERNS.DESCENDANT.equals(op)) {
 				propertyPath = anyChildPath + "+";
 			} else if (PATTERNS.SELF_OR_DESCENDANT.equals(op)) {
 				propertyPath = anyChildPath + "*";
 			} else if (PATTERNS.ANY_OF.equals(op)) {
-				// isUnion = true;
+				isUnion = true;
 			} else if (PATTERNS.ALL_OF.equals(op)) {
 				isUnion = false;
 			} else if (PATTERNS.NONE_OF.equals(op)) {
 				isNot = true;
 			}
-			IReference list = graph.filter(opApplication,
-					NWMATH.PROPERTY_ARGUMENTS, null).objectReference();
+			IReference list = graph.filter(opApplication, NWMATH.PROPERTY_ARGUMENTS, null).objectReference();
 			int count = 0;
 			int closeParens = 0;
 			while (list != null && !RDF.NIL.equals(list)) {
-				IReference first = graph.filter((IReference) list,
-						RDF.PROPERTY_FIRST, null).objectReference();
-				IReference nextList = first != null ? graph.filter(
-						(IReference) list, RDF.PROPERTY_REST, null)
-						.objectReference() : null;
+				IReference first = graph.filter((IReference) list, RDF.PROPERTY_FIRST, null).objectReference();
+				IReference nextList = first != null
+						? graph.filter((IReference) list, RDF.PROPERTY_REST, null).objectReference()
+						: null;
 				if (RDF.NIL.equals(nextList)) {
 					nextList = null;
 				}
@@ -185,14 +179,27 @@ public class PopcornPatternToSparql {
 					}
 					if (isUnion || isNot) {
 						if (count > 0) {
-							result.dedent().newLine().append("} UNION {")
-									.indent();
+							result.dedent().newLine().append("} UNION {").indent();
 						} else if (nextList != null) {
 							result.newLine().append("{").indent();
 							closeParens++;
 						}
 					}
-					toSparql(target, first, graph, result, seen, propertyPath);
+					
+					if (first.getURI() != null && !graph.contains(first, null, null)) {
+						// result.newLine().append("FILTER (").append(target).append(" = ").append(first).append(") . ");
+						result.newLine().append(target).append(" ").append(propertyPath != null ? propertyPath : "<x:y>?").append(" ").append(first).append(" . ");
+					} else {
+						if (propertyPath == null) {
+							// unify variable name of target and first
+							result.bnodes.put(first.toString(), result.bnodes.get(target.toString()));
+						}
+						toSparql(first, graph, result, seen);
+						// add path last since other patterns may be evaluated faster
+						if (propertyPath != null) {
+							result.newLine().append(target).append(" ").append(propertyPath).append(" ").append(first).append(" . ");
+						}
+					}
 					count++;
 				}
 				list = nextList;
@@ -203,36 +210,27 @@ public class PopcornPatternToSparql {
 			}
 			if (PATTERNS.ROOT.equals(op)) {
 				result.newLine().append("FILTER NOT EXISTS {").indent();
-				result.newLine().append("[]").append(" ").append(anyChildPath)
-						.append(" ").append(target).append(" . ");
+				result.newLine().append("[]").append(" ").append(anyChildPath).append(" ").append(target).append(" . ");
 				result.dedent().newLine().append("}");
 			}
 		}
 	}
 
-	protected void toSparql(IReference target, IReference s, IGraph graph,
-			Result result, Set<IReference> seen, String propertyPath) {
-		Object op = graph.filter(s, NWMATH.PROPERTY_OPERATOR, null)
-				.objectValue();
+	protected void toSparql(IReference s, IGraph graph, Result result, Set<IReference> seen) {
+		Object op = graph.filter(s, NWMATH.PROPERTY_OPERATOR, null).objectValue();
 		if (op instanceof IReference && MATCH_OPS.contains(op)) {
-			if (propertyPath == null) {
-				propertyPath = "_BIND_";
-			}
-			expandMatchOp(target, s, (IReference) op, graph, result, seen,
-					propertyPath);
+			expandMatchOp(s, s, (IReference) op, graph, result, seen);
 		} else if (seen.add(s)) {
 			IGraph stmts = graph.filter(s, null, null);
 			for (IStatement stmt : stmts) {
 				IReference p = stmt.getPredicate();
 				Object o = stmt.getObject();
 				if (RDF.PROPERTY_REST.equals(p) && RDF.NIL.equals(o)
-						|| RDF.PROPERTY_TYPE.equals(p)
-						&& RDF.TYPE_LIST.equals(o)) {
+						|| RDF.PROPERTY_TYPE.equals(p) && RDF.TYPE_LIST.equals(o)) {
 					// skip list type and list closing
 					continue;
 				}
-				if (NWMATH.PROPERTY_NAME.equals(p)
-						&& o.toString().startsWith("\"_\"")) {
+				if (NWMATH.PROPERTY_NAME.equals(p) && o.toString().startsWith("\"_\"")) {
 					// skip special variable with name "_" since it is
 					// interpreted as wildcard
 					continue;
@@ -241,38 +239,22 @@ public class PopcornPatternToSparql {
 				if (NWMATH.PROPERTY_ARGUMENTS.equals(p)) {
 					// special handling for matching all arguments with .!, .&
 					// or .|
-					IReference first = graph.filter((IReference) o,
-							RDF.PROPERTY_FIRST, null).objectReference();
-					Object firstOp = graph.filter(first,
-							NWMATH.PROPERTY_OPERATOR, null).objectValue();
+					IReference first = graph.filter((IReference) o, RDF.PROPERTY_FIRST, null).objectReference();
+					Object firstOp = graph.filter(first, NWMATH.PROPERTY_OPERATOR, null).objectValue();
 					if (MATCH_OPS.contains(firstOp)) {
-						IReference rest = graph.filter((IReference) o,
-								RDF.PROPERTY_REST, null).objectReference();
+						IReference rest = graph.filter((IReference) o, RDF.PROPERTY_REST, null).objectReference();
 						if (rest == null || RDF.NIL.equals(rest)) {
 							result.append(o).append(" . ");
-							expandMatchOp((IReference) o, first,
-									(IReference) firstOp, graph, result, seen,
-									listItemPath);
+							expandMatchOp((IReference) o, first, (IReference) firstOp, graph, result, seen);
+							result.newLine().append(o).append(" ").append(listItemPath).append(" ").append(first).append(" . ");
 							continue;
 						}
 					}
 				}
 				result.append(o).append(" . ");
 				if (o instanceof IReference) {
-					toSparql((IReference) o, (IReference) o, graph, result,
-							seen, null);
+					toSparql((IReference) o, graph, result, seen);
 				}
-			}
-			// add path last since other patterns may be evaluated faster
-			boolean isBindPath = "_BIND_".equals(propertyPath);
-			if (propertyPath != null && !isBindPath) {
-				result.newLine().append(target).append(" ")
-						.append(propertyPath).append(" ").append(s)
-						.append(" . ");
-			} else if (isBindPath) {
-				// bind operator needs to be inserted last
-				result.newLine().append("BIND ( ").append(s).append(" as ")
-						.append(target).append(" ) . ");
 			}
 		}
 	}
@@ -283,27 +265,23 @@ public class PopcornPatternToSparql {
 				IEntityManager em = emFactory.get()) {
 			// parse Popcorn expression into OMObject representation
 			final ParsingResult<IReference> result = new ReportingParseRunner<IReference>(
-					parser.Start(new NWMathBuilder(em, ns)))
-					.run(popcornPattern);
+					parser.Start(new NWMathBuilder(em, ns))).run(popcornPattern);
 			if (result.matched) {
 				// convert to RDF representation
 				IReference mathExpr = result.resultValue;
-				IGraph graph = new LinkedHashGraph(em.match(null, null, null)
-						.toList());
+				IGraph graph = new LinkedHashGraph(em.match(null, null, null).toList());
 				Result sparqlResult = new Result(ns);
 				if (!rootVariable.startsWith("?")) {
 					rootVariable = "?" + rootVariable;
 				}
 				if (graph.filter(mathExpr, null, null).isEmpty()) {
-					sparqlResult.newLine().append("BIND ( ").append(mathExpr)
-							.append(" as ").append(rootVariable)
+					sparqlResult.newLine().append("BIND ( ").append(mathExpr).append(" as ").append(rootVariable)
 							.append(" ) . ");
 				} else {
 					sparqlResult.bnodes.put(mathExpr.toString(), rootVariable);
-					toSparql(mathExpr, mathExpr, graph, sparqlResult,
-							new HashSet<IReference>(), null);
-					sparqlResult.newLine().append("FILTER NOT EXISTS { ")
-							.append(rootVariable).append(" rdf:first [] }");
+					toSparql(mathExpr, graph, sparqlResult, new HashSet<IReference>());
+					sparqlResult.newLine().append("FILTER NOT EXISTS { ").append(rootVariable)
+							.append(" rdf:first [] }");
 				}
 				return sparqlResult;
 			}
@@ -326,11 +304,9 @@ public class PopcornPatternToSparql {
 			String where = sparqlResult.sb.toString();
 			StringBuilder prefixes = new StringBuilder();
 			Set<String> seen = new HashSet<>();
-			for (Map.Entry<URI, String> e : sparqlResult.usedPrefixes
-					.entrySet()) {
+			for (Map.Entry<URI, String> e : sparqlResult.usedPrefixes.entrySet()) {
 				seen.add(e.getValue());
-				prefixes.append(SparqlUtils.prefix(e.getValue(), e.getKey()
-						.toString()));
+				prefixes.append(SparqlUtils.prefix(e.getValue(), e.getKey().toString()));
 			}
 			if (!seen.contains("math")) {
 				prefixes.append(SparqlUtils.prefix("math", NWMATH.NAMESPACE));
@@ -338,8 +314,7 @@ public class PopcornPatternToSparql {
 			if (!seen.contains("rdf")) {
 				prefixes.append(SparqlUtils.prefix("rdf", RDF.NAMESPACE));
 			}
-			return prefixes + "\nSELECT DISTINCT ?result WHERE {" + where
-					+ " }";
+			return prefixes + "\nSELECT DISTINCT ?result WHERE {" + where + " }";
 		}
 		return null;
 	}
