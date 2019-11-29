@@ -495,7 +495,8 @@ public class PopcornParser extends BaseRdfParser {
 	public Rule Pattern() {
 		return firstOf(sequence(".!", pushSymbol(PATTERNS.NONE_OF)), sequence(".|", pushSymbol(PATTERNS.ANY_OF)),
 				sequence(".&", pushSymbol(PATTERNS.ALL_OF)), sequence(".^", pushSymbol(PATTERNS.ROOT)),
-				sequence("...", pushSymbol(PATTERNS.SELF_OR_DESCENDANT)), sequence("..+", pushSymbol(PATTERNS.DESCENDANT)), //
+				sequence(".,", pushSymbol(PATTERNS.ARGUMENT)), sequence("...", pushSymbol(PATTERNS.SELF_OR_DESCENDANT)),
+				sequence("..+", pushSymbol(PATTERNS.DESCENDANT)), //
 				Wildcard());
 	}
 

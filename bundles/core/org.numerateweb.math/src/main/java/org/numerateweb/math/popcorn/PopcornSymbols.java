@@ -115,11 +115,12 @@ public class PopcornSymbols {
 		symbolMap.put("prefixes", symbol("rdf", "prefixes"));
 		symbolMap.put("prefix", symbol("rdf", "prefix"));
 
-		// Support for match expressions
+		// Support for patterns
 		symbolMap.put(".!", PATTERNS.NONE_OF);
 		symbolMap.put(".|", PATTERNS.ANY_OF);
 		symbolMap.put(".&", PATTERNS.ALL_OF);
 		symbolMap.put(".^", PATTERNS.ROOT);
+		symbolMap.put(".,", PATTERNS.ARGUMENT);
 		symbolMap.put("...", PATTERNS.SELF_OR_DESCENDANT);
 		symbolMap.put("..+", PATTERNS.DESCENDANT);
 		symbolMap.put("?", PATTERNS.ANY);

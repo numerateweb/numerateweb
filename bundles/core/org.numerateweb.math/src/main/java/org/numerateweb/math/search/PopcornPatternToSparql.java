@@ -115,7 +115,7 @@ public class PopcornPatternToSparql {
 
 	static final String listItemPath = "rdf:first|(rdf:rest+/rdf:first)";
 
-	final Set<URI> MATCH_OPS = new HashSet<>(Arrays.asList(PATTERNS.ROOT, PATTERNS.DESCENDANT,
+	final Set<URI> MATCH_OPS = new HashSet<>(Arrays.asList(PATTERNS.ROOT, PATTERNS.ARGUMENT, PATTERNS.DESCENDANT,
 			PATTERNS.SELF_OR_DESCENDANT, PATTERNS.ALL_OF, PATTERNS.ANY_OF, PATTERNS.NONE_OF));
 
 	public PopcornPatternToSparql(final INamespaces ns) {
@@ -150,6 +150,8 @@ public class PopcornPatternToSparql {
 			boolean isNot = false;
 			if (PATTERNS.ROOT.equals(op)) {
 				isUnion = true;
+			} else if (PATTERNS.ARGUMENT.equals(op)) {
+				propertyPath = listItemPath;
 			} else if (PATTERNS.DESCENDANT.equals(op)) {
 				propertyPath = anyChildPath + "+";
 			} else if (PATTERNS.SELF_OR_DESCENDANT.equals(op)) {
@@ -225,8 +227,7 @@ public class PopcornPatternToSparql {
 			for (IStatement stmt : stmts) {
 				IReference p = stmt.getPredicate();
 				Object o = stmt.getObject();
-				if (RDF.PROPERTY_REST.equals(p) && RDF.NIL.equals(o)
-						|| RDF.PROPERTY_TYPE.equals(p) && RDF.TYPE_LIST.equals(o)) {
+				if (RDF.PROPERTY_TYPE.equals(p) && RDF.TYPE_LIST.equals(o)) {
 					// skip list type and list closing
 					continue;
 				}
@@ -235,23 +236,21 @@ public class PopcornPatternToSparql {
 					// interpreted as wildcard
 					continue;
 				}
-				result.newLine().append(s).append(" ").append(p).append(" ");
+				result.newLine().append(s).append(" ").append(p).append(" ").append(o).append(" . ");
 				if (NWMATH.PROPERTY_ARGUMENTS.equals(p)) {
-					// special handling for matching all arguments with .!, .&
-					// or .|
+					if (RDF.NIL.equals(o)) {
+						// do not match empty argument lists
+						continue;
+					}
+					
+					// special handling for matching all arguments with .,
 					IReference first = graph.filter((IReference) o, RDF.PROPERTY_FIRST, null).objectReference();
 					Object firstOp = graph.filter(first, NWMATH.PROPERTY_OPERATOR, null).objectValue();
-					if (MATCH_OPS.contains(firstOp)) {
-						IReference rest = graph.filter((IReference) o, RDF.PROPERTY_REST, null).objectReference();
-						if (rest == null || RDF.NIL.equals(rest)) {
-							result.append(o).append(" . ");
-							expandMatchOp((IReference) o, first, (IReference) firstOp, graph, result, seen);
-							result.newLine().append(o).append(" ").append(listItemPath).append(" ").append(first).append(" . ");
-							continue;
-						}
+					if (PATTERNS.ARGUMENT.equals(firstOp)) {
+						expandMatchOp((IReference) o, first, (IReference) firstOp, graph, result, seen);
+						continue;
 					}
 				}
-				result.append(o).append(" . ");
 				if (o instanceof IReference) {
 					toSparql((IReference) o, graph, result, seen);
 				}

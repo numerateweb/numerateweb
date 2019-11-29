@@ -2,9 +2,7 @@
 	a[href]:after {
 		content: none !important;
 	}
-}
-
-.definition .prettyprint {
-	background-color: white !important;
-	color: red;
+	pre {
+		background-color: white !important;
+	}
 }

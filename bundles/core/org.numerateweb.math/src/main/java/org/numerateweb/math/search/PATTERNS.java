@@ -10,6 +10,7 @@ public abstract class PATTERNS {
 	public static final URI NONE_OF = CD_URI.appendLocalPart("none_of");
 	public static final URI ANY_OF = CD_URI.appendLocalPart("any_of");
 	public static final URI ALL_OF = CD_URI.appendLocalPart("all_of");
+	public static final URI ARGUMENT = CD_URI.appendLocalPart("argument");
 	public static final URI ROOT = CD_URI.appendLocalPart("root");
 	public static final URI DESCENDANT = CD_URI.appendLocalPart("descendant");
 	public static final URI SELF_OR_DESCENDANT = CD_URI.appendLocalPart("self_or_descendant");
