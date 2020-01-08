@@ -13,7 +13,7 @@ import net.enilink.komma.em.DecoratingEntityManagerModule;
 import net.enilink.komma.em.EntityManagerFactoryModule;
 import net.enilink.komma.em.util.KommaUtil;
 import net.enilink.komma.em.util.UnitOfWork;
-import net.enilink.komma.rdf4j.RDF4JMemoryStoreModule;
+import net.enilink.komma.rdf4j.RDF4JModule;
 
 /**
  * Helper methods for working with RDF data.
@@ -25,7 +25,7 @@ public class RdfHelpers {
 		KommaModule kommaModule = new KommaModule();
 		kommaModule.includeModule(KommaUtil.getCoreModule());
 		kommaModule.includeModule(mathModule);
-		Injector injector = Guice.createInjector(new RDF4JMemoryStoreModule(),
+		Injector injector = Guice.createInjector(new RDF4JModule(),
 				new EntityManagerFactoryModule(kommaModule, null, new DecoratingEntityManagerModule()),
 				new AbstractModule() {
 					@Override

@@ -12,8 +12,6 @@ import org.parboiled.errors.ErrorUtils;
 import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 
-import com.github.parboiled1.grappa.stack.DefaultValueStack;
-
 /**
  * Simple JUnit Test for the POPCORN rules parser
  */
@@ -33,19 +31,18 @@ public class RulesParserTest extends GUnitBaseTestCase {
 			}
 			Rule rule = (Rule) MathRulesParser.class.getMethod(textInfo.rule).invoke(parser);
 			// ensure that full text is matched until EOF
-			rule = parser.sequence(rule, MathRulesParser.EOI);
+			rule = parser.Sequence(rule, MathRulesParser.EOI);
 
-			ParsingResult<Object> result = new ReportingParseRunner<Object>(rule)
-					.withValueStack(new DefaultValueStack<Object>()).run((CharSequence) textInfo.text);
+			ParsingResult<Object> result = new ReportingParseRunner<Object>(rule).run(textInfo.text);
 
-			boolean passed = !result.isSuccess() && textInfo.result == Result.FAIL
-					|| result.isSuccess() && textInfo.result == Result.OK;
+			boolean passed = !result.matched && textInfo.result == Result.FAIL
+					|| result.matched && textInfo.result == Result.OK;
 
-			if (result.isSuccess() && !result.getValueStack().isEmpty()) {
-				System.out.println(result.getTopStackValue());
+			if (result.matched && result.resultValue != null) {
+				System.out.println(result.resultValue);
 			}
 
-			if (!result.isSuccess() && textInfo.result == Result.OK) {
+			if (!result.matched && textInfo.result == Result.OK) {
 				System.err.println(ErrorUtils.printParseErrors(result));
 			}
 

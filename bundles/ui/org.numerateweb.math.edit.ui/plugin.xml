@@ -9,9 +9,14 @@
             id="org.numerateweb.math.edit.importOpenMathCD"
             name="ImportOpenMathCD">  </command>
       <command
-            defaultHandler="org.numerateweb.math.ui.actions.RunComputationsHandler"
+            defaultHandler="org.numerateweb.math.ui.commands.RunComputationsHandler"
             id="org.numerateweb.math.edit.runComputations"
             name="RunComputations">  </command>
+      <command
+            defaultHandler="org.numerateweb.math.ui.commands.ExportRulesHandler"
+            id="org.numerateweb.math.edit.exportRules"
+            name="ExportRules">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -25,12 +30,12 @@
          </command>
       </menuContribution>
       <menuContribution
+            allPopups="false"
             locationURI="popup:net.enilink.komma.edit.ui.menu">
           <command
                commandId="org.numerateweb.math.edit.importOpenMathCD"
                icon="icons/full/obj16/pi.png"
-               label="Import OpenMath CD"
-               style="pulldown">
+               label="Import OpenMath CD">
          </command>
       </menuContribution>
       <menuContribution
@@ -39,8 +44,16 @@
          <command
                commandId="org.numerateweb.math.edit.runComputations"
                icon="icons/full/obj16/pi.png"
-               label="Run computations"
-               style="push">
+               label="Run computations">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:net.enilink.komma.edit.ui.menu">
+         <command
+               commandId="org.numerateweb.math.edit.exportRules"
+               icon="icons/full/obj16/pi.png"
+               label="Export rules">
          </command>
       </menuContribution>
    </extension>
