@@ -9,7 +9,7 @@ public class GuavaCache<K, T> extends AbstractCache<K, T> {
 	private Cache<Object, Object> cache;
 
 	public GuavaCache() {
-		cache = CacheBuilder.newBuilder().maximumSize(4096)
+		cache = CacheBuilder.newBuilder().maximumSize(16384)
 				.expireAfterWrite(10, TimeUnit.MINUTES).build();
 	}
 

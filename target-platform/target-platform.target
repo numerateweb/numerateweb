@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="numerateweb" sequenceNumber="84">
+<?pde version="3.8"?><target name="numerateweb" sequenceNumber="85">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.common.feature.group" version="2.16.0.v20190625-1131"/>
@@ -19,11 +19,11 @@
 <repository location="https://dl.bintray.com/enilink/updates/enilink/1.2.4/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="net.enilink.komma.edit.feature.feature.group" version="1.3.4.20191202135504"/>
-<unit id="net.enilink.komma.edit.ui.feature.feature.group" version="1.3.4.20191202135504"/>
-<unit id="net.enilink.komma.editor.feature.feature.group" version="1.3.4.20191202135504"/>
-<unit id="net.enilink.komma.feature.feature.group" version="1.3.4.20191202135504"/>
-<repository location="http://dl.bintray.com/komma/snapshots/komma/1.3.4.20191202135504/"/>
+<unit id="net.enilink.komma.edit.feature.feature.group" version="1.3.4.20200108170158"/>
+<unit id="net.enilink.komma.edit.ui.feature.feature.group" version="1.3.4.20200108170158"/>
+<unit id="net.enilink.komma.editor.feature.feature.group" version="1.3.4.20200108170158"/>
+<unit id="net.enilink.komma.feature.feature.group" version="1.3.4.20200108170158"/>
+<repository location="https://dl.bintray.com/komma/snapshots/komma/1.3.4.20200108170158/"/>
 </location>
 </locations>
 <includeBundles>

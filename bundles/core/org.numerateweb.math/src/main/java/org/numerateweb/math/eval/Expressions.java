@@ -8,6 +8,7 @@ import static org.numerateweb.math.eval.Helpers.unaryObj;
 import static org.numerateweb.math.eval.Helpers.valueToSet;
 import static org.numerateweb.math.eval.Helpers.valueToStream;
 
+import java.math.MathContext;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.Expr;
 
+import net.enilink.commons.util.ValueType;
 import net.enilink.commons.util.ValueUtils;
 import net.enilink.komma.core.IReference;
 import net.enilink.komma.core.URI;
@@ -32,7 +34,48 @@ public class Expressions {
 	static final Map<String, Expr> constants = new HashMap<>();
 	static final Map<String, Function<Object, Object>> functions = new HashMap<>();
 
-	static ValueUtils values = ValueUtils.getInstance();
+	// override two methods to cope with specific issues
+	// FIXME: change actual class behaviour
+	static ValueUtils values = new ValueUtils() {
+
+		// FIXME: allow assignment of String value to Enum type by trying Enum.valueOf()
+		@Override
+		@SuppressWarnings("unchecked")
+		public Object convertValue(java.lang.Class<?> toType, Object value, Object defaultValue) {
+			if (toType.isEnum() && value instanceof String) {
+				return Enum.valueOf(toType.asSubclass(Enum.class), (String) value);
+			}
+			return super.convertValue(toType, value, defaultValue);
+		};
+
+		// FIXME: ValueUtils::divide() sets no scale when using BigDecimals, which
+		// can result in severely rounded results (e.g. 9.0 / BigInteger(2) -> 4)
+		// workaround for now, override full method, use MathContext.DECIMAL64
+		// which should be equivalent to calculations with double precision
+		@Override
+		public Object divide(Object v1, Object v2) {
+			ValueType type = getNumericType(getType(v1), getType(v2), false);
+
+			switch (type) {
+			case BIGINTEGER:
+				return bigIntValue(v1).divide(bigIntValue(v2));
+
+			case BIGDECIMAL:
+				return bigDecValue(v1).divide(bigDecValue(v2), MathContext.DECIMAL64);
+
+			case FLOAT:
+			case DOUBLE:
+				return createReal(type, doubleValue(v1) / doubleValue(v2));
+
+			default:
+				return createInteger(type, longValue(v1) / longValue(v2));
+			}
+		}
+	};
+	// FIXME: remove this once above changes are applied to ValueUtils
+	public static ValueUtils getValueUtils() {
+		return values;
+	}
 
 	static final String CDBASE = "http://www.openmath.org/cd";
 
@@ -55,13 +98,15 @@ public class Expressions {
 		}));
 
 		functions.put(CDBASE + "/list2#list_selector", binaryObj((i, list) -> {
-			if ((int) values.longValue(i) <= 0) throw new IllegalArgumentException("not a positive index: " + i);
+			if ((int) values.longValue(i) <= 0) {
+				throw new IllegalArgumentException("not a positive index: " + i);
+			}
 			return valueToStream(list).skip((int) values.longValue(i) - 1).findFirst().get();
 		}));
 		functions.put(CDBASE + "/list3#entry", binaryObj((list, i) -> {
-			// for positive index, same as list2#list_selector
 			// FIXME: negative index (count from end) not supported
-			return functions.get(CDBASE + "/list2#list_selector").apply(new Object[]{ i, list });
+			// for positive index same as list2#list_selector(i, list)
+			return functions.get(CDBASE + "/list2#list_selector").apply(new Object[] { i, list });
 		}));
 
 		functions.put(CDBASE + "/prog1#block", reduce((a, b) -> b));

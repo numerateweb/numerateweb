@@ -48,14 +48,13 @@ public class PojoEvaluator extends SimpleEvaluator {
 		// check if the property should be calculated for this subject
 		if (ignoreLookup.containsKey(subject.getClass())
 				&& ignoreLookup.get(subject.getClass()).apply(subject).contains(property.getURI().localPart())) {
-			if (cached) {
-				// remove from cache, re-evaluate
-				invalidate(subject, property, true);
-			}
-			// return the plain property value
-			return result(getPropertyValue(subject, property));
+			Object value = getPropertyValue(subject, property);
+			logger.trace("ignoring evaluation for ({}.{}), existing value = {}", subject, property, value);
+			// property should be ignored for this subject, add current value to cache
+			valueCache.put(new Pair<Object, IReference>(subject, property), value);
+			cached = true;
 		}
-		// WARNING: side effect, adds dependencies
+		// WARNING: side effect, adds dependencies; DO NOT skip when cached!
 		Result result = super.evaluate(subject, property, restriction);
 		if (getConstraintExpression(subject, property) == null) {
 			// value from model, no need to update field value
