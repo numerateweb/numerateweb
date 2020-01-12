@@ -89,30 +89,30 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 
 	protected final ICache<OMObject, E> parsedExpressionCache;
 
-	static class Path<T> {
+	protected static class Path<T> {
 		final ArrayDeque<T> pathElements = new ArrayDeque<>();
 		final Set<T> elementSet = new HashSet<>();
 
-		void push(T element) {
+		public void push(T element) {
 			pathElements.add(element);
 			elementSet.add(element);
 		}
 
-		void pop() {
+		public void pop() {
 			T last = pathElements.removeLast();
 			elementSet.remove(last);
 		}
 
-		boolean contains(T element) {
+		public boolean contains(T element) {
 			return elementSet.contains(element);
 		}
 
-		T peekLast() {
+		public T peekLast() {
 			return pathElements.peekLast();
 		}
 	}
 
-	private final ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
+	protected final ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
 		protected Path<Pair<Object, IReference>> initialValue() {
 			return new Path<>();
 		};
