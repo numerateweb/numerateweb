@@ -166,6 +166,8 @@ public class Expressions {
 		functions.put(CDBASE + "/relation1#neq", binaryObj((a, b) -> values.compareWithConversion(a, b) != 0));
 
 		functions.put(CDBASE + "/logic1#not", unaryObj(arg -> !values.booleanValue(arg)));
+		functions.put(CDBASE + "/logic1#or", reduce((a, b) -> values.booleanValue(a) || values.booleanValue(b)));
+		functions.put(CDBASE + "/logic1#and", reduce((a, b) -> values.booleanValue(a) && values.booleanValue(b)));
 
 		functions.put(CDBASE + "/rounding1#round", unaryDouble(Expressions::round));
 		functions.put(CDBASE + "/rounding1#ceiling", unaryDouble(Math::ceil));
