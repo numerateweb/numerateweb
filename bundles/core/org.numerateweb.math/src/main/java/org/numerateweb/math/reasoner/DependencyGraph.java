@@ -85,6 +85,9 @@ public class DependencyGraph<T> {
 			for (Node<T> s : seen) {
 				s.clearSuccessors();
 			}
+		} else {
+			// node has never existed or been cleaned up in an earlier removal
+			callback.apply(value, true);
 		}
 	}
 
