@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.enilink.commons.logging.LoggingPlugin;
-
 public class CLI {
 	Map<String, CLICommand> commands = new LinkedHashMap<>();
 
@@ -13,7 +11,9 @@ public class CLI {
 		for (CLICommand c : Arrays.<CLICommand> asList(new ConvertOMObject(), //
 				new PopcornPatternSearch(), //
 				new ConvertOMCD(), //
-				new ValidateOMCD() //
+				new ValidateOMCD(), //
+				new RulesToRdf(), //
+				new PopcornToSparql() //
 		)) {
 			commands.put(c.name(), c);
 		}
