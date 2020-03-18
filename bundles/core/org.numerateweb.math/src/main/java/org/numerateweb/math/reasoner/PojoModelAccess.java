@@ -111,7 +111,7 @@ public class PojoModelAccess implements IModelAccess {
 	}
 
 	@Override
-	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+	public Object createInstance(Object scope, URI property, URI uri, IReference clazz, Map<URI, Object> args) {
 		throw new UnsupportedOperationException("not implemented");
 	}
 

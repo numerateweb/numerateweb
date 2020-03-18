@@ -112,7 +112,7 @@ public class RdfModelAccess implements IModelAccess {
 	}
 
 	@Override
-	public IReference createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+	public IReference createInstance(Object scope, URI property, URI uri, IReference clazz, Map<URI, Object> args) {
 		// TODO: test this initial implementation
 		IEntity entity = manager.createNamed(uri, clazz, RDFS.TYPE_RESOURCE);
 		args.forEach((key, value) -> ((IResource) entity).addProperty(key, value));

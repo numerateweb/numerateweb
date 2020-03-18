@@ -38,8 +38,8 @@ public class PojoEvaluator extends SimpleEvaluator {
 	
 	@Override
 	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
-		Object instance = super.createInstance(uri, clazz, args);
 		Pair<Object, IReference> property = path.get().peekLast();
+		Object instance = modelAccess.createInstance(property.getFirst(), property.getSecond().getURI(), uri, clazz, args);
 		List<Object> instances = propertiesToManagedInstances.computeIfAbsent(property, k -> new ArrayList<>());
 		instances.add(instance);
 		return instance;
