@@ -6,6 +6,7 @@ import static org.numerateweb.math.model.OMObject.OMSTR;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 
 import org.numerateweb.math.eval.expr.Expr;
 import org.numerateweb.math.model.OMObject;
@@ -13,6 +14,9 @@ import org.numerateweb.math.model.OMObjectParser;
 import org.numerateweb.math.reasoner.AbstractEvaluator;
 import org.numerateweb.math.reasoner.CacheManager;
 import org.numerateweb.math.reasoner.IModelAccess;
+
+import net.enilink.komma.core.IReference;
+import net.enilink.komma.core.URI;
 
 /**
  * Simple numeric evaluator for OpenMath objects.
@@ -65,5 +69,10 @@ public class SimpleEvaluator extends AbstractEvaluator<Object> {
 		} else {
 			return OMObject.OMSTR(expr.toString());
 		}
+	}
+
+	@Override
+	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }
