@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.numerateweb.math.eval.Expressions;
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.model.OMObject.Type;
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import com.google.common.collect.Iterators;
 import net.enilink.commons.iterator.IExtendedIterator;
 import net.enilink.commons.iterator.NiceIterator;
 import net.enilink.commons.iterator.WrappedIterator;
-import net.enilink.commons.util.ValueUtils;
 import net.enilink.komma.core.IReference;
 import net.enilink.komma.core.URI;
 
@@ -43,7 +43,7 @@ public class PojoModelAccess implements IModelAccess {
 
 	private static final String GET_PREFIX = "get";
 	private static final String SET_PREFIX = "set";
-	private static final String IS_PREFIX = "is";
+	// private static final String IS_PREFIX = "is";
 
 	// the constraints for a class
 	static class ClassSpec {
@@ -85,6 +85,10 @@ public class PojoModelAccess implements IModelAccess {
 		// walk super-classes to find a possible constraint
 		while (clazz != null) {
 			ClassSpec spec = classSpecs.get(clazz.getSimpleName());
+			if (null == spec) {
+				// try lookup with the full class name as fallback
+				spec = classSpecs.get(clazz.getTypeName());
+			}
 			if (spec != null) {
 				OMObject expression = spec.constraints.get(propertyName);
 				if (expression != null) {
@@ -145,7 +149,7 @@ public class PojoModelAccess implements IModelAccess {
 			final boolean unpack = !Collection.class.isAssignableFrom(m.getParameterTypes()[0]);
 			setter = (s, arg) -> {
 				logger.trace("invoking {}.{}({})", s, m.getName(), arg);
-				return m.invoke(s, ValueUtils.getInstance().convertValue(m.getParameterTypes()[0],
+				return m.invoke(s, Expressions.getValueUtils().convertValue(m.getParameterTypes()[0],
 						unpack ? ((Collection<?>) arg).toArray()[0] : arg, null));
 			};
 		} else {
@@ -157,7 +161,7 @@ public class PojoModelAccess implements IModelAccess {
 				final boolean unpack = !Collection.class.isAssignableFrom(f.getType());
 				setter = (s, arg) -> {
 					logger.trace("setting {}.{} = {}", s, f.getName(), arg);
-					f.set(s, ValueUtils.getInstance().convertValue(f.getType(),
+					f.set(s, Expressions.getValueUtils().convertValue(f.getType(),
 							unpack ? ((Collection<?>) arg).toArray()[0] : arg, null));
 					return null;
 				};
