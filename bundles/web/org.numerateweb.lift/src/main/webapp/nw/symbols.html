@@ -8,7 +8,7 @@
 	<div id="main" data-lift="surround?with=default;at=content">
 		<div data-lift="JS.rdfa"></div>
 		<div data-lift="JS.templates"></div>
-		<div data-lift="rdfa" data-params="?library">
+		<div data-lift="rdfa" data-params="library">
 			<div class="pull-left" style="margin-bottom: 20px">
 				<h3 style="margin: 0" data-if-param="library">
 					Symbols in <span about="?library" data-lift="rdf.pname"></span>
@@ -25,6 +25,8 @@
 				<div data-embed="nw/_symbol"></div>
 			</div>
 			<div data-for="?symbol" data-items="8" class="paginator"></div>
+
+			<!-- textarea class="query"></textarea -->
 		</div>
 </body>
 </html>

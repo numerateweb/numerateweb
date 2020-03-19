@@ -45,7 +45,7 @@ public class PopcornEditingSupport extends ResourceEditingSupport {
 		}
 
 		public Rule Start(Builder<?> builder) {
-			return sequence(IriRef(), ":=", super.Start(builder));
+			return Sequence(IriRef(), "=", super.Start(builder));
 		}
 	}
 

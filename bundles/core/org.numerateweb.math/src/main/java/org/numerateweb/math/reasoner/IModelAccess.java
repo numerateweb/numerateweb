@@ -23,7 +23,12 @@ public interface IModelAccess {
 	 * Return a new instance of with the given <code>uri</code> and type
 	 * <code>clazz</code>, use the supplied args to construct/initialize the
 	 * instance.
-	 * 
+	 *
+	 * @param scope
+	 *            The container object that defines the life-cycle scope of the
+	 *            created instance.
+	 * @param property
+	 *            The property for which the instances are created
 	 * @param uri
 	 *            The uri for the instance that should be created
 	 * @param clazz
@@ -32,7 +37,7 @@ public interface IModelAccess {
 	 *            A map of intialization property URIs and values
 	 * @return The requested instance.
 	 */
-	Object createInstance(URI uri, IReference clazz, Map<URI, Object> args);
+	Object createInstance(Object scope, URI property, URI uri, IReference clazz, Map<URI, Object> args);
 
 	/**
 	 * Return an {@link OMObject} that represents the constraint on the given

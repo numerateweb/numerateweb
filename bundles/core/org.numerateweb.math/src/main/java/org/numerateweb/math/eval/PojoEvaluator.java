@@ -3,11 +3,14 @@ package org.numerateweb.math.eval;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.numerateweb.math.model.OMObject;
 import org.numerateweb.math.reasoner.CacheManager;
@@ -18,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.enilink.commons.util.Pair;
 import net.enilink.komma.core.IReference;
+import net.enilink.komma.core.URI;
 
 public class PojoEvaluator extends SimpleEvaluator {
 
@@ -25,12 +29,22 @@ public class PojoEvaluator extends SimpleEvaluator {
 
 	protected DependencyGraph<Object> dependencyGraph;
 	protected Map<Class<?>, Function<Object, Collection<String>>> ignoreLookup = new HashMap<>();
+	protected Map<Pair<Object, IReference>, List<Object>> propertiesToManagedInstances = new HashMap<>();
 
 	public PojoEvaluator(PojoModelAccess modelAccess, CacheManager cacheManager) {
 		super(modelAccess, cacheManager);
 		dependencyGraph = new DependencyGraph<>();
 	}
-
+	
+	@Override
+	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
+		Pair<Object, IReference> property = path.get().peekLast();
+		Object instance = modelAccess.createInstance(property.getFirst(), property.getSecond().getURI(), uri, clazz, args);
+		List<Object> instances = propertiesToManagedInstances.computeIfAbsent(property, k -> new ArrayList<>());
+		instances.add(instance);
+		return instance;
+	}
+	
 	public void registerIgnoreLookup(Class<?> clazz, Function<Object, Collection<String>> getter) {
 		ignoreLookup.put(clazz, getter);
 	}
@@ -105,6 +119,7 @@ public class PojoEvaluator extends SimpleEvaluator {
 
 	public void invalidate(Object subject, IReference property, boolean reevaluate) {
 		Collection<Pair<Object, IReference>> invalidatedRoots = new ArrayList<>();
+		Set<Object> invalidatedInstances = new HashSet<>();
 		dependencyGraph.invalidate(new Pair<>(subject, property), (obj, isRoot) -> {
 			@SuppressWarnings("unchecked")
 			Pair<Object, IReference> pair = (Pair<Object, IReference>) obj;
@@ -113,10 +128,28 @@ public class PojoEvaluator extends SimpleEvaluator {
 			if (isRoot) {
 				invalidatedRoots.add(pair);
 			}
+			// remove potentially created instances
+			propertiesToManagedInstances.computeIfPresent(pair, (k, list) -> {
+				if (list != null) {
+					invalidatedInstances.addAll(list);
+				}
+				return null;
+			});
 			return null;
 		});
+		// remove computations for invalidated instances from dependency graph
+		Collection<Pair<Object, IReference>> rootsForReevalution = invalidatedRoots.stream().filter(root -> {
+			if (invalidatedInstances.contains(root.getFirst())) {
+				dependencyGraph.remove(root);
+				// do not consider this node for reevaluation
+				return false;
+			} else {
+				return true;
+			}
+		}).collect(Collectors.toList());
+		
 		if (reevaluate) {
-			for (Pair<Object, IReference> pair : invalidatedRoots) {
+			for (Pair<Object, IReference> pair : rootsForReevalution) {
 				logger.trace("re-evaluating {}", pair);
 				try {
 					evaluateRoot(pair.getFirst(), pair.getSecond(), Optional.empty());
@@ -125,6 +158,5 @@ public class PojoEvaluator extends SimpleEvaluator {
 				}
 			}
 		}
-		invalidatedRoots.clear();
 	}
 }

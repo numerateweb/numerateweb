@@ -20,7 +20,7 @@ public class MathLabelProvider implements IItemLabelProvider {
 			IReference p = constraint.getOnProperty();
 			String expr = renderMath(constraint.getExpression());
 			if (p != null) {
-				return ModelUtil.getLabel(p) + " := "
+				return ModelUtil.getLabel(p) + " = "
 						+ (expr == null ? "?" : expr);
 			}
 			return expr;

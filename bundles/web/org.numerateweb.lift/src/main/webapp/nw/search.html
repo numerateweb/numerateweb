@@ -9,25 +9,72 @@
 		<script data-lift="embed?what=_mathjax"></script>
 		<style data-lift="head" type="text/css">
 /* <![CDATA[ */
-.definition .content a,.definition .prettyprint a {
+.definition {
+	position: relative;
+}
+
+.definition .content a, .definition .prettyprint a {
 	color: red;
+}
+
+.definition>* {
+	margin-bottom: 20px;
 }
 
 .definition .content {
 	background-color: #FFFFFF;
 	border: 1px solid #DDDDDD;
 	border-radius: 4px 4px 4px 4px;
-	padding: 0px 0px 20px 20px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	padding: 30px 0px 5px 20px;
+	overflow: auto;
+}
+
+.definition .caption {
+	background-color: #F5F5F5;
+	border: 1px solid #DDDDDD;
+	border-radius: 4px 0 4px 0;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 3px 7px;
+	position: absolute;
+	top: 0px;
 }
 
 .definition .prettyprint {
-	margin-top: -20px;
+	margin: -1px 0;
 	padding-top: 5px;
 	white-space: pre-line;
 }
 
+.definition .content+.prettyprint {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+.definition .prettyprint.xml {
+	white-space: pre;
+}
+
+.definition .toggle {
+	color: red;
+	position: absolute;
+	font-size: smaller;
+	right: 15px;
+}
+
 .examples {
 	margin: 10px 0;
+}
+
+.searchForm {
+	display: flex;
+}
+
+.searchForm textarea {
+	flex-grow: 1;
+	margin-right: 1em;
 }
 /* ]]> */
 </style>
@@ -37,68 +84,83 @@
 					var expr = $(this).closest(".example").find("pre").text();
 					$("textarea[name=popcorn]").val(expr);
 				});
+
+				$(".toggle").click(
+						function() {
+							$(this).parent().find(".xml").css(
+									'display',
+									function(index, val) {
+										return val != "block" ? "block"
+												: "none";
+									});
+						});
 			});
 		</script>
 		<div data-lift="popcornSearch">
-			<h4>POPCORN</h4>
-			<form action="" method="get">
-				<fieldset id="fields">
-					<textarea name="popcorn" class="form-control"></textarea>
-				</fieldset>
-				<div class="examples">
-					<div class="row">
-						<div class="col-md-4 example">
-							<div>
-								<a href="javascript:void(0)">Find all top-level expressions
-									that contain a sum or a product.</a>
-							</div>
-							<pre>.^(..+(.|(arith1:sum, arith1:product)))</pre>
+			<form action="" method="get" class="searchForm">
+				<textarea name="popcorn"></textarea>
+				<button type="submit" class="btn btn-primary">
+					<i class="glyphicon glyphicon-search"></i>
+				</button>
+			</form>
+			<div style="width: 100%; text-align: right; margin-bottom: 1em;">
+				<a data-toggle="collapse" href=".examples">Examples</a>&nbsp; <a
+					data-toggle="collapse" href="#sparqlQuery">SPARQL</a>
+			</div>
+
+			<div class="examples collapse">
+				<div class="row">
+					<div class="col-md-4 example">
+						<div>
+							<a href="javascript:void(0)">Find all top-level expressions
+								that contain a sum or a product.</a>
 						</div>
-						<div class="col-md-4 example">
-							<div>
-								<a href="javascript:void(0)">Find all lambda functions that
-									use the times operator and the plus operator.</a>
-							</div>
-							<pre>$_ -&gt; ...(.&(arith1:times, arith1:plus))</pre>
+						<pre>.^(..+(.|(arith1:sum, arith1:product)))</pre>
+					</div>
+					<div class="col-md-4 example">
+						<div>
+							<a href="javascript:void(0)">Find all lambda functions that
+								use the times operator and the plus operator.</a>
 						</div>
-						<div class="col-md-4 example">
-							<div>
-								<a href="javascript:void(0)">Find all lambda functions that
-									have $x as parameter.</a>
-							</div>
-							<pre>$x -&gt; ?</pre>
+						<pre>$_ -&gt; ...(arith1:times, arith1:plus)</pre>
+					</div>
+					<div class="col-md-4 example">
+						<div>
+							<a href="javascript:void(0)">Find all lambda functions that
+								have $x as parameter.</a>
 						</div>
+						<pre>$x -&gt; ?</pre>
 					</div>
 				</div>
-				<div id="buttons" style="padding-top: 10px">
-					<button type="submit" class="btn btn-primary">
-						<i class="glyphicon glyphicon-search"></i>
-					</button>
-				</div>
-			</form>
+			</div>
 
 			<div data-lift="rdfa"
-				prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# math: http://numerateweb.org/vocab/math#">
-				<div style="margin: 10px 0px">
-					<a data-toggle="collapse" href="#sparqlQuery">SPARQL</a>
-					<div id="sparqlQuery" class="collapse">
-						<textarea class="query form-control"></textarea>
-					</div>
+				prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# math: http://numerateweb.org/vocab/math#"
+				class="clearfix">
+				<div id="sparqlQuery" class="collapse">
+					<textarea class="query form-control"></textarea>
 				</div>
 
 				<div class="popcorn-patterns"></div>
 				<div class="row definition" about="?expr">
 					<div class="col-md-12">
 						<a href="{app}/describe?model={model}&resource={}"
-							data-lift="rdf.ref?to=href" class="pull-right"
-							style="padding-right: 5px; font-size: smaller">describe</a>
+							data-lift="rdf.ref?to=href"
+							style="position: absolute; right: 15px; font-size: smaller">describe</a>
 						<div class="content">
 							<span data-lift="math.mathml"></span>
 						</div>
-						<pre class="prettyprint" style="text-align: left"><span data-lift="math.popcorn" data-linkto="/nw/symbol?symbol={}"></span></pre>
+						<pre class="prettyprint" style="text-align: left">
+							<span data-lift="math.popcorn" data-linkto="/nw/symbol?symbol={}"></span>
+						</pre>
+						<a class="toggle" href="javascript:void(0)">XML</a>
+						<pre class="prettyprint xml"
+							style="text-align: left; display: none">
+							<span data-lift="math.xml"></span>
+						</pre>
 					</div>
 				</div>
-				<div class="paginator" data-for="?expr"></div>
+				<!-- div class="paginator" data-for="?expr"></div -->
 			</div>
 		</div>
 	</div>

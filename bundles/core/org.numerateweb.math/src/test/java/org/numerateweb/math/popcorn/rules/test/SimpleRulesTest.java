@@ -23,8 +23,6 @@ import org.parboiled.errors.ErrorUtils;
 import org.parboiled.parserunners.ReportingParseRunner;
 import org.parboiled.support.ParsingResult;
 
-import com.github.parboiled1.grappa.stack.DefaultValueStack;
-
 import net.enilink.komma.core.URI;
 import net.enilink.komma.core.URIs;
 
@@ -75,11 +73,10 @@ public class SimpleRulesTest {
 			rules = br.lines().collect(Collectors.joining("\n"));
 		}
 
-		ParsingResult<Object> result = new ReportingParseRunner<Object>(parser.Document())
-				.withValueStack(new DefaultValueStack<Object>()).run(rules.toCharArray());
+		ParsingResult<Object> result = new ReportingParseRunner<Object>(parser.Document()).run(rules.toCharArray());
 
-		if (result.isSuccess() && !result.getValueStack().isEmpty()) {
-			OMObject constraintSet = (OMObject) result.getTopStackValue();
+		if (result.matched && result.resultValue != null) {
+			OMObject constraintSet = (OMObject) result.resultValue;
 			List<OMObject> constraints = Arrays.stream(constraintSet.getArgs(), 1, constraintSet.getArgs().length)
 					.map(r -> (OMObject) r).collect(Collectors.toList());
 

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.numerateweb.math.ns.INamespaces;
-import org.numerateweb.math.search.MATCH;
+import org.numerateweb.math.search.PATTERNS;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -115,13 +115,15 @@ public class PopcornSymbols {
 		symbolMap.put("prefixes", symbol("rdf", "prefixes"));
 		symbolMap.put("prefix", symbol("rdf", "prefix"));
 
-		// Support for match expressions
-		symbolMap.put(".!", MATCH.NOT);
-		symbolMap.put(".|", MATCH.ANY);
-		symbolMap.put(".&", MATCH.ALL);
-		symbolMap.put(".^", MATCH.ROOT);
-		symbolMap.put("...", MATCH.SELF_OR_DESCENDANT);
-		symbolMap.put("..+", MATCH.DESCENDANT);
+		// Support for patterns
+		symbolMap.put(".!", PATTERNS.NONE_OF);
+		symbolMap.put(".|", PATTERNS.ANY_OF);
+		symbolMap.put(".&", PATTERNS.ALL_OF);
+		symbolMap.put(".^", PATTERNS.ROOT);
+		symbolMap.put(".,", PATTERNS.ARGUMENT);
+		symbolMap.put("...", PATTERNS.SELF_OR_DESCENDANT);
+		symbolMap.put("..+", PATTERNS.DESCENDANT);
+		symbolMap.put("?", PATTERNS.ANY);
 	}
 
 	static Map<URI, String> prefixShorthands = new HashMap<>();

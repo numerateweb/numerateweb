@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -25,7 +24,6 @@ import net.enilink.commons.iterator.NiceIterator;
 import net.enilink.commons.iterator.WrappedIterator;
 import net.enilink.commons.util.Pair;
 import net.enilink.komma.core.IReference;
-import net.enilink.komma.core.URI;
 import net.enilink.komma.model.ModelUtil;
 
 public abstract class AbstractEvaluator<E> implements IEvaluator {
@@ -89,33 +87,33 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 
 	protected final ICache<OMObject, E> parsedExpressionCache;
 
-	static class Path<T> {
+	protected static class Path<T> {
 		final ArrayDeque<T> pathElements = new ArrayDeque<>();
 		final Set<T> elementSet = new HashSet<>();
 
 		public Path() {
 		}
 
-		void push(T element) {
+		public void push(T element) {
 			pathElements.add(element);
 			elementSet.add(element);
 		}
 
-		void pop() {
+		public void pop() {
 			T last = pathElements.removeLast();
 			elementSet.remove(last);
 		}
 
-		boolean contains(T element) {
+		public boolean contains(T element) {
 			return elementSet.contains(element);
 		}
 
-		T peekLast() {
+		public T peekLast() {
 			return pathElements.peekLast();
 		}
 	}
 
-	private final ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
+	protected final ThreadLocal<Path<Pair<Object, IReference>>> path = new ThreadLocal<Path<Pair<Object, IReference>>>() {
 		protected Path<Pair<Object, IReference>> initialValue() {
 			return new Path<>();
 		};
@@ -316,10 +314,5 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 	@Override
 	public IExtendedIterator<?> getInstances(IReference clazz) {
 		return modelAccess.getInstances(clazz);
-	}
-
-	@Override
-	public Object createInstance(URI uri, IReference clazz, Map<URI, Object> args) {
-		return modelAccess.createInstance(uri, clazz, args);
 	}
 }

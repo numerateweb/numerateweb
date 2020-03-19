@@ -1,0 +1,8 @@
+@media print {
+	a[href]:after {
+		content: none !important;
+	}
+	pre {
+		background-color: white !important;
+	}
+}

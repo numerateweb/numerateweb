@@ -74,13 +74,13 @@ public class MathRulesParser extends BaseRdfParser {
 	}
 
 	public Rule PrefixDeclaration() {
-		return sequence("Prefix:", PNAME_NS(), WS(), IRI_REF(), setNamespace((String) pop(1), (IriRef) pop()), WS());
+		return Sequence("Prefix:", PNAME_NS(), WS(), IRI_REF(), setNamespace((String) pop(1), (IriRef) pop()), WS());
 	}
 
 	// allow local names without colons
 	public Rule IriRef() {
-		return sequence(firstOf(IRI_REF(), PrefixedName(), //
-				sequence(PN_LOCAL(), push(new QName("", (String) pop())))), WS());
+		return Sequence(FirstOf(IRI_REF(), PrefixedName(), //
+				Sequence(PN_LOCAL(), push(new QName("", (String) pop())))), WS());
 	}
 
 	public URI toURI(Object value) {
@@ -103,7 +103,7 @@ public class MathRulesParser extends BaseRdfParser {
 	}
 
 	public Rule Constraint(Var<URI> classIri) {
-		return sequence(IriRef(), ":=", popcornParser.Expr(), //
+		return Sequence(IriRef(), "=", popcornParser.Expr(), //
 				// convert constraint to OpenMath object
 				push(OMA(OMS(RULES.CONSTRAINT), OMR(classIri.get()), OMR(toURI(pop(1))), (OMObject) pop())) //
 		);
@@ -117,17 +117,17 @@ public class MathRulesParser extends BaseRdfParser {
 	}
 
 	public Rule Constraints(Var<URI> classIri) {
-		return sequence(Constraint(classIri), zeroOrMore(",", Constraint(classIri)));
+		return Sequence(Constraint(classIri), ZeroOrMore(",", Constraint(classIri)));
 	}
 
 	public Rule ClassFrame() {
 		Var<URI> classIri = new Var<>();
-		return sequence("Class:", IriRef(), classIri.set(toURI(pop())),
-				zeroOrMore(sequence("Constraints:", Constraints(classIri))));
+		return Sequence("Class:", IriRef(), classIri.set(toURI(pop())),
+				ZeroOrMore(Sequence("Constraint:", Constraints(classIri))));
 	}
 
 	public Rule Document() {
-		return sequence(push(LIST_BEGIN), zeroOrMore(firstOf(PrefixDeclaration(), ClassFrame())), EOI,
+		return Sequence(push(LIST_BEGIN), ZeroOrMore(FirstOf(PrefixDeclaration(), ClassFrame())), EOI,
 				pushConstraints());
 	}
 

@@ -19,6 +19,7 @@ import net.enilink.komma.core.IReference;
 import net.enilink.komma.core.ITransaction;
 import net.enilink.komma.em.concepts.IResource;
 import net.enilink.vocab.rdf.RDF;
+import net.enilink.vocab.rdfs.RDFS;
 
 public class Reasoner {
 	private IEvaluator evaluator;
@@ -49,10 +50,11 @@ public class Reasoner {
 
 	public void run(final net.enilink.vocab.owl.Class clazz) {
 		IQuery<?> query = em.createQuery(SparqlUtils.prefix("rdf", RDF.NAMESPACE) + //
+				SparqlUtils.prefix("rdfs", RDFS.NAMESPACE) + //
 				SparqlUtils.prefix("mathrl", NWRULES.NAMESPACE) + //
 				"SELECT DISTINCT ?instance ?property ?currentValue WHERE { " + //
 				(clazz != null ? "?instance a ?class . " : "") + //
-				"?instance a [mathrl:constraint [ mathrl:onProperty ?property ]] . " + //
+				"?instance a [ rdfs:subClassOf* [ mathrl:constraint [ mathrl:onProperty ?property ] ] ] . " + //
 				"optional { ?instance ?property ?currentValue }" + //
 				"}");
 		if (clazz != null) {

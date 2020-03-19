@@ -11,6 +11,9 @@ import com.google.common.base.Objects;
 /**
  * A simple graph to capture computation dependencies e.g. within a set of
  * mathematical formulas.
+ * The formula <code>A = B + C</code> would be captured by this graph as <code>{(A -&gt; B), (A -&gt; C)}</code>.
+ * 
+ * @see <a href="https://en.wikipedia.org/wiki/Dependency_graph">https://en.wikipedia.org/wiki/Dependency_graph</a>
  *
  * @param <T>
  *            The node type
@@ -18,26 +21,19 @@ import com.google.common.base.Objects;
 public class DependencyGraph<T> {
 	static class Node<T> {
 		final T value;
-		final Set<Node<T>> predecessors = new HashSet<>();
-		final Set<Node<T>> successors = new HashSet<>();
+		final Set<Node<T>> incoming = new HashSet<>();
+		final Set<Node<T>> outgoing = new HashSet<>();
 
 		Node(T value) {
 			this.value = value;
 		}
 
-		boolean addSuccessor(Node<T> succ) {
-			if (successors.add(succ)) {
-				succ.predecessors.add(this);
+		boolean addIncoming(Node<T> in) {
+			if (incoming.add(in)) {
+				in.outgoing.add(this);
 				return true;
 			}
 			return false;
-		}
-
-		void clearSuccessors() {
-			successors.forEach(succ -> {
-				succ.predecessors.remove(this);
-			});
-			successors.clear();
 		}
 
 		@Override
@@ -59,10 +55,9 @@ public class DependencyGraph<T> {
 			Node<?> other = (Node<?>) obj;
 			return Objects.equal(this.value, other.value);
 		}
-
 	}
 
-	final Map<T, Node<T>> nodes = new HashMap<>();
+	protected final Map<T, Node<T>> nodes = new HashMap<>();
 
 	protected Node<T> node(T value) {
 		return nodes.get(value);
@@ -73,7 +68,49 @@ public class DependencyGraph<T> {
 	}
 
 	public boolean addDependency(T from, T to) {
-		return ensureNode(from).addSuccessor(ensureNode(to));
+		return ensureNode(to).addIncoming(ensureNode(from));
+	}
+	
+	public boolean contains(T value) {
+		return nodes.containsKey(value);
+	}
+	
+	/**
+	 * Removes node and its dependencies completely from the graph.
+	 * 
+	 * @param key The corresponding identifier
+	 * @return <code>true</code> if the node exists in this graph, else <code>false</code>
+	 */
+	public boolean remove(T key) {
+		Node<T> node = node(key);
+		if (node != null) {
+			remove(node);
+			return true;
+		}
+		return false;
+	}
+	
+	protected void remove(Node<T> node) {
+		// remove edges from other nodes to node
+		node.incoming.forEach(in -> {
+			in.outgoing.remove(node);
+			if (in.incoming.isEmpty() && in.outgoing.isEmpty()) {
+				// also remove in node if it has no other connections left
+				nodes.remove(in.value);
+			}
+		});
+		node.incoming.clear();
+		// remove edges from node to other nodes
+		node.outgoing.forEach(out -> {
+			out.incoming.remove(node);
+			if (out.incoming.isEmpty() && out.outgoing.isEmpty()) {
+				// also remove out node if it has no other connections left
+				nodes.remove(out.value);
+			}
+		});
+		node.outgoing.clear();
+		// delete node object from map
+		nodes.remove(node.value);
 	}
 
 	public void invalidate(T value, BiFunction<T, Boolean, Void> callback) {
@@ -81,9 +118,9 @@ public class DependencyGraph<T> {
 		if (node != null) {
 			Set<Node<T>> seen = new HashSet<>();
 			invalidate(node, callback, seen);
-			// refresh all outgoing dependencies of processed nodes
+			// remove invalidated nodes from dependency graph
 			for (Node<T> s : seen) {
-				s.clearSuccessors();
+				remove(s);
 			}
 		} else {
 			// node has never existed or been cleaned up in an earlier removal
@@ -94,10 +131,10 @@ public class DependencyGraph<T> {
 	protected void invalidate(final Node<T> node, BiFunction<T, Boolean, Void> callback, Set<Node<T>> seen) {
 		if (seen.add(node)) {
 			// notify listener that node is invalidated
-			callback.apply(node.value, node.predecessors.isEmpty());
+			callback.apply(node.value, node.incoming.isEmpty());
 
-			// refresh all predecessor nodes
-			node.predecessors.forEach(pred -> {
+			// refresh all dependent nodes
+			node.incoming.forEach(pred -> {
 				invalidate(pred, callback, seen);
 			});
 		}

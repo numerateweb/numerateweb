@@ -1,16 +1,16 @@
 Prefix: : <http://example.org/>
 
 Class: Rectangle
-Constraints:
-:area := @a * @b,
-:perimeter := 2.0 * @a + 2.0 * @b
+Constraint:
+area = @a * @b,
+perimeter = 2.0 * @a + 2.0 * @b
 
 Class: Circle
-Constraints:
-:area := pi * @r ^ 2,
-:perimeter := 2.0 * pi * @r
+Constraint:
+area = pi * @r ^ 2,
+perimeter = 2.0 * pi * @r
 
 Class: Extrusion
-Constraints:
-:volume := @area(@base) * @h,
-:surface := 2.0 * @area(@base) + @perimeter(@base) * @h
+Constraint:
+volume = @area(@base) * @h,
+surface = 2.0 * @area(@base) + @perimeter(@base) * @h

@@ -1,4 +1,4 @@
-package org.numerateweb.math.ui.actions;
+package org.numerateweb.math.ui.commands;
 
 import java.util.Collection;
 import java.util.Iterator;

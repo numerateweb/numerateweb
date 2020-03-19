@@ -1,18 +1,18 @@
 Prefix: : <http://example.org/>
 
 Class: Rectangle
-Constraints:
-:area := @a * @b
+Constraint:
+area = @a * @b
 
 Class: Rectangles
-Constraints:
-:areaSum := sum(@@rectangles, $r -> @area($r)),
-:sumIs9  := @areaSum = 9.0
+Constraint:
+areaSum = sum(@@rectangles, $r -> @area($r)),
+sumIs9  = @areaSum = 9.0
 
 Class: NAry
-Constraints:
-:add      := @a + @b + @c,
-:multiply := @a * @b * @c,
-:divide   := @a / @b / @c,
-:subtract := @a - @b - @c,
-:power    := @a ^ @b ^ @c
+Constraint:
+add      = @a + @b + @c,
+multiply = @a * @b * @c,
+divide   = @a / @b / @c,
+subtract = @a - @b - @c,
+power    = @a ^ @b ^ @c
