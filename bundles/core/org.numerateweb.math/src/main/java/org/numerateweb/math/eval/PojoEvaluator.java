@@ -55,6 +55,23 @@ public class PojoEvaluator extends SimpleEvaluator {
 		dependencyGraph.addDependency(from, to);
 	}
 
+	/**
+	 * Evaluate in the root context, saves prior context path information (if any)
+	 * and restores it after the evaluation.
+	 */
+	public Result evaluateRoot(Object subject, IReference property, Optional<IReference> restriction) {
+		Path<Pair<Object, IReference>> outerPath = path.get();
+		if (null == outerPath.peekLast()) {
+			return evaluate(subject, property, restriction);
+		}
+		try {
+			path.set(new Path<Pair<Object, IReference>>());
+			return evaluate(subject, property, restriction);
+		} finally {
+			path.set(outerPath);
+		}
+	}
+
 	@Override
 	public Result evaluate(Object subject, IReference property, Optional<IReference> restriction) {
 		// check if already in cache
@@ -135,7 +152,7 @@ public class PojoEvaluator extends SimpleEvaluator {
 			for (Pair<Object, IReference> pair : rootsForReevalution) {
 				logger.trace("re-evaluating {}", pair);
 				try {
-					evaluate(pair.getFirst(), pair.getSecond(), Optional.empty());
+					evaluateRoot(pair.getFirst(), pair.getSecond(), Optional.empty());
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}

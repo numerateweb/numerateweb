@@ -91,6 +91,9 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 		final ArrayDeque<T> pathElements = new ArrayDeque<>();
 		final Set<T> elementSet = new HashSet<>();
 
+		public Path() {
+		}
+
 		public void push(T element) {
 			pathElements.add(element);
 			elementSet.add(element);

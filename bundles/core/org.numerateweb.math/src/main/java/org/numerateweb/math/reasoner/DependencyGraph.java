@@ -122,6 +122,9 @@ public class DependencyGraph<T> {
 			for (Node<T> s : seen) {
 				remove(s);
 			}
+		} else {
+			// node has never existed or been cleaned up in an earlier removal
+			callback.apply(value, true);
 		}
 	}
 
