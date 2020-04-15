@@ -5,12 +5,15 @@ import static org.numerateweb.math.eval.Helpers.binaryObj;
 import static org.numerateweb.math.eval.Helpers.reduce;
 import static org.numerateweb.math.eval.Helpers.unaryDouble;
 import static org.numerateweb.math.eval.Helpers.unaryObj;
+import static org.numerateweb.math.eval.Helpers.valueToIterator;
 import static org.numerateweb.math.eval.Helpers.valueToSet;
 import static org.numerateweb.math.eval.Helpers.valueToStream;
 
 import java.math.MathContext;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -24,6 +27,7 @@ import java.util.stream.Stream;
 import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.Expr;
 
+import net.enilink.commons.util.Pair;
 import net.enilink.commons.util.ValueType;
 import net.enilink.commons.util.ValueUtils;
 import net.enilink.komma.core.IReference;
@@ -174,6 +178,7 @@ public class Expressions {
 		functions.put(CDBASE + "/rounding1#floor", unaryDouble(Math::floor));
 		functions.put(CDBASE + "/rounding1#trunc", unaryDouble(Expressions::truncate));
 
+		constants.put(CDBASE + "/sys#null", new ConstantExpr(null));
 		constants.put(CDBASE + "/nums1#pi", new ConstantExpr(Math.PI));
 		constants.put(CDBASE + "/nums1#e", new ConstantExpr(Math.E));
 		constants.put(CDBASE + "/nums1#NaN", new ConstantExpr(Double.NaN));
@@ -181,6 +186,18 @@ public class Expressions {
 
 		// not actually part of the nums1 CD, but NaN is useless without this check
 		functions.put(CDBASE + "/nums1#isNaN", unaryObj(arg -> Double.isNaN(values.doubleValue(arg))));
+
+		functions.put(CDBASE + "/out#println", args -> { 
+			Iterator<?> it = valueToIterator(args);
+			while (it.hasNext()) {
+				System.out.print(it.next());
+				if (it.hasNext()) {
+					System.out.print(" ");
+				}
+			}
+			System.out.println();
+			return null;
+		});
 	}
 
 	static Object divide(Object a, Object b) {
@@ -269,6 +286,25 @@ public class Expressions {
 			throw t;
 		} finally {
 			values.pop();
+		}
+	}
+
+	public static Object withVars(List<Pair<String, Object>> bindings, Supplier<Object> func) {
+		Map<String, Stack<Object>> vars = currentVars.get();
+		List<Stack<?>> stacks = bindings.stream().map(nameValue -> {
+			Stack<Object> valueStack = vars.computeIfAbsent(nameValue.getFirst(), varName -> {
+				return new Stack<>();
+			});
+			valueStack.push(nameValue.getSecond());
+			return valueStack;
+		}).collect(Collectors.toList());
+		try {
+			return func.get();
+		} catch (Throwable t) {
+			t.printStackTrace();
+			throw t;
+		} finally {
+			stacks.forEach(stack -> stack.pop());
 		}
 	}
 

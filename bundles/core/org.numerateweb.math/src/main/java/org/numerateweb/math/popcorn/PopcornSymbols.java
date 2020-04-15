@@ -124,6 +124,9 @@ public class PopcornSymbols {
 		symbolMap.put("...", PATTERNS.SELF_OR_DESCENDANT);
 		symbolMap.put("..+", PATTERNS.DESCENDANT);
 		symbolMap.put("?", PATTERNS.ANY);
+
+		// null symbol
+		symbolMap.put("null", symbol("sys", "null"));
 	}
 
 	static Map<URI, String> prefixShorthands = new HashMap<>();

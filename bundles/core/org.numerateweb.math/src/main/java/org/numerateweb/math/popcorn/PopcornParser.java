@@ -160,7 +160,9 @@ public class PopcornParser extends BaseRdfParser {
 
 	public Rule Expr() {
 		Var<Boolean> nsChanged = new Var<>(false);
-		return Sequence(Optional(PrefixDecl(), nsChanged.set(true)), BlockExpr(), resetNamespaces(nsChanged.get()));
+		return Sequence(Optional(PrefixDecl(), nsChanged.set(true)), //
+				FirstOf(Sequence("begin", BlockExpr(), "end"), BlockExpr()), //
+				resetNamespaces(nsChanged.get()));
 	}
 
 	public boolean updateNamespaces(String prefix, URI namespace) {
@@ -215,7 +217,8 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule IntervalExpr() {
-		return Sequence(AddExpr(), Optional(FirstOf("until", ".."), startList(), AddExpr(), push(OMA(popList(objClass)))));
+		return Sequence(AddExpr(),
+				Optional(FirstOf("until", ".."), startList(), AddExpr(), push(OMA(popList(objClass)))));
 	}
 
 	public Rule AddExpr() {
@@ -239,8 +242,7 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	/**
-	 * Rule that captures an n-ary application of an operator
-	 * <code>op</code>.
+	 * Rule that captures an n-ary application of an operator <code>op</code>.
 	 * <p>
 	 * A <code>op</code> B <code>op</code> C <code>op</code> ...
 	 * </p>
@@ -259,7 +261,8 @@ public class PopcornParser extends BaseRdfParser {
 	 */
 	@DontLabel
 	public Rule BinaryOp(Object operator, Object operand) {
-		return OneOrMore(operator, pushSymbol(match()), operand, push(OMA((OMObject) pop(1), (OMObject) pop(1), (OMObject) pop())));
+		return OneOrMore(operator, pushSymbol(match()), operand,
+				push(OMA((OMObject) pop(1), (OMObject) pop(1), (OMObject) pop())));
 	}
 
 	public Rule NegExpr() {
@@ -323,7 +326,10 @@ public class PopcornParser extends BaseRdfParser {
 		Var<List<OMObject>> vars = new Var<>();
 		return Sequence(push(LIST_BEGIN),
 				// list of variables with Optional attributions
-				CommaList(Sequence(Var(), Optional(AttributionSuffix()))), vars.set(popList(objClass)), "->", Expr(),
+				CommaList(Sequence(Var(), Optional(AttributionSuffix()))), vars.set(popList(objClass)), "->", //
+				// block expressions where statements are separated by ; are not allowed here
+				// parentheses have to be used
+				AssignExpr(), //
 				push(OMBIND(OMS(symbol("fns1", "lambda")), vars.get(), (OMObject) pop())));
 	}
 
@@ -373,12 +379,12 @@ public class PopcornParser extends BaseRdfParser {
 	}
 
 	public Rule IfExpr() {
-		return Sequence(push(LIST_BEGIN), pushSymbol("prog1", "if"), "if", Expr(), "then", Expr(), "else", Expr(),
-				"endif", push(OMA(popList(objClass))));
+		return Sequence(push(LIST_BEGIN), pushSymbol("prog1", "if"), "if", Expr(), "then", Expr(),
+				Optional("else", Expr()), "end", push(OMA(popList(objClass))));
 	}
 
 	public Rule WhileExpr() {
-		return Sequence(push(LIST_BEGIN), pushSymbol("prog1", "while"), "while", Expr(), "do", Expr(), "endwhile",
+		return Sequence(push(LIST_BEGIN), pushSymbol("prog1", "while"), "while", Expr(), "do", Expr(), "end",
 				push(OMA(popList(objClass))));
 	}
 

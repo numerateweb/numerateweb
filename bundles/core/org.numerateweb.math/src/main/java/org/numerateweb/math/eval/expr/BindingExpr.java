@@ -32,6 +32,7 @@ public class BindingExpr implements Expr {
 
 	@Override
 	public Object eval() {
-		throw new UnsupportedOperationException();
+		// the value of this expression is the binding expression itself
+		return this;
 	}
 }

@@ -103,7 +103,7 @@ public abstract class PopcornBuilderBase<T> implements Builder<T> {
 				Iterator<PopcornExpr> it = args.iterator();
 				it.next();
 				return new PopcornExpr("if " + it.next() + " then " + it.next()
-						+ " else " + it.next() + " endif");
+						+ " else " + it.next() + " end");
 			}
 		});
 		symbolConverters.put(symbol("prog1", "while"), new Converter() {
@@ -112,7 +112,7 @@ public abstract class PopcornBuilderBase<T> implements Builder<T> {
 				Iterator<PopcornExpr> it = args.iterator();
 				it.next();
 				return new PopcornExpr("while " + it.next() + " do "
-						+ it.next() + " endwhile");
+						+ it.next() + " end");
 			}
 		});
 

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Represents a simple function on one or more arguments.
+ * Represents a call of a built-in function on one or more arguments.
  */
-public class FunctionExpr implements Expr {
+public class BuiltinCallExpr implements Expr {
 	/**
 	 * The function that is used to compute a value.
 	 */
@@ -17,11 +17,11 @@ public class FunctionExpr implements Expr {
 	 */
 	protected final Expr[] args;
 
-	public FunctionExpr(Function<Object, Object> f, List<Expr> args) {
+	public BuiltinCallExpr(Function<Object, Object> f, List<Expr> args) {
 		this(f, args.toArray(new Expr[args.size()]));
 	}
 
-	public FunctionExpr(Function<Object, Object> f, Expr... args) {
+	public BuiltinCallExpr(Function<Object, Object> f, Expr... args) {
 		this.f = f;
 		this.args = args;
 	}

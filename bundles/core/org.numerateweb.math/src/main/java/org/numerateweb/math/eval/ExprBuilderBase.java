@@ -12,13 +12,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.numerateweb.math.eval.expr.CallExpr;
 import org.numerateweb.math.eval.expr.AttributedExpr;
 import org.numerateweb.math.eval.expr.BindingExpr;
 import org.numerateweb.math.eval.expr.ConstantExpr;
 import org.numerateweb.math.eval.expr.ConstructExpr;
 import org.numerateweb.math.eval.expr.EvalWithRestriction;
 import org.numerateweb.math.eval.expr.Expr;
-import org.numerateweb.math.eval.expr.FunctionExpr;
+import org.numerateweb.math.eval.expr.BuiltinCallExpr;
 import org.numerateweb.math.eval.expr.IfElseExpr;
 import org.numerateweb.math.eval.expr.MapOperatorExpr;
 import org.numerateweb.math.eval.expr.ResourceSetExpr;
@@ -27,6 +28,7 @@ import org.numerateweb.math.eval.expr.SymbolExpr;
 import org.numerateweb.math.eval.expr.ValueExpr;
 import org.numerateweb.math.eval.expr.ValueSetExpr;
 import org.numerateweb.math.eval.expr.VarExpr;
+import org.numerateweb.math.eval.expr.WhileExpr;
 import org.numerateweb.math.model.Builder;
 import org.numerateweb.math.ns.INamespaces;
 
@@ -200,6 +202,13 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 			}
 		});
 
+		symbolConverters.put(CDBASE + "/prog1#while", new Converter() {
+			@Override
+			public Expr convert(List<Expr> args) {
+				return new WhileExpr(args);
+			}
+		});
+
 		symbolConverters.put(CDBASE + "/ctor1#generate", new Converter() {
 			@Override
 			public Expr convert(List<Expr> args) {
@@ -231,25 +240,29 @@ abstract class ExprBuilderBase<T> implements Builder<T> {
 			public T end() {
 				Expr head = objects.get(0);
 				objects.remove(0);
-
-				String symbolUri = head.toString();
-				Converter converter = symbolConverters.get(symbolUri);
-				if (converter != null) {
-					Expr result = converter.convert(objects);
-					// converter may return null, if it cannot handle this
-					// specific application
-					if (result != null) {
+				
+				if (head instanceof SymbolExpr) {
+					String symbolUri = head.toString();
+					Converter converter = symbolConverters.get(symbolUri);
+					if (converter != null) {
+						Expr result = converter.convert(objects);
+						// converter may return null, if it cannot handle this
+						// specific application
+						if (result != null) {
+							return parent.build(result);
+						}
+					}
+	
+					Function<Object, Object> function = Expressions.functions.get(symbolUri);
+					if (function != null) {
+						Expr result = new BuiltinCallExpr(function, objects);
 						return parent.build(result);
 					}
-				}
-
-				Function<Object, Object> function = Expressions.functions.get(symbolUri);
-				if (function != null) {
-					Expr result = new FunctionExpr(function, objects);
+					throw new IllegalArgumentException("Unsupported symbol " + symbolUri);
+				} else {
+					Expr result = new CallExpr(head, objects);
 					return parent.build(result);
 				}
-
-				throw new IllegalArgumentException("Unsupported symbol " + head);
 			}
 		};
 	}

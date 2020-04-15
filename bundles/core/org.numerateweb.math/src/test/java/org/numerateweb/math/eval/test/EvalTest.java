@@ -14,6 +14,9 @@ import org.numerateweb.math.util.PopcornParseUtils;
 public class EvalTest {
 	Expr parse(String expr) {
 		ParseResult<Expr> result = PopcornParseUtils.parse(expr, INamespaces.empty(), new ExprBuilder());
+		if (!result.matched()) {
+			throw new IllegalArgumentException(result.errorMessage());
+		}
 		return result.value;
 	}
 
@@ -24,7 +27,7 @@ public class EvalTest {
 	Number evalNumber(String expr) {
 		return (Number) parse(expr).eval();
 	}
-	
+
 	@Test
 	public void testBasicOperators() {
 		assertEquals(8, evalNumber("2^3").intValue());
@@ -51,5 +54,57 @@ public class EvalTest {
 		assertEquals(eval("{2,3}"), eval("set1:intersect({1,2,3},{2,3,4},{7,2,6,3})"));
 		assertEquals(eval("{}"), eval("set1:intersect({1,2,3},{},{7,2,6,3})"));
 		assertEquals(eval("{{2,{},10},3}"), eval("set1:intersect({1,{2,{},10},3},{{2,{},10},3,4})"));
+	}
+
+	@Test
+	public void testLambdas() {
+		assertEquals(10, evalNumber("$lambda := $x -> $x * 2; $lambda(5)").intValue());
+		assertEquals(12, evalNumber("($x -> $x * 2)(6)").intValue());
+	}
+
+	@Test
+	public void testWhile() {
+		assertEquals(1, evalNumber("$i := 5; while $i > 1 do $i := $i - 1 end; $i").intValue());
+		// sum of first n integers
+		assertEquals(5 * 6 / 2,
+				evalNumber("$i := 5; $sum := 0; while $i > 0 do $sum := $sum + $i; $i := $i - 1 end; $sum")
+						.intValue());
+	}
+
+	@Test
+	public void testComplexExpression() {
+		String expression = String.join(";\n", //
+				"$degrees := $r -> $r * 180 / pi", //
+				"$radians := $d -> $d * pi / 180", //
+				"$sigma := -20", //
+				"$r_2 := 80; $r_0 := 50; $r_2 := 85", //
+				"$kappa_2 := 30", "$kappa_0 := $degrees(arctan(tan($radians($kappa_2))) * cos($radians($sigma)))", //
+				"$xb := $r_2 * cos($radians($kappa_2))", //
+				"$yb := $r_2 * sin($radians($kappa_2))", //
+				"$zb := 0", //
+				"$xm := $xb + $r_0 * cos($radians($kappa_0))", //
+				"$ym := $yb + $r_0 * sin($radians($kappa_0))*cos($radians($sigma))", //
+				"$zm := $yb + $r_0 * sin($radians($kappa_0))*sin($radians($sigma))", //
+				"$alpha0 := if $sigma <0 then 90 else -90 end", //
+
+				"$z0_prev := null", //
+				"$diff_z0 := 1", //
+				"while $diff_z0 > 0.001 do\n" + //
+						String.join(";\n", //
+								"$x0 := $xm - $r_0 * cos($radians($alpha0))", //
+								"$y0 := $ym + $r_0 * sin($radians($alpha0))*cos($radians($sigma))", //
+								"$z0 := $r_0 * sin($radians($alpha0))*sin($radians($sigma))", //
+								// "out:println($diff_z0 + \" - \" + $z0_prev)", //
+								"if $z0_prev != null then $diff_z0 := abs($z0 - $z0_prev) end", //
+								"$z0_prev := $z0", //
+
+								"$alpha2 := $degrees(arctan($y0/$x0))", //
+								"$x2 := cos($radians($alpha2)) * $r_2", //
+								"$y2 := sin($radians($alpha2)) * $r_2", //
+
+								"$alpha0 := $degrees(arctan(($y2 - $ym) / cos($radians($sigma)) / ($xm - $x2)))" //
+						) + //
+						"end\n");
+		eval(expression);
 	}
 }
