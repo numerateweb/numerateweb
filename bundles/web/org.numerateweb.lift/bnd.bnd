@@ -1,0 +1,2 @@
+Lift-Packages: org.numerateweb.lift
+Bundle-Activator: org.numerateweb.lift.Activator

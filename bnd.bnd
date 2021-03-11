@@ -1,0 +1,6 @@
+Bundle-Version: ${project.version}
+-exportcontents: !*.internal*, org.numerateweb.*
+Import-Package: !org.osgi.service.component.annotations, *
+Bundle-ActivationPolicy: lazy
+-removeheaders: Bundle-Developers
+-dsannotations-options: norequirements
