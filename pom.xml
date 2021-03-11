@@ -1,146 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.numerateweb</groupId>
 	<artifactId>numerateweb-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
 	<properties>
-		<tycho-version>1.5.0</tycho-version>
-		<scala.version>2.11.1</scala.version>
-		<path.to.root>../../..</path.to.root>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<komma.version>1.5.2</komma.version>
+		<enilink.version>1.4.0-SNAPSHOT</enilink.version>
+		<scala.version>2.13.2</scala.version>
+		<karaf.tooling.version>4.3.0</karaf.tooling.version>
+
+		<bnd.version>4.3.1</bnd.version>
 	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<configuration>
-					<executionEnvironment>JavaSE-1.8</executionEnvironment>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-					<target>
-						<artifact>
-							<groupId>org.numerateweb</groupId>
-							<artifactId>target-platform</artifactId>
-							<version>1.0.0</version>
-						</artifact>
-					</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<excludeResources>
-						<excludeResource>**/*.scala</excludeResource>
-					</excludeResources>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>plugin-source</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>plugin-source</goal>
+							<goal>bnd-process</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho-version}</version>
-			</plugin>
 		</plugins>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-repository-plugin</artifactId>
-					<version>${tycho-version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-director-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<configuration>
-						<formats>
-							<linux>tar.gz</linux>
-						</formats>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<executions>
-						<execution>
-							<id>attached-p2-metadata</id>
-							<phase>package</phase>
-							<goals>
-								<goal>p2-metadata</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>target-platform-configuration</artifactId>
-					<version>${tycho-version}</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.7</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.2.0</version>
-				</plugin>
-				<plugin>
 					<groupId>net.alchim31.maven</groupId>
 					<artifactId>scala-maven-plugin</artifactId>
-					<version>3.2.1</version>
+					<version>4.3.1</version>
 					<configuration>
 						<scalaVersion>${scala.version}</scalaVersion>
 					</configuration>
 					<executions>
 						<execution>
 							<goals>
+								<goal>add-source</goal>
 								<goal>compile</goal>
 								<goal>testCompile</goal>
 							</goals>
 						</execution>
 					</executions>
 				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>biz.aQute.bnd</groupId>
+					<artifactId>bnd-maven-plugin</artifactId>
+					<version>${bnd.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.karaf.tooling</groupId>
+					<artifactId>karaf-maven-plugin</artifactId>
+					<version>${karaf.tooling.version}</version>
+					<extensions>true</extensions>
+				</plugin>
+
+				<!-- Plugins for copying of Webjars and Java dependencies into the projects. -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
@@ -153,7 +91,10 @@
 								<goal>unpack-dependencies</goal>
 							</goals>
 							<configuration>
-								<outputDirectory>.</outputDirectory>
+								<includeGroupIds>org.webjars, org.webjars.bower,
+									org.webjars.npm
+								</includeGroupIds>
+								<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 								<includeScope>runtime</includeScope>
 								<includes>META-INF/resources/webjars/**</includes>
 								<excludes>**/src/**</excludes>
@@ -167,11 +108,31 @@
 								<goal>copy-dependencies</goal>
 							</goals>
 							<configuration>
-								<excludeGroupIds>org.webjars, org.webjars.bower, org.webjars.npm</excludeGroupIds>
+								<excludeGroupIds>org.webjars, org.webjars.bower,
+									org.webjars.npm
+								</excludeGroupIds>
 								<stripVersion>true</stripVersion>
-								<outputDirectory>lib/</outputDirectory>
+								<outputDirectory>${project.build.outputDirectory}/lib</outputDirectory>
 								<includeScope>runtime</includeScope>
 							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.1.1</version>
+					<configuration>
+						<archive>
+							<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+						</archive>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>test-jar</goal>
+							</goals>
 						</execution>
 					</executions>
 				</plugin>
@@ -191,11 +152,10 @@
 										<versionRange>[0.0,)</versionRange>
 										<goals>
 											<goal>unpack-dependencies</goal>
-											<goal>copy-dependencies</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<execute />
+										<execute/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -204,52 +164,46 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>.keep</exclude>
+				</excludes>
+			</resource>
+
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+					<include>plugin.properties</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<directory>src/main/webapp</directory>
+				<excludes>
+					<exclude>.keep</exclude>
+				</excludes>
+			</resource>
+		</resources>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>doclint-java8-disable</id>
-			<activation>
-				<jdk>[1.8,)</jdk>
-			</activation>
-			<properties>
-				<javadoc.opts>-Xdoclint:none</javadoc.opts>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>updatesite</id>
-			<build>
-				<!-- plugins>
-					<plugin>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins -->
-			</build>
-
-			<modules>
-				<module>updatesite</module>
-			</modules>
-		</profile>
-	</profiles>
+	<repositories>
+		<repository>
+			<id>oss-sonatype-snapshots</id>
+			<name>OSS Sonatype Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 	<modules>
-		<module>target-platform</module>
-
-		<module>bundles/core/org.numerateweb.math</module>
-		<module>bundles/core/org.numerateweb.math.edit</module>
-
-		<module>bundles/web/org.numerateweb.lift</module>
-		<module>bundles/web/org.numerateweb.website</module>
-
-		<module>bundles/ui/org.numerateweb.math.edit.ui</module>
+		<module>bundles/core</module>
+		<module>bundles/web</module>
+		<module>bundles/ui</module>
 	</modules>
 </project>

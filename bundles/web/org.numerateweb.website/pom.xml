@@ -7,8 +7,14 @@
     <artifactId>numerateweb-web</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
+
   <groupId>org.numerateweb</groupId>
   <artifactId>org.numerateweb.website</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.numerateweb</groupId>
+      <artifactId>org.numerateweb.lift</artifactId>
+      <version>${project.version}</version>
+    </dependency></dependencies>
 </project>

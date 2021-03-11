@@ -2,11 +2,11 @@ gunit Rules;
 
 Constraint:
 <<
-prop := sum(1..3, $x -> $x * 2)
+prop = sum(1..3, $x -> $x * 2)
 >> OK
 
 <<
-my:prop := sum(1..3, $x -> $x * 2)
+my:prop = sum(1..3, $x -> $x * 2)
 >> OK
 
 PrefixDeclaration:
@@ -19,14 +19,14 @@ Document:
 Prefix: myns: <http://example.org/>
 
 Class: MyClass
-Constraints:
-myns:prop := sum(1..3, $x -> $x * 2),
-myns:prop2 := sum(1..3, $x -> $x * 2)
-Constraints:
-myns:prop := sum(1..3, $x -> $x * 2),
-myns:prop2 := sum(1..3, $x -> $x * 2)
+Constraint:
+myns:prop = sum(1..3, $x -> $x * 2),
+myns:prop2 = sum(1..3, $x -> $x * 2)
+Constraint:
+myns:prop = sum(1..3, $x -> $x * 2),
+myns:prop2 = sum(1..3, $x -> $x * 2)
 
 Class: MyClass2
-Constraints:
-myns:prop := 2 + 3 * 4
+Constraint:
+myns:prop = 2 + 3 * 4
 >> OK

@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.numerateweb.math.MathActivator;
 import org.numerateweb.math.model.OMObjectBuilder;
 import org.numerateweb.math.om.cd.OMCDParser;
 import org.numerateweb.math.util.stax.ParseException;
@@ -128,10 +127,10 @@ public class OMReader {
 			}
 		}
 		if (!errors.isEmpty()) {
-			final MultiStatus status = new MultiStatus(MathActivator.PLUGIN_ID,
+			final MultiStatus status = new MultiStatus("org.numerateweb.math",
 					0, "Failed to read one or more content dictionaries", null);
 			for (String error : errors) {
-				status.add(new Status(Status.ERROR, MathActivator.PLUGIN_ID,
+				status.add(new Status(Status.ERROR, "org.numerateweb.math",
 						error));
 			}
 			return status;
