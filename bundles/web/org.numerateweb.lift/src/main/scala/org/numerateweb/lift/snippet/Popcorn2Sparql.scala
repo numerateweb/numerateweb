@@ -1,20 +1,13 @@
 package org.numerateweb.lift.snippet
 
-import net.liftweb.http.SHtml
-import net.liftweb.http.js.JsCmd
-import net.liftweb.util.Helpers._
-import net.liftweb.util.Helpers
-import net.liftweb.util.Helpers.strToCssBindPromoter
-import scala.xml.NodeSeq
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JE._
+import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsCmds.SetValById
-import net.liftweb.http.S
-import net.liftweb.json.JsonAST.JString
+import net.liftweb.util.Helpers._
 import org.numerateweb.math.search.PopcornPatternToSparql
-import net.enilink.lift.util.Globals
-import net.liftweb.http.js.JsCmds
-import org.numerateweb.math.ns.Namespaces
-import net.enilink.komma.core.URIs
+
+import scala.xml.NodeSeq
 
 class Popcorn2Sparql {
   def render = {

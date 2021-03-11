@@ -1,14 +1,6 @@
 package org.numerateweb.lift
 
-import scala.Option.option2Iterable
-import scala.collection.JavaConversions._
-
-import org.osgi.framework.BundleActivator
-import org.osgi.framework.BundleContext
-
-import net.liftweb.http.LiftFilter
-import net.liftweb.http.LiftRulesMocker.toLiftRules
-import net.liftweb.osgi.OsgiBootable
+import org.osgi.framework.{BundleActivator, BundleContext}
 
 object Activator {
   private var bundleContext: BundleContext = _

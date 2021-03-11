@@ -4,7 +4,7 @@ import scala.xml.NodeSeq
 import org.numerateweb.math.search.PopcornPatternToSparql
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
-import net.enilink.lift.util.Globals
+import net.enilink.platform.lift.util.Globals
 
 class PopcornSearch {
   def render = {

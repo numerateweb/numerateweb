@@ -1,49 +1,29 @@
 package org.numerateweb.lift.snippet
 
-import java.net.URL
-
-import scala.collection.JavaConversions._
-import scala.xml.Node
-import scala.xml.NodeSeq
-import scala.xml.NodeSeq.seqToNodeSeq
-import scala.xml.Text
-import scala.xml.XML
-import scala.xml.parsing.NoBindingFactoryAdapter
-
-import org.numerateweb.lift.util.OMXmlBuilderWithMathml
-import org.numerateweb.lift.util.PopcornBuilderWithHtml
-import org.numerateweb.math.rdf.vocab.Object
-import org.numerateweb.math.ns.Namespaces
+import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
+import net.enilink.komma.core.IReference
+import net.enilink.komma.model.ModelUtil
+import net.enilink.platform.lift.util.{CurrentContext, Globals}
+import net.liftweb.common.Box.box2Option
+import net.liftweb.common.{Empty, Full}
+import net.liftweb.http.{DispatchSnippet, S}
+import net.liftweb.util.{ClearNodes, Helpers}
+import org.numerateweb.lift.util.{OMXmlBuilderWithMathml, PopcornBuilderWithHtml}
 import org.numerateweb.math.ns.Namespaces
 import org.numerateweb.math.rdf.NWMathParser
 import org.numerateweb.math.rdf.rules.Constraint
-
-import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
-
-import net.enilink.komma.model.ModelUtil
-import net.enilink.komma.core.IReference
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.transform.TransformerException
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.URIResolver
-import javax.xml.transform.dom.DOMResult
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.stream.StreamSource
-import net.enilink.lift.util.CurrentContext
-import net.enilink.lift.util.Globals
-import net.liftweb.common.Box.box2Option
-import net.liftweb.common.Empty
-import net.liftweb.common.Full
-import net.liftweb.http.DispatchSnippet
-import net.liftweb.http.S
-import net.liftweb.util.ClearNodes
-import net.liftweb.util.Helpers
+import org.numerateweb.math.rdf.vocab.Object
 import org.numerateweb.math.xml.OMXmlBuilder
-import javax.xml.transform.OutputKeys
+
 import java.io.StringWriter
-import javax.xml.transform.stream.StreamResult
-import scala.xml.Utility
-import scala.xml.Unparsed
+import java.net.URL
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.{OutputKeys, TransformerException, TransformerFactory, URIResolver}
+import javax.xml.transform.dom.{DOMResult, DOMSource}
+import javax.xml.transform.stream.{StreamResult, StreamSource}
+import scala.xml.NodeSeq.seqToNodeSeq
+import scala.xml._
+import scala.xml.parsing.NoBindingFactoryAdapter
 
 object Transformers {
   val basePath = "xsl/"

@@ -1,6 +1,5 @@
 package org.numerateweb.lift.util
 
-import scala.collection.JavaConversions._
 import scala.xml.Utility
 import org.numerateweb.math.ns.INamespaces
 import org.numerateweb.math.popcorn.PopcornBuilder
