@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.numerateweb</groupId>
+		<artifactId>numerateweb-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
+	</parent>
+
+	<artifactId>numerateweb-launch-equinox</artifactId>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>at.bestsolution</groupId>
+				<artifactId>maven-osgi-exec-plugin</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>exec-osgi</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<mode>restart</mode>
+					<programArguments>
+						<programArgument>-console</programArgument>
+						<programArgument>-consoleLog</programArgument>
+						<programArgument>-application</programArgument>
+						<programArgument>net.enilink.platform.core.application</programArgument>
+						<programArgument>-clearPersistedState</programArgument>
+						<programArgument>-clean</programArgument>
+						<programArgument>-noExit</programArgument>
+					</programArguments>
+					<vmProperties>
+						<property>
+							<name>org.osgi.service.http.port</name>
+							<value>8080</value>
+						</property>
+						<property>
+							<name>net.enilink.models.dir</name>
+							<value>${project.basedir}/workspace/models</value>
+						</property>
+					</vmProperties>
+					<startLevels>
+						<net.enilink.commons.logging>0</net.enilink.commons.logging>
+						<net.enilink.platform.lift>4</net.enilink.platform.lift>
+						<org.eclipse.equinox.http.jetty>4</org.eclipse.equinox.http.jetty>
+						<org.eclipse.core.runtime>0</org.eclipse.core.runtime>
+						<org.eclipse.equinox.common>2</org.eclipse.equinox.common>
+						<org.apache.felix.scr>2</org.apache.felix.scr>
+						<org.eclipse.equinox.event>2</org.eclipse.equinox.event>
+						<org.eclipse.equinox.simpleconfigurator>1</org.eclipse.equinox.simpleconfigurator>
+						<org.eclipse.osgi>-1</org.eclipse.osgi>
+					</startLevels>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>configure</id>
+
+			<modules>
+				<module>../..</module>
+			</modules>
+
+			<dependencies>
+				<dependency>
+					<groupId>net.enilink.platform</groupId>
+					<artifactId>net.enilink.platform.equinox.feature</artifactId>
+					<version>${enilink.version}</version>
+					<type>pom</type>
+				</dependency>
+				<dependency>
+					<groupId>org.numerateweb</groupId>
+					<artifactId>org.numerateweb.website</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>at.bestsolution</groupId>
+						<artifactId>maven-osgi-exec-plugin</artifactId>
+						<configuration>
+							<mode>configure</mode>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>efxclipse-releases</id>
+			<url>http://maven.bestsolution.at/efxclipse-releases/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>efxclipse-snapshots</id>
+			<url>http://maven.bestsolution.at/efxclipse-snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+</project>

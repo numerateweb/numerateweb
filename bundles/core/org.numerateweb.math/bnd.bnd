@@ -1,1 +1,7 @@
+Bundle-SymbolicName: ${project.artifactId};singleton:=true
 Bundle-ClassPath: ., lib/commons-compress.jar
+DynamicImport-Package: org.parboiled.*
+Import-Package: !org.osgi.service.component.annotations, \
+  com.github.luben.zstd;resolution:=optional, \
+  org.brotli.dec;resolution:=optional, \
+  org.tukaani.xz;resolution:=optional, *

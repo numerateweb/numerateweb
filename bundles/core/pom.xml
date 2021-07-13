@@ -14,6 +14,22 @@
 	<artifactId>numerateweb-core</artifactId>
 	<packaging>pom</packaging>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bnd-process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 	<modules>
 		<module>org.numerateweb.math</module>
 		<module>org.numerateweb.math.edit</module>

@@ -1,2 +1,3 @@
 Lift-Packages: org.numerateweb.lift
 Bundle-Activator: org.numerateweb.lift.Activator
+Import-Package: !org.osgi.service.component.annotations, !com.sun.org.apache.xalan.internal.xsltc.trax, *
