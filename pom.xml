@@ -80,7 +80,7 @@
 									org.webjars.npm
 								</includeGroupIds>
 								<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-								<includeScope>runtime</includeScope>
+								<includeScope>provided</includeScope>
 								<includes>META-INF/resources/webjars/**</includes>
 								<excludes>**/src/**</excludes>
 								<overWriteIfNewer>true</overWriteIfNewer>
