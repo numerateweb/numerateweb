@@ -1,5 +1,6 @@
 package org.numerateweb.math.rdf;
 
+import com.google.inject.name.Names;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
@@ -49,7 +50,8 @@ public class RdfHelpers {
 						uow.begin();
 						bind(UnitOfWork.class).toInstance(uow);
 						bind(IUnitOfWork.class).toInstance(uow);
-						bind(IDataManager.class).toProvider(IDataManagerFactory.class);
+						bind(IDataManager.class).annotatedWith(Names.named("unmanaged"))
+								.toProvider(IDataManagerFactory.class);
 					}
 
 					@Singleton
