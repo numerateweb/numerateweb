@@ -115,14 +115,14 @@
 							<a href="javascript:void(0)">Find all top-level expressions
 								that contain a sum or a product.</a>
 						</div>
-						<pre>.^(..+(.|(arith1:sum, arith1:product)))</pre>
+						<pre>.^(..+(.|(sum, product)))</pre>
 					</div>
 					<div class="col-md-4 example">
 						<div>
 							<a href="javascript:void(0)">Find all lambda functions that
 								use the times operator and the plus operator.</a>
 						</div>
-						<pre>$_ -&gt; ...(arith1:times, arith1:plus)</pre>
+						<pre>$_ -&gt; ...(times, plus)</pre>
 					</div>
 					<div class="col-md-4 example">
 						<div>
