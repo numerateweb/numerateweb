@@ -30,14 +30,14 @@
    <extension
          point="net.enilink.komma.model.uriMapRules">
       <rule
-            pattern="http://numerateweb.org/vocab/math/"
+            pattern="http://numerateweb.org/vocab/math/(.*)"
             priority="20"
-            replacement="platform:/plugin/org.numerateweb.math/META-INF/ontologies/">
+            replacement="platform:/plugin/org.numerateweb.math/META-INF/ontologies/$1.ttl">
       </rule>
       <rule
             pattern="http://numerateweb.org/vocab/math"
             priority="30"
-            replacement="platform:/plugin/org.numerateweb.math/META-INF/ontologies/math">
+            replacement="platform:/plugin/org.numerateweb.math/META-INF/ontologies/math.ttl">
       </rule>
    </extension>
 

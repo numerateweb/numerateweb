@@ -1,0 +1,53 @@
+# baseURI: http://numerateweb.org/vocab/math/rules
+# imports: http://numerateweb.org/vocab/math
+# prefix: mathrl
+
+@prefix math: <http://numerateweb.org/vocab/math#> .
+@prefix mathrl: <http://numerateweb.org/vocab/math/rules#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://numerateweb.org/vocab/math/rules>
+  rdf:type owl:Ontology ;
+  owl:imports <http://numerateweb.org/vocab/math> ;
+.
+mathrl:Constraint
+  rdf:type owl:Class ;
+  rdfs:comment "Represents a rule for computing the value of the associated property." ;
+  rdfs:subClassOf owl:Thing ;
+  rdfs:subClassOf [
+      rdf:type owl:Restriction ;
+      owl:allValuesFrom math:Object ;
+      owl:onProperty mathrl:expression ;
+    ] ;
+  rdfs:subClassOf [
+      rdf:type owl:Restriction ;
+      owl:allValuesFrom rdf:Property ;
+      owl:onProperty mathrl:onProperty ;
+    ] ;
+  rdfs:subClassOf [
+      rdf:type owl:Restriction ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onProperty mathrl:expression ;
+    ] ;
+  rdfs:subClassOf [
+      rdf:type owl:Restriction ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger ;
+      owl:onProperty mathrl:onProperty ;
+    ] ;
+.
+mathrl:constraint
+  rdf:type owl:ObjectProperty ;
+  rdfs:range mathrl:Constraint ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+.
+mathrl:expression
+  rdf:type owl:ObjectProperty ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+.
+mathrl:onProperty
+  rdf:type owl:ObjectProperty ;
+  rdfs:subPropertyOf owl:topObjectProperty ;
+.
