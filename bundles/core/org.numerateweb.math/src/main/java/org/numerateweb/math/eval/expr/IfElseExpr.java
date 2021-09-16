@@ -3,11 +3,15 @@ package org.numerateweb.math.eval.expr;
 import java.util.List;
 
 import org.numerateweb.math.model.OMObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents an if-then-else expression.
  */
 public class IfElseExpr implements Expr {
+	private static final Logger log = LoggerFactory.getLogger(IfElseExpr.class);
+
 	/**
 	 * Expressions for the three blocks that are evaluated to compute the condition
 	 * and branch results.
@@ -31,7 +35,7 @@ public class IfElseExpr implements Expr {
 		try {
 			cond = args[0].eval();
 		} catch (Exception e) {
-			System.err.println("Evaluation of IF condition failed: " + e.getMessage());
+			log.debug("Evaluation of IF condition failed", e);
 			cond = false;
 		}
 		if (Boolean.TRUE.equals(cond) || OMObject.LOGIC1_TRUE.equals(cond)) {

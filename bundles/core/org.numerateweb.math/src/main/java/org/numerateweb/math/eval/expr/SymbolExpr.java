@@ -26,6 +26,6 @@ public class SymbolExpr implements Expr {
 
 	@Override
 	public Object eval() {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("Unable to evaluate symbol '" + uri + "'");
 	}
 }
