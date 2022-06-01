@@ -1,0 +1,32 @@
+= Welcome to the Numerate Web for Java repository.
+
+This repository contains the Java implementation of the proposed Numerate Web languages and algorithms.
+
+== Structure of the repository
+
+This repository is structured as follows:
+
+bundles/core/org.numerateweb.math:: The following core components:
+  - `math.eval` - algorithms for the evaluation of mathematical expressions
+  - `math.model` - Java implementation of OpenMath objects and builder interface for the creation of OpenMath objects in different formats
+  - `math.om.cd` - parser and importer for OpenMath Content Dictionaries
+  - `math.popcorn` - parser and generator (builder) for the POPCORN-LD language
+  - `math.popcorn.rules` - parser and generator for the POPCORN-LD-based rule language
+  - `math.rdf` - OpenMath-RDF implementation including rules and Content Dictionaries
+  - `math.reasoner` - forward-chaining reasoner for Numerate Web rules based on _math.eval_; can be used with RDF-based data and POJOs
+  - `math.search` - SPARQL-based search on OpenMath-RDF using the _patterns_ Content Dictionary
+bundles/core/org.numerateweb.math.edit:: KOMMA-based editing components for mathematical objects and rules.
+bundles/core/ui:: Extensions for KOMMA-based editors that run on top of the Eclipse Platform (RCP or RAP).
+bundles/core/web:: Web application for browsing and searching OpenMath Content Dictionaries encoded in RDF.
+openmath-cd:: Mirror of the associated `rdf` and `patterns` Content Dictionaries.
+
+== Building all modules
+- This is a plain Maven project.
+- A full build can be executed via `mvn package`
+
+== Building and running the web application
+
+- change to the folder `launch/equinox`
+- run `mvn test -Pconfigure -DskipTests` to initialize or update a launch configuration
+- run `mvn test` to (re-)start the server instance
+- The application should now be available at: [http://localhost:8080/nw/](http://localhost:8080/nw/)
