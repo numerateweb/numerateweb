@@ -20,12 +20,15 @@ bundles/core/ui:: Extensions for KOMMA-based editors that run on top of the Ecli
 bundles/core/web:: Web application for browsing and searching OpenMath Content Dictionaries encoded in RDF.
 openmath-cd:: Mirror of the associated `rdf` and `patterns` Content Dictionaries.
 
+== Required Java version
+- *The project requires Java 11*.
+- The implementation is not yet compatible with Java 17. This will be fixed when switchting to KOMMA 1.6.0.
+
 == Building all modules
 - This is a plain Maven project.
 - A full build can be executed via `mvn package`
 
 == Building and running the web application
-
 - change to the folder `launch/equinox`
 - run `mvn test -Pconfigure -DskipTests` to initialize or update a launch configuration
 - run `mvn test` to (re-)start the server instance
