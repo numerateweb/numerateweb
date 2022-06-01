@@ -1,6 +1,6 @@
 Bundle-Version: ${project.version}
 -exportcontents: !*.internal*, org.numerateweb.*
-Import-Package: !org.osgi.service.component.annotations, *
+Import-Package: !org.osgi.service.component.annotations, com.google.common.*; version="[25,31]", *
 Bundle-ActivationPolicy: lazy
 -removeheaders: Bundle-Developers
 -dsannotations-options: norequirements
