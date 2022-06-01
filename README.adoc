@@ -30,6 +30,8 @@ openmath-cd:: Mirror of the associated `rdf` and `patterns` Content Dictionaries
 
 == Building and running the web application
 - change to the folder `launch/equinox`
+- initially run `curl https://raw.githubusercontent.com/numerateweb/openmath-cd/master/openmath.ttl > workspace/models/openmath.ttl`
+  to download the RDF version of the OpenMath Content Dictionaries
 - run `mvn test -Pconfigure -DskipTests` to initialize or update a launch configuration
 - run `mvn test` to (re-)start the server instance
 - The application should now be available at: http://localhost:8080/nw/
