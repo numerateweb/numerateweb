@@ -29,4 +29,4 @@ openmath-cd:: Mirror of the associated `rdf` and `patterns` Content Dictionaries
 - change to the folder `launch/equinox`
 - run `mvn test -Pconfigure -DskipTests` to initialize or update a launch configuration
 - run `mvn test` to (re-)start the server instance
-- The application should now be available at: [http://localhost:8080/nw/](http://localhost:8080/nw/)
+- The application should now be available at: http://localhost:8080/nw/
