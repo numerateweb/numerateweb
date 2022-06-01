@@ -1,2 +1,3 @@
 Bundle-SymbolicName: ${project.artifactId};singleton:=true
 Bundle-Activator: org.numerateweb.math.edit.MathEditPlugin$Implementation
+DynamicImport-Package: org.parboiled.*, net.enilink.komma.parser, net.enilink.komma.parser.*
