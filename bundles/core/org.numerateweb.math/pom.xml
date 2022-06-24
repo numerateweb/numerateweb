@@ -38,6 +38,11 @@
 			<version>${komma.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>net.enilink.komma</groupId>
+			<artifactId>net.enilink.komma.parser</artifactId>
+			<version>${komma.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
