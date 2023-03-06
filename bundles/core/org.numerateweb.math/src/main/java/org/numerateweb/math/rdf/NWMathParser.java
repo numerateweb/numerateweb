@@ -38,6 +38,7 @@ public class NWMathParser {
 		NamespaceBinding(String prefix, URI uri, NamespaceBinding previous) {
 			this.prefix = prefix;
 			this.uri = uri;
+			this.previous = previous;
 		}
 
 		String getPrefix(String uri) {
@@ -209,18 +210,6 @@ public class NWMathParser {
 
 	public <T> T createOMF(Literal l, Builder<T> builder) {
 		return builder.f(Double.parseDouble(l.getValue().getLabel()));
-	}
-
-	protected <T> T toPNameOrUriString(Object value, Builder<T> builder) {
-		if (value instanceof Literal) {
-			return createOMSTR((Literal) value, builder);
-		}
-		URI uri = ((IReference) value).getURI();
-		if (uri != null) {
-			String prefix = allNamespaces.getPrefix(uri.namespace());
-			return builder.str(prefix == null ? "<" + uri.toString() + ">" : prefix + ":" + uri.localPart());
-		}
-		return builder.str(value.toString());
 	}
 
 	public <T> T createOMA(Application application, Builder<T> builder) {
