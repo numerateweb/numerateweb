@@ -3,6 +3,9 @@ package org.numerateweb.math.manchester;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.enilink.komma.core.*;
+import net.enilink.komma.literals.LiteralConverter;
+import net.enilink.vocab.xmlschema.XMLSCHEMA;
 import org.numerateweb.math.ns.INamespaces;
 
 import net.enilink.komma.parser.sparql.tree.BNode;
@@ -14,28 +17,16 @@ import net.enilink.komma.parser.sparql.tree.IriRef;
 import net.enilink.komma.parser.sparql.tree.Literal;
 import net.enilink.komma.parser.sparql.tree.QName;
 import net.enilink.komma.parser.sparql.tree.visitor.TreeWalker;
-import net.enilink.komma.core.IEntityManager;
-import net.enilink.komma.core.IReference;
-import net.enilink.komma.core.IValue;
-import net.enilink.komma.core.URI;
-import net.enilink.komma.core.URIs;
 
 /**
  * Convert a value into the representation that is used by KOMMA.
- * 
  */
 public class ValueConverter {
-	private IEntityManager em;
 	private Map<BNode, IReference> bNodes = new HashMap<BNode, IReference>();
 	private INamespaces ns;
 
-	public ValueConverter(IEntityManager manager, INamespaces ns) {
-		this.em = manager;
+	public ValueConverter(INamespaces ns) {
 		this.ns = ns;
-	}
-
-	public IEntityManager getEntityManager() {
-		return em;
 	}
 
 	protected URI toURI(Object value) {
@@ -64,7 +55,7 @@ public class ValueConverter {
 		if (value instanceof BNode) {
 			IReference reference = bNodes.get(value);
 			if (reference == null) {
-				bNodes.put((BNode) value, reference = em.create());
+				bNodes.put((BNode) value, reference = new BlankNode());
 			}
 			return reference;
 		} else if (value instanceof IriRef || value instanceof QName) {
@@ -74,35 +65,39 @@ public class ValueConverter {
 			((Literal) value).accept(new TreeWalker<Void>() {
 				@Override
 				public Boolean integerLiteral(IntegerLiteral numericLiteral,
-						Void data) {
-					result[0] = em.toValue(numericLiteral.getValue());
+				                              Void data) {
+					result[0] = new net.enilink.komma.core.Literal(Integer.toString(numericLiteral.getValue()),
+							XMLSCHEMA.TYPE_INTEGER);
 					return false;
 				}
 
 				@Override
 				public Boolean booleanLiteral(BooleanLiteral booleanLiteral,
-						Void data) {
-					result[0] = em.toValue(booleanLiteral.getValue());
+				                              Void data) {
+					result[0] = new net.enilink.komma.core.Literal(Boolean.toString(booleanLiteral.getValue()),
+							XMLSCHEMA.TYPE_BOOLEAN);
 					return false;
 				}
 
 				@Override
 				public Boolean doubleLiteral(DoubleLiteral doubleLiteral,
-						Void data) {
-					result[0] = em.toValue(doubleLiteral.getValue());
+				                             Void data) {
+					result[0] = new net.enilink.komma.core.Literal(Double.toString(doubleLiteral.getValue()),
+							XMLSCHEMA.TYPE_DECIMAL);
 					return false;
 				}
 
 				@Override
 				public Boolean genericLiteral(GenericLiteral genericLiteral,
-						Void data) {
-					result[0] = em.createLiteral(genericLiteral.getLabel(),
-							(URI) toValue(genericLiteral.getDatatype()),
-							genericLiteral.getLanguage());
+				                              Void data) {
+					String lang = genericLiteral.getLanguage();
+					result[0] = lang == null ? new net.enilink.komma.core.Literal(genericLiteral.getLabel(),
+							(URI) toValue(genericLiteral.getDatatype())) :
+							new net.enilink.komma.core.Literal(genericLiteral.getLabel(), lang);
 					return false;
 				}
 			}, null);
-			return (IValue) result[0];
+			return result[0];
 		}
 		return (IReference) value;
 	}

@@ -33,7 +33,7 @@ public class RulesParserTest extends GUnitBaseTestCase {
 			// ensure that full text is matched until EOF
 			rule = parser.Sequence(rule, MathRulesParser.EOI);
 
-			ParsingResult<Object> result = new ReportingParseRunner<Object>(rule).run(textInfo.text);
+			ParsingResult<Object> result = new ReportingParseRunner<>(rule).run(textInfo.text);
 
 			boolean passed = !result.matched && textInfo.result == Result.FAIL
 					|| result.matched && textInfo.result == Result.OK;

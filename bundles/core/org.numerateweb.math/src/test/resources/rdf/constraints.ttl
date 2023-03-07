@@ -1,0 +1,615 @@
+@prefix :       <http://example.org/vocab#> .
+@prefix komma:  <http://enilink.net/vocab/komma#> .
+@prefix math:   <http://numerateweb.org/vocab/math#> .
+@prefix mathrl: <http://numerateweb.org/vocab/math/rules#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:Resource  mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                                mathrl:expression  [ rdf:type        math:Application ;
+                                                     math:arguments  ( [ rdf:type        math:Application ;
+                                                                         math:arguments  ( [ rdf:type        math:Application ;
+                                                                                             math:arguments  ( :price ) ;
+                                                                                             math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                           ]
+                                                                                           [ rdf:type        math:Application ;
+                                                                                             math:arguments  ( :economicLife ) ;
+                                                                                             math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                           ]
+                                                                                         ) ;
+                                                                         math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                                       ]
+                                                                       [ rdf:type        math:Application ;
+                                                                         math:arguments  ( [ rdf:type        math:Application ;
+                                                                                             math:arguments  ( :uses ) ;
+                                                                                             math:operator   <http://www.openmath.org/cd/rdf#valueset>
+                                                                                           ]
+                                                                                           [ rdf:type        math:Binding ;
+                                                                                             math:binder     <http://www.openmath.org/cd/fns1#lambda> ;
+                                                                                             math:body       [ rdf:type        math:Application ;
+                                                                                                               math:arguments  ( :depreciation
+                                                                                                                                 [ rdf:type   math:Variable ;
+                                                                                                                                   math:name  "w"
+                                                                                                                                 ]
+                                                                                                                               ) ;
+                                                                                                               math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                             ] ;
+                                                                                             math:variables  ( [ rdf:type   math:Variable ;
+                                                                                                                 math:name  "w"
+                                                                                                               ]
+                                                                                                             )
+                                                                                           ]
+                                                                                         ) ;
+                                                                         math:operator   <http://www.openmath.org/cd/arith1#sum>
+                                                                       ]
+                                                                     ) ;
+                                                     math:operator   <http://www.openmath.org/cd/arith1#plus>
+                                                   ] ;
+                                mathrl:onProperty  :depreciation
+                              ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :price ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :uses ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#valueset>
+                                                                                        ]
+                                                                                        [ rdf:type        math:Binding ;
+                                                                                          math:binder     <http://www.openmath.org/cd/fns1#lambda> ;
+                                                                                          math:body       [ rdf:type        math:Application ;
+                                                                                                            math:arguments  ( :investmentCosts
+                                                                                                                              [ rdf:type   math:Variable ;
+                                                                                                                                math:name  "w"
+                                                                                                                              ]
+                                                                                                                            ) ;
+                                                                                                            math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                          ] ;
+                                                                                          math:variables  ( [ rdf:type   math:Variable ;
+                                                                                                              math:name  "w"
+                                                                                                            ]
+                                                                                                          )
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#sum>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#plus>
+                                                ] ;
+                             mathrl:onProperty  :investmentCosts
+                           ] .
+
+:ProcessWithGas  mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                                      mathrl:expression  [ rdf:type        math:Application ;
+                                                           math:arguments  ( [ rdf:type        math:Application ;
+                                                                               math:arguments  ( :inputPowerGas
+                                                                                                 [ rdf:type        math:Application ;
+                                                                                                   math:arguments  ( :resource ) ;
+                                                                                                   math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                 ]
+                                                                                               ) ;
+                                                                               math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                             ]
+                                                                             [ rdf:type        math:Application ;
+                                                                               math:arguments  ( :resourceCount ) ;
+                                                                               math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                             ]
+                                                                             [ rdf:type        math:Application ;
+                                                                               math:arguments  ( :fullLoadHours ) ;
+                                                                               math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                             ]
+                                                                           ) ;
+                                                           math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                         ] ;
+                                      mathrl:onProperty  :energyGas
+                                    ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyGas ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyPriceGas
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :masterData
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :plan ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :energyCostsGas
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyCostsElectrical ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyCostsGas ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#plus>
+                                                ] ;
+                             mathrl:onProperty  :energyCosts
+                           ] .
+
+<http://www.openmath.org/cd/rdf#resource>
+        rdf:type  math:Symbol .
+
+<http://www.openmath.org/cd/arith1#divide>
+        rdf:type  math:Symbol .
+
+:MasterData  rdf:type  owl:Class .
+
+:Plan   mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type    math:Literal ;
+                                                                      math:value  "3600"^^xsd:long
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :partsPerHour ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                ] ;
+                             mathrl:onProperty  :taktTime
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :partsPerYear ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :workHoursPerYear
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :masterData ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                ] ;
+                             mathrl:onProperty  :partsPerHour
+                           ] .
+
+<http://www.openmath.org/cd/rdf#value>
+        rdf:type  math:Symbol .
+
+:Process  mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                               mathrl:expression  [ rdf:type        math:Application ;
+                                                    math:arguments  ( [ rdf:type        math:Application ;
+                                                                        math:arguments  ( :partsPerHour
+                                                                                          [ rdf:type        math:Application ;
+                                                                                            math:arguments  ( :plan ) ;
+                                                                                            math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                          ]
+                                                                                        ) ;
+                                                                        math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                      ]
+                                                                      [ rdf:type        math:Application ;
+                                                                        math:arguments  ( :maxPartsPerHour ) ;
+                                                                        math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                      ]
+                                                                    ) ;
+                                                    math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                  ] ;
+                               mathrl:onProperty  :utilization
+                             ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :processTime ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :capacity
+                                                                                                                                [ rdf:type        math:Application ;
+                                                                                                                                  math:arguments  ( :resource ) ;
+                                                                                                                                  math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                                                ]
+                                                                                                                              ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                                                        ]
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :taktTime
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :plan ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/rounding1#ceiling>
+                                                ] ;
+                             mathrl:onProperty  :resourceCount
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :inputPowerElectrical
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :resource ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :resourceCount ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :fullLoadHours ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :energyElectrical
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :resourceCount ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :requiredSpace
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :resource ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :occupanyCostRate
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :masterData
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :plan ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :occupancyCosts
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( :energyCostsElectrical ) ;
+                                                  math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                ] ;
+                             mathrl:onProperty  :energyCosts
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :utilization ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :workHoursPerYear
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :masterData
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :plan ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :fullLoadHours
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :machineHourRate ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                            [ rdf:type    math:Literal ;
+                                                                                                              math:value  3600
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                                                        ]
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :processTime ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :partsPerCycle ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                ] ;
+                             mathrl:onProperty  :costsPerPart
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :resourceCount ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :maintenanceCosts
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :resource ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :uses
+                                                                                                                                [ rdf:type        math:Application ;
+                                                                                                                                  math:arguments  ( :resource ) ;
+                                                                                                                                  math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                                                ]
+                                                                                                                              ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#valueset>
+                                                                                                            ]
+                                                                                                            [ rdf:type        math:Binding ;
+                                                                                                              math:binder     <http://www.openmath.org/cd/fns1#lambda> ;
+                                                                                                              math:body       [ rdf:type        math:Application ;
+                                                                                                                                math:arguments  ( :maintenanceCosts
+                                                                                                                                                  [ rdf:type   math:Variable ;
+                                                                                                                                                    math:name  "w"
+                                                                                                                                                  ]
+                                                                                                                                                ) ;
+                                                                                                                                math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                                              ] ;
+                                                                                                              math:variables  ( [ rdf:type   math:Variable ;
+                                                                                                                                  math:name  "w"
+                                                                                                                                ]
+                                                                                                                              )
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/arith1#sum>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#plus>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :maintenanceCosts
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :resourceCount ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :depreciation
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :resource ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :imputedInterest ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :occupancyCosts ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :maintenanceCosts ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyCosts ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#plus>
+                                                ] ;
+                             mathrl:onProperty  :costsPerYear
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :resourceCount ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :investmentCosts
+                                                                                                                                [ rdf:type        math:Application ;
+                                                                                                                                  math:arguments  ( :resource ) ;
+                                                                                                                                  math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                                                ]
+                                                                                                                              ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                                                        ]
+                                                                                        [ rdf:type    math:Literal ;
+                                                                                          math:value  2
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :interestRate
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :masterData
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :plan ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :imputedInterest
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( :processTime
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :resource ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                ] ;
+                             mathrl:onProperty  :processTime
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :costsPerYear ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :fullLoadHours ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                ] ;
+                             mathrl:onProperty  :machineHourRate
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyElectrical ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :energyPriceElectrical
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :masterData
+                                                                                                            [ rdf:type        math:Application ;
+                                                                                                              math:arguments  ( :plan ) ;
+                                                                                                              math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                                            ]
+                                                                                                          ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :energyCostsElectrical
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :resourceCount ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :capacity
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :resource ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :partsPerCycle
+                           ] ;
+        mathrl:constraint  [ rdf:type           mathrl:Constraint ;
+                             mathrl:expression  [ rdf:type        math:Application ;
+                                                  math:arguments  ( [ rdf:type        math:Application ;
+                                                                      math:arguments  ( [ rdf:type    math:Literal ;
+                                                                                          math:value  3600
+                                                                                        ]
+                                                                                        [ rdf:type        math:Application ;
+                                                                                          math:arguments  ( :processTime ) ;
+                                                                                          math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                                        ]
+                                                                                      ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/arith1#divide>
+                                                                    ]
+                                                                    [ rdf:type        math:Application ;
+                                                                      math:arguments  ( :partsPerCycle ) ;
+                                                                      math:operator   <http://www.openmath.org/cd/rdf#value>
+                                                                    ]
+                                                                  ) ;
+                                                  math:operator   <http://www.openmath.org/cd/arith1#times>
+                                                ] ;
+                             mathrl:onProperty  :maxPartsPerHour
+                           ] .
+
+<http://example.org/processes/rules>
+        rdf:type     owl:Ontology ;
+        rdfs:label   "Mathematical Rules" ;
+        owl:imports  <http://numerateweb.org/vocab/math/rules> , <http://example.org/vocab/processes> , <http://enilink.net/vocab/komma> .
+
+<urn:symbol:gd>  rdf:type  math:Symbol .
+
+<http://www.openmath.org/cd/arith1#times>
+        rdf:type  math:Symbol .

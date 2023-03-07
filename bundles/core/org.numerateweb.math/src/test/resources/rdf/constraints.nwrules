@@ -1,0 +1,35 @@
+Prefix: : <http://example.org/vocab#>
+
+Class: Resource
+Constraint:
+investmentCosts = @price + sum(@@uses, $w -> @investmentCosts($w)),
+depreciation = @price / @economicLife + sum(@@uses, $w -> @depreciation($w))
+
+Class: Process
+Constraint:
+partsPerCycle = @resourceCount * @capacity(@resource),
+energyCosts = @energyCostsElectrical,
+machineHourRate = @costsPerYear / @fullLoadHours,
+energyElectrical = @inputPowerElectrical(@resource) * @resourceCount * @fullLoadHours,
+processTime = @processTime(@resource),
+maxPartsPerHour = 3600 / @processTime * @partsPerCycle,
+resourceCount = ceiling((@processTime / @capacity(@resource)) / @taktTime(@plan)),
+energyCostsElectrical = @energyElectrical * @energyPriceElectrical(@masterData(@plan)),
+costsPerYear = @resourceCount * @depreciation(@resource) + @imputedInterest + @occupancyCosts + @maintenanceCosts + @energyCosts,
+fullLoadHours = @utilization * @workHoursPerYear(@masterData(@plan)),
+maintenanceCosts = @resourceCount * (@maintenanceCosts(@resource) + sum(@@uses(@resource), $w -> @maintenanceCosts($w))),
+occupancyCosts = @resourceCount * @requiredSpace(@resource) * @occupanyCostRate(@masterData(@plan)),
+imputedInterest = @resourceCount * @investmentCosts(@resource) / 2 * @interestRate(@masterData(@plan)),
+costsPerPart = @machineHourRate / 3600 * @processTime / @partsPerCycle,
+utilization = @partsPerHour(@plan) / @maxPartsPerHour
+
+Class: Plan
+Constraint:
+partsPerHour = @partsPerYear / @workHoursPerYear(@masterData),
+taktTime = 3600 / @partsPerHour
+
+Class: ProcessWithGas
+Constraint:
+energyCosts = @energyCostsElectrical + @energyCostsGas,
+energyCostsGas = @energyGas * @energyPriceGas(@masterData(@plan)),
+energyGas = @inputPowerGas(@resource) * @resourceCount * @fullLoadHours

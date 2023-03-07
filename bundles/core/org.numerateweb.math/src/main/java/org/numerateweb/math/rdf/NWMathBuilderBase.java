@@ -1,40 +1,24 @@
 package org.numerateweb.math.rdf;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import net.enilink.komma.core.IEntityManager;
-import net.enilink.komma.core.IReference;
-import net.enilink.komma.core.Namespace;
-import net.enilink.komma.core.URI;
-import net.enilink.komma.core.URIs;
+import net.enilink.komma.core.*;
 import net.enilink.komma.parser.manchester.ManchesterSyntaxParser;
 import net.enilink.vocab.xmlschema.XMLSCHEMA;
-
 import org.numerateweb.math.manchester.StatementConverterActions;
 import org.numerateweb.math.manchester.ValueConverter;
 import org.numerateweb.math.model.Builder;
 import org.numerateweb.math.model.DelegatingSeqBuilder;
 import org.numerateweb.math.ns.INamespaces;
 import org.numerateweb.math.om.rdf.OMRdfSymbols;
-import org.numerateweb.math.rdf.vocab.Application;
-import org.numerateweb.math.rdf.vocab.Attribution;
-import org.numerateweb.math.rdf.vocab.AttributionPair;
-import org.numerateweb.math.rdf.vocab.Binding;
 import org.numerateweb.math.rdf.vocab.Error;
-import org.numerateweb.math.rdf.vocab.Foreign;
 import org.numerateweb.math.rdf.vocab.Literal;
 import org.numerateweb.math.rdf.vocab.Object;
-import org.numerateweb.math.rdf.vocab.Reference;
-import org.numerateweb.math.rdf.vocab.Symbol;
-import org.numerateweb.math.rdf.vocab.Variable;
+import org.numerateweb.math.rdf.vocab.*;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
 import org.parboiled.support.ParsingResult;
+
+import java.math.BigInteger;
+import java.util.*;
 
 public class NWMathBuilderBase<T> implements Builder<T> {
 	protected Context context;
@@ -48,7 +32,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		@Override
 		public Builder<VariablesBuilder<B>> attrVar(final URI symbol) {
 			final NWMathVarBuilder<B> parent = this;
-			final List<AttributionPair> pairs = new ArrayList<AttributionPair>();
+			final List<AttributionPair> pairs = new ArrayList<>();
 			return new NWMathBuilderBase<VariablesBuilder<B>>(context) {
 				Builder<VariablesBuilder<B>> self = this;
 				URI currentKey = symbol;
@@ -64,7 +48,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 				@Override
 				public VariablesBuilder<B> build(IReference obj) {
 					addPair(obj);
-					return new NWMathVarBuilder<B>(context) {
+					return new NWMathVarBuilder<>(context) {
 						@Override
 						public Builder<VariablesBuilder<B>> attrVar(URI symbol) {
 							currentKey = symbol;
@@ -101,7 +85,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 	abstract static class NamespaceBuilder<B> extends NWMathSeqBuilder<B> {
 		List<Namespace> namespaces;
-		List<String> args = new ArrayList<String>();
+		List<String> args = new ArrayList<>();
 
 		NamespaceBuilder(Context context, List<Namespace> namespaces) {
 			super(context);
@@ -178,12 +162,12 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		<T> SeqBuilder<T> create(NWMathBuilderBase<T> parent, URI symbol);
 	}
 
-	private static Map<URI, BuilderFactory> builderFactories = new HashMap<URI, BuilderFactory>();
+	private static Map<URI, BuilderFactory> builderFactories = new HashMap<>();
 	static {
 		builderFactories.put(OMRdfSymbols.RESOURCE, new BuilderFactory() {
 			@Override
 			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent, final URI symbol) {
-				return new NWMathSeqBuilder<E>(parent.context) {
+				return new NWMathSeqBuilder<>(parent.context) {
 					IReference resourceRef;
 
 					@Override
@@ -210,8 +194,8 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		BuilderFactory valueAndValuesetBuilderFactory = new BuilderFactory() {
 			@Override
 			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent, final URI symbol) {
-				return new NWMathSeqBuilder<E>(parent.context) {
-					List<IReference> args = new ArrayList<IReference>();
+				return new NWMathSeqBuilder<>(parent.context) {
+					List<IReference> args = new ArrayList<>();
 
 					@Override
 					public SeqBuilder<E> build(IReference obj) {
@@ -243,7 +227,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		builderFactories.put(OMRdfSymbols.RESOURCESET, new BuilderFactory() {
 			@Override
 			public <E> SeqBuilder<E> create(final NWMathBuilderBase<E> parent, final URI symbol) {
-				return new NWMathSeqBuilder<E>(parent.context) {
+				return new NWMathSeqBuilder<>(parent.context) {
 					String classDescription;
 
 					@Override
@@ -254,7 +238,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 					@Override
 					public E end() {
-						ValueConverter converter = new ValueConverter(getEntityManager(), new INamespaces() {
+						ValueConverter converter = new ValueConverter(new INamespaces() {
 							@Override
 							public String getPrefix(URI namespace) {
 								// not supported
@@ -404,8 +388,8 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 	@Override
 	public SeqBuilder<T> apply() {
 		final NWMathBuilderBase<T> parent = this;
-		final DelegatingSeqBuilder<T> delegatingBuilder = new DelegatingSeqBuilder<T>();
-		delegatingBuilder.delegate(new NWMathSeqBuilder<T>(context) {
+		final DelegatingSeqBuilder<T> delegatingBuilder = new DelegatingSeqBuilder<>();
+		delegatingBuilder.delegate(new NWMathSeqBuilder<>(context) {
 			Application application = null;
 			List<IReference> args = null;
 
@@ -446,14 +430,14 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 	@Override
 	public BindingBuilder<T> bind() {
-		return new BindingBuilder<T>() {
+		return new BindingBuilder<>() {
 			final BindingBuilder<T> self = this;
 			IReference binder, body;
-			List<Variable> variables = new ArrayList<Variable>();
+			List<Variable> variables = new ArrayList<>();
 
 			@Override
 			public Builder<BindingBuilder<T>> binder() {
-				return new NWMathBuilderBase<BindingBuilder<T>>(context) {
+				return new NWMathBuilderBase<>(context) {
 					@Override
 					public BindingBuilder<T> build(IReference obj) {
 						binder = obj;
@@ -464,7 +448,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 			@Override
 			public Builder<BindingBuilder<T>> body() {
-				return new NWMathBuilderBase<BindingBuilder<T>>(context) {
+				return new NWMathBuilderBase<>(context) {
 					@Override
 					public BindingBuilder<T> build(IReference obj) {
 						body = obj;
@@ -484,7 +468,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 
 			@Override
 			public VariablesBuilder<BindingBuilder<T>> variables() {
-				return new NWMathVarBuilder<BindingBuilder<T>>(context) {
+				return new NWMathVarBuilder<>(context) {
 					@Override
 					public VariablesBuilder<BindingBuilder<T>> build(IReference obj) {
 						if (obj instanceof Variable) {
@@ -507,7 +491,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		final NWMathBuilderBase<T> parent = this;
 		final Error error = create(Error.class);
 		error.setSymbol(getEntityManager().findRestricted(symbol, Symbol.class));
-		return new NWMathSeqBuilder<T>(context) {
+		return new NWMathSeqBuilder<>(context) {
 			List<IReference> args = null;
 
 			@Override
@@ -532,10 +516,10 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 		final NWMathBuilderBase<T> parent = this;
 		if (OMRdfSymbols.PREFIXES.equals(symbol)) {
 			final List<Namespace> namespaces = new ArrayList<>();
-			return new NWMathBuilderBase<Builder<T>>(context) {
+			return new NWMathBuilderBase<>(context) {
 				@Override
 				public SeqBuilder<Builder<T>> apply() {
-					return new NamespaceBuilder<Builder<T>>(context, namespaces) {
+					return new NamespaceBuilder<>(context, namespaces) {
 						boolean isSet = false;
 
 						public SeqBuilder<Builder<T>> s(URI symbol) {
@@ -551,7 +535,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 						@Override
 						public SeqBuilder<SeqBuilder<Builder<T>>> apply() {
 							final SeqBuilder<Builder<T>> parent = this;
-							return new NamespaceBuilder<SeqBuilder<Builder<T>>>(context, namespaces) {
+							return new NamespaceBuilder<>(context, namespaces) {
 								@Override
 								SeqBuilder<Builder<T>> builder() {
 									return parent;
@@ -571,18 +555,18 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 						Builder<T> builder() {
 							return namespaces.isEmpty() ? parent
 									: new NWMathBuilderBase<T>(context.childContext(namespaces)) {
-										@Override
-										public T build(IReference target) {
-											return parent.build(target);
-										}
-									};
+								@Override
+								public T build(IReference target) {
+									return parent.build(target);
+								}
+							};
 						}
 					};
 				}
 			};
 		}
 
-		final List<AttributionPair> pairs = new ArrayList<AttributionPair>();
+		final List<AttributionPair> pairs = new ArrayList<>();
 		return new NWMathBuilderBase<Builder<T>>(context) {
 			Builder<Builder<T>> self = this;
 			URI currentKey = symbol;
@@ -598,7 +582,7 @@ public class NWMathBuilderBase<T> implements Builder<T> {
 			@Override
 			public Builder<T> build(IReference obj) {
 				addPair(obj);
-				return new NWMathBuilderBase<T>(context) {
+				return new NWMathBuilderBase<>(context) {
 					@Override
 					public Builder<Builder<T>> attr(URI symbol) {
 						currentKey = symbol;

@@ -96,8 +96,7 @@ public class ComplexRulesTest {
 			rules = br.lines().collect(Collectors.joining("\n"));
 		}
 
-		ParsingResult<Object> result = new ReportingParseRunner<Object>(parser.Document()).run(rules.toCharArray());
-
+		ParsingResult<Object> result = new ReportingParseRunner<>(parser.Document()).run(rules.toCharArray());
 		if (result.matched && result.resultValue != null) {
 			OMObject constraintSet = (OMObject) result.resultValue;
 			List<OMObject> constraints = Arrays.stream(constraintSet.getArgs(), 1, constraintSet.getArgs().length)
@@ -155,7 +154,6 @@ public class ComplexRulesTest {
 			assertEquals("P(circle)", 2 * Math.PI * circ.r, circ.perimeter, 10e-5);
 			assertEquals("V(cylinder)", cyl.base.area * cyl.h, cyl.volume, 10e-5);
 			assertEquals("A(cylinder)", 2 * cyl.base.area + cyl.base.perimeter * cyl.h, cyl.surface, 10e-5);
-
 		} else {
 			System.err.println(ErrorUtils.printParseErrors(result));
 			fail("Invalid rules format.");

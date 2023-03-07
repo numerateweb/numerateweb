@@ -1,6 +1,8 @@
 package org.numerateweb.math.rdf;
 
 import com.google.inject.name.Names;
+import net.enilink.komma.core.*;
+import net.enilink.vocab.rdf.RDF;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
@@ -12,10 +14,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-import net.enilink.komma.core.IEntityManagerFactory;
-import net.enilink.komma.core.IUnitOfWork;
-import net.enilink.komma.core.KommaException;
-import net.enilink.komma.core.KommaModule;
 import net.enilink.komma.dm.IDataManager;
 import net.enilink.komma.dm.IDataManagerFactory;
 import net.enilink.komma.em.DecoratingEntityManagerModule;
@@ -23,6 +21,9 @@ import net.enilink.komma.em.EntityManagerFactoryModule;
 import net.enilink.komma.em.util.KommaUtil;
 import net.enilink.komma.em.util.UnitOfWork;
 import net.enilink.komma.rdf4j.RDF4JModule;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Helper methods for working with RDF data.
