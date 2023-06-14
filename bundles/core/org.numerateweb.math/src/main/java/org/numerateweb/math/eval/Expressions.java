@@ -183,6 +183,8 @@ public class Expressions {
 		constants.put(CDBASE + "/nums1#e", new ConstantExpr(Math.E));
 		constants.put(CDBASE + "/nums1#NaN", new ConstantExpr(Double.NaN));
 		constants.put(CDBASE + "/list2#nil", new ConstantExpr(Collections.emptyList()));
+		constants.put(CDBASE + "/logic1#true", new ConstantExpr(true));
+		constants.put(CDBASE + "/logic1#false", new ConstantExpr(false));
 
 		// not actually part of the nums1 CD, but NaN is useless without this check
 		functions.put(CDBASE + "/nums1#isNaN", unaryObj(arg -> Double.isNaN(values.doubleValue(arg))));
