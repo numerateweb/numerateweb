@@ -141,7 +141,7 @@ public class RdfModelAccess implements IModelAccess {
 
 		query.setParameter("subject", subject).setParameter("property", property);
 		restriction.ifPresent(r -> {
-			query.setParameter("restriction", restriction);
+			query.setParameter("restriction", r);
 		});
 
 		IExtendedIterator<?> it = query.evaluate();
