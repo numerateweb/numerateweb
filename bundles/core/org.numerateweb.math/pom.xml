@@ -28,11 +28,6 @@
 			<version>1.7.26</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>25.1-jre</version>
-		</dependency>
-		<dependency>
 			<groupId>net.enilink.komma</groupId>
 			<artifactId>net.enilink.commons.util</artifactId>
 			<version>${komma.version}</version>
