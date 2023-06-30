@@ -126,12 +126,18 @@ public abstract class AbstractEvaluator<E> implements IEvaluator {
 	@SuppressWarnings("unchecked")
 	protected AbstractEvaluator(IModelAccess modelAccess, CacheManager cacheManager) {
 		this.modelAccess = modelAccess;
+		this.valueCache = createValueCache(cacheManager);
+		this.parsedExpressionCache = createExpressionCache(cacheManager);
+	}
 
-		this.valueCache = (ICache<Pair<Object, IReference>, E>) cacheManager
+	protected ICache<Pair<Object, IReference>, E> createValueCache(CacheManager cacheManager) {
+		return (ICache<Pair<Object, IReference>, E>) cacheManager
 				.get(new TypeLiteral<ICache<Pair<Object, IReference>, Object>>() {
 				});
+	}
 
-		this.parsedExpressionCache = (ICache<OMObject, E>) cacheManager
+	protected ICache<OMObject, E> createExpressionCache(CacheManager cacheManager) {
+		return (ICache<OMObject, E>) cacheManager
 				.get(new TypeLiteral<ICache<OMObject, Object>>() {
 				});
 	}

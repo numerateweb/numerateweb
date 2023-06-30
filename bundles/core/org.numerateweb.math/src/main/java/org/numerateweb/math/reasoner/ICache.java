@@ -7,7 +7,5 @@ public interface ICache<K, T> {
 
 	T remove(K key);
 
-	double getHitrate();
-
 	void clear();
 }
