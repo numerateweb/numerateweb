@@ -5,7 +5,7 @@ public interface ICache<K, T> {
 
 	CacheResult<T> get(K key);
 
-	T remove(K key);
+	void remove(K key);
 
 	void clear();
 }
